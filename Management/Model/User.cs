@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleApp1.Enumeration;
-using ConsoleApp1.Models;
 
 namespace ConsoleApp1.Models
 {
     public class User
     {
-        sealed static int userId = 1; 
-        public User(string username, string name, string email, Role role)
+        private static int userId = 1; 
+        public User(string name, string email, Role role)
         {
             UserId = userId++;
-            Name = username;
+            Name = name;
             Email = email;
             Role = role;
         }
@@ -23,10 +22,10 @@ namespace ConsoleApp1.Models
         public string Email { get; set; }
         public Role Role { get; set; }
         public string CurrentProject { get; set; }
-        //public ICollection<Project> AssignedProjects { get; set; }
+        public ICollection<Project> AssignedProjects { get; set; }
         public override string ToString()
         {
-            return string.Format($"Name : {Name} \n UserId : {UserId} \n Email : {Email} \n Role : {Role} \n CurrentProject : {CurrentProject}");
+            return string.Format($"Name : {this.Name} \n UserId : {this.UserId} \n Email : {this.Email} \n Role : {this.Role} \n CurrentProject : {this.CurrentProject}");
         }
     }
 }
