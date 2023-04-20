@@ -10,7 +10,7 @@ namespace ConsoleApp1.Controller
 {
 	public interface IAssignment
 	{
-		string AssignUser(int projectId,User user);
-		string DeassignUser(int projectId,User user);
+		string AssignUser(int projectId,int userId);
+		string DeassignUser(int projectId,int userId);
 	}
 }

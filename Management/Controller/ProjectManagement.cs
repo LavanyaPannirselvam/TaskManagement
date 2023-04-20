@@ -12,71 +12,73 @@ namespace ConsoleApp1.Controller
 {
     public class ProjectManagement : IProjectManage, IAssignment, IModify
     {
-        private Database database;
+        private readonly Database _database = Database.GetInstance();
         
-
-        public ProjectManagement(Database database) 
+        public string AssignUser(int projectId, int userId)
         {
-            this.database = database;
-        }
-
-        public string AssignUser(int projectId, User user)
-        {
-            if (database.GetCurrentUser() != null)
+            if (_database.IsUserAvailable(_database.CurrentUser))
             {
-                if (database.GetCurrentUser().Role != Role.EMPLOYEE)
+                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
                 {
-                    if (database.GetProject(projectId) != null)
+                    if (_database.GetProject(projectId) != null)
                     {
-                        if (!database.GetProject(projectId).AssignedUsers.Contains(user))
+                        if (_database.IsUserAvailable(userId))
                         {
-                            database.GetProject(projectId).AssignedUsers.Add(user);
-                            user.AssignedProjects.Add(database.GetProject(projectId));
-                            return "Project is assigned to " + user.UserId + " successfully";
+                            if (!_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(userId)))
+                            {
+                                _database.GetProject(projectId).AssignedUsers.Add(_database.GetUser(userId));
+                                _database.GetUser(userId).AssignedProjects.Add(_database.GetProject(projectId));
+                                return "Project is assigned to " + userId + " successfully";
+                            }
+                            else return "Project is already assigned to the user";
                         }
-                        else return "Project is already assigned to the user";
+                        else return "Given user is not available in the users list";
                     }
                     else return "Project is not available";
                 }
                 else return "You don't have the access to assign a project";
             }
-            else return "Login yourself to proceed yourself";
+            else return "Login yourself to proceed further";
         }
 
-        public string DeassignUser(int projectId, User user)
+        public string DeassignUser(int projectId, int userId)
         {
-            if (database.GetCurrentUser() != null)
+            if (_database.CurrentUser != 0)
             {
-                if (database.GetCurrentUser().Role != Role.EMPLOYEE)
+                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
                 {
-                    if (database.GetProject(projectId) != null)
+                    if (_database.GetProject(projectId) != null)
                     {
-                        if (database.GetProject(projectId).AssignedUsers.Contains(user))
+                        if (_database.IsUserAvailable(userId))
                         {
-                            database.GetProject(projectId).AssignedUsers.Remove(user);
-                            user.AssignedProjects.Remove(database.GetProject(projectId));
-                            return "Project is deassigned from " + user.UserId + " successfully";
+                            if (_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(userId)))
+                            {
+                                _database.GetProject(projectId).AssignedUsers.Remove(_database.GetUser(userId));
+                                _database.GetUser(userId).AssignedProjects.Remove(_database.GetProject(projectId));
+                                return "Project is deassigned from " + userId + " successfully";
+                            }
+                            else return "Project is already deassigned to the user";
                         }
-                        else return "Project is already deassigned to the user";
+                        else return "Given user is not available in the users list";
                     }
                     else return "Project is not available";
                 }
                 else return "You don't have the access to deassign a project";
             }
-            else return "Login yourself to proceed yourself";
+            else return "Login yourself to proceed further";
         }
 
         public string ChangePriority(int projectId, PriorityType priority)
         {
-            if (database.GetCurrentUser() != null)
+            if (_database.CurrentUser != 0)
             {
-                if (database.GetCurrentUser().Role != Role.EMPLOYEE)
+                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
                 {
-                    if (database.GetProject(projectId) != null)
+                    if (_database.GetProject(projectId) != null)
                     {
-                        if (database.GetProject(projectId).Priority != priority)
+                        if (_database.GetProject(projectId).Priority != priority)
                         {
-                            database.GetProject(projectId).Priority = priority;
+                            _database.GetProject(projectId).Priority = priority;
                             return "Priority setted successfully";
                         }
                         else return "Project is already in this priority";
@@ -85,20 +87,20 @@ namespace ConsoleApp1.Controller
                 }
                 else return "You don't have the access to change the priority of a project";
             }
-            else return "Login yourself to proceed yourself";
+            else return "Login yourself to proceed further";
         }
 
         public string ChangeStatus(int projectId, StatusType status)
         {
-            if (database.GetCurrentUser() != null)
+            if (_database.CurrentUser != 0)
             {
-                if (database.GetProject(projectId) != null)
+                if (_database.GetProject(projectId) != null)
                 {
-                    if(database.GetProject(projectId).AssignedUsers.Contains(database.GetCurrentUser()))
+                    if(_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser)))
                     { 
-                        if (database.GetProject(projectId).Status != status)
+                        if (_database.GetProject(projectId).Status != status)
                         {
-                            database.GetProject(projectId).Status = status;
+                            _database.GetProject(projectId).Status = status;
                             return "Status updated successfully";
                         }
                         else return "Project is already in this status";
@@ -107,17 +109,17 @@ namespace ConsoleApp1.Controller
                 }
                 else return "Project is not available";
             }
-            else return "Login yourself to proceed yourself";
+            else return "Login yourself to proceed further";
         }
 
         public string CreateProject(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate)
         {
-            if (database.GetCurrentUser() != null)
+            if (_database.CurrentUser != 0)
             {
-                if (database.GetCurrentUser().Role == Role.MANAGER)
+                if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
                 {
-                    Project project = new Project(name, desc,database.GetCurrentUser().UserId, status, type, startDate, endDate);
-                    if (database.AddProject(project) == Result.SUCCESS)
+                    Project project = new Project(name, desc,_database.CurrentUser, status, type, startDate, endDate);
+                    if (_database.AddProject(project) == Result.SUCCESS)
                         return "Project created successfully";
                     else return "Project creation failed";
                 }
@@ -128,13 +130,13 @@ namespace ConsoleApp1.Controller
 
         public string RemoveProject(int projectId)
         {
-            if(database.GetCurrentUser() != null)
+            if(_database.CurrentUser != 0)
             {
-                if(database.GetCurrentUser().Role== Role.MANAGER)
+                if(_database.GetUser(_database.CurrentUser).Role== Role.MANAGER)
                 {
-                    if (database.DeleteProject(projectId) == Result.SUCCESS)
+                    if (_database.DeleteProject(projectId) == Result.SUCCESS)
                         return "Project removed successfully";
-                    else if (database.DeleteProject(projectId) == Result.PARTIAL)
+                    else if (_database.DeleteProject(projectId) == Result.PARTIAL)
                         return "Project cannot be deleted as it is yet to complete";
                     else return "Project doesn't available";
                 }
@@ -143,6 +145,12 @@ namespace ConsoleApp1.Controller
             else return "Login yourself to proceed further";
         }
 
-       
+        public string ViewProject(int projectId)
+        {
+            if (_database.GetProject(projectId) != null)
+                    return _database.GetProject(projectId).ToString();
+                else return "Project not available";
+            }
+
     }
 }

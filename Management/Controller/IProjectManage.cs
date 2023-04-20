@@ -12,5 +12,7 @@ namespace ConsoleApp1.Controller
     {
         string CreateProject(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate);
         string RemoveProject(int projectId);
+        string ViewProject(int projectId);
+
     }
 }

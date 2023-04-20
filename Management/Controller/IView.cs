@@ -9,6 +9,5 @@ namespace ConsoleApp1.Controller
     public interface IView
     {
         string ViewMyProjects();
-        string ViewProject(int projectId);
     }
 }
