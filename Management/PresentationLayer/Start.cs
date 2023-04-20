@@ -11,12 +11,7 @@ namespace ConsoleApp1.PresentationLayer
 {
     public class Start
     {
-        private static DatabaseHandler handler;
-
-        public Start()
-        {
-            handler = new DatabaseHandler();
-        }
+        private static readonly CollectUserInput collectUserInput = new();
         public static void Run()
         {
             Console.WriteLine("Welcome");
@@ -29,9 +24,9 @@ namespace ConsoleApp1.PresentationLayer
                 MainMenuOptions options = (MainMenuOptions)(choice - 1);
                 switch(options)
                 {
-                    case MainMenuOptions.SIGNUP:
+                    case MainMenuOptions.SIGNUP:Console.WriteLine(collectUserInput.CollectSignUpInput());
                         break;
-                    case MainMenuOptions.SIGNIN:
+                    case MainMenuOptions.SIGNIN:Console.WriteLine(collectUserInput.CollectLogInInput());
                         break;
                     case MainMenuOptions.QUIT:Environment.Exit(0);
                         break;
