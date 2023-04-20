@@ -16,6 +16,8 @@ namespace ConsoleApp1.Models
             Name = name;
             Email = email;
             Role = role;
+            AssignedProjects = new List<Project>();
+            CurrentProject = "";
         }
         public int UserId { get; set; }
         public string Name { get; set; }

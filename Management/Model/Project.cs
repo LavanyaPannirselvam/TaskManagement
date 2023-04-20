@@ -16,7 +16,7 @@ namespace ConsoleApp1.Models
            Priority = type;
            StartDate = startDate;
            EndDate = endDate;
-
+           AssignedUsers = new List<User>();
         }
         public int Id { get; set; }
       
