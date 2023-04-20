@@ -8,27 +8,31 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1.DataBase
 {
-    public class DatabaseHandler
+    public class DatabaseHandler : ISignProcess,ILogProcess
     {
-        private Database database;
-        public DatabaseHandler()
+        private Database _database = Database.GetInstance();
+        private static DatabaseHandler? _databaseHandler=null;
+        public static DatabaseHandler GetInstance() 
         {
-            database = Database.GetInstance();
+            if(_databaseHandler==null)
+                return new DatabaseHandler();
+            return _databaseHandler;
         }
-        public string SignUp(string password, string name, string email, Role role)
+        public string SignUp(string name, string email, Role role, string password)
         {
-            User newUser = new User(name, email, role);
-            if (database.AddUser(newUser,password) == Result.FAILURE)
+            User newUser = new(name, email, role);
+            if (_database.AddUser(newUser,password) == Result.FAILURE)
                 return "User already exists";
-            else if (database.AddUser(newUser, password) != Result.SUCCESS) return "Some error occured";
+            //else if (database.AddUser(newUser, password) != Result.SUCCESS) 
+              //  return "Some error occured";
             else return "SignedUp successfully \nYour userId is : " + newUser.UserId;
         }
 
         public string LogIn(int userid, string password)
         {
-            if (database.CheckUser(userid, password) == Result.SUCCESS)
+            if (_database.CheckUser(userid, password) == Result.SUCCESS)
                 return "Login successful";
-            else if (database.CheckUser(userid, password) == Result.PARTIAL)
+            else if (_database.CheckUser(userid, password) == Result.PARTIAL)
                 return "Password incorrect";
             else return "Invalid userId";
                 
@@ -36,19 +40,20 @@ namespace ConsoleApp1.DataBase
 
         public string LogOut() 
         {
-            if (database.GetCurrentUser() != null)
-            {
-                database.SetCurrentUser(null);//TODO
+            Console.WriteLine(_database.CurrentUser);
+            Result result = _database.LogOut();
+            if(result == Result.SUCCESS)
                 return "LoggedOut successfully";
-            }
-            else return "Login yourself to proceed further";
+            else return "Logout unsuccessful";
         }
 
         public string SignOut()
         {
-            if (database.DeleteUser() == Result.SUCCESS)
+            Console.WriteLine(_database.CurrentUser);
+            Result result = _database.DeleteUser();
+            if (result == Result.SUCCESS)
                 return "Your account deleted successfully";
-            else if (database.DeleteUser() == Result.PARTIAL) 
+            else if (result == Result.PARTIAL) 
                 return "Cannot delete account now as you have projects pending to do";
             else return "Login yourself to proceed further";
         }

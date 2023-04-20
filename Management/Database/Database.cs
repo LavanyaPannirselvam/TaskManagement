@@ -2,7 +2,9 @@
 using ConsoleApp1.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,105 +12,126 @@ namespace ConsoleApp1.DataBase
 {
     public class Database
     {
-        private Dictionary<int, User> allUsers;
-        private Dictionary<int, string> userCredentials;
-        private Dictionary<int, Project> allProjects;
-        private User? currentUser = null;
-        private Database() {
-            allUsers = new Dictionary<int, User>();
-            allProjects = new Dictionary<int, Project>();
-            userCredentials = new Dictionary<int, string>();
+        private readonly Dictionary<int, User> _allUsers;
+        private readonly Dictionary<int, string> _userCredentials;
+        private readonly Dictionary<int, Project> _allProjects;
+
+        public int CurrentUser;    
+        private Database()
+        {
+            _allUsers = new Dictionary<int, User>();
+            _allProjects = new Dictionary<int, Project>();
+            _userCredentials = new Dictionary<int, string>();
         }
 
         private static readonly Database? instance = null;
-        public static Database GetInstance() 
+        public static Database GetInstance()
         {
-            if(instance == null)
+            if (instance == null)
                 return new Database();
             return instance;
         }
         //Projects section
         public Result AddProject(Project project)
         {
-            if (allProjects.ContainsKey(project.Id))
+            if (_allProjects.ContainsKey(project.Id))
                 return Result.FAILURE;
-            allProjects.Add(project.Id, project);
+            _allProjects.Add(project.Id, project);
             return Result.SUCCESS;
         }
 
         public Project GetProject(int projectId)
         {
-            if (allProjects.ContainsKey(projectId))
-                return allProjects[projectId];
+            if (_allProjects.ContainsKey(projectId))
+                return _allProjects[projectId];
             else return null;
         }
 
-        public Result DeleteProject(int projectId) 
+        public Result DeleteProject(int projectId)
         {
-            if (allProjects.ContainsKey(projectId))
+            if (_allProjects.ContainsKey(projectId))
             {
                 if (GetProject(projectId).AssignedUsers.Count == 0)
                 {
-                    allProjects.Remove(projectId);
-                    return Result.SUCCESS;
-                }
-                else return Result.PARTIAL;
-            }
-            return Result.FAILURE;             
-        }
-        //User section
-        public Result AddUser(User user,string password)
-        {
-            if(allUsers.ContainsKey(user.UserId))
-                return Result.FAILURE;
-            allUsers.Add(user.UserId, user);
-            userCredentials.Add(user.UserId, password);
-            return Result.SUCCESS;
-        }
-
-        public User GetUser(int userId)
-        {
-            if (allUsers.ContainsKey(userId))
-                return allUsers[userId];
-            return null;
-        }
-
-        public Result DeleteUser()
-        {
-            if(currentUser != null)
-            {
-                if (currentUser.AssignedProjects.Count == 0)
-                {
-                    allUsers.Remove(currentUser.UserId);
-                    userCredentials.Remove(currentUser.UserId);
-                    currentUser = null;
+                    _allProjects.Remove(projectId);
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
             }
             return Result.FAILURE;
         }
-
-        internal Result CheckUser(int userId,string password)
+        //User section
+        public Result AddUser(User user, string password)
         {
-            if (allUsers.ContainsKey(userId))
+            if (_allUsers.ContainsKey(user.UserId))
+                return Result.FAILURE;
+            _allUsers.Add(user.UserId, user);
+            _userCredentials.Add(user.UserId, password);
+            return Result.SUCCESS;
+        }
+
+        public User GetUser(int userId)
+        {
+             return _allUsers[userId];
+        }
+        public bool IsUserAvailable(int userId)
+        {
+            if(_allUsers.ContainsKey(userId))
+                return true;
+            return false;
+        }
+        public Result DeleteUser()
+        {
+            if (GetCurrentUser() != 0)
             {
-                if (userCredentials[userId] == password)
+                if (GetUser(GetCurrentUser()).AssignedProjects.Count == 0)
+                {
+                    _allUsers.Remove(GetCurrentUser());
+                    _userCredentials.Remove(GetCurrentUser());
+                    SetCurrentUser(0);
                     return Result.SUCCESS;
+                }
                 else return Result.PARTIAL;
             }
             else return Result.FAILURE;
         }
 
+        internal Result CheckUser(int userId, string password)
+        {
+            if (_allUsers.ContainsKey(userId))
+            {
+                if (_userCredentials[userId] == password)
+                {
+                    SetCurrentUser(userId);
+                    //Console.WriteLine(CurrentUser);
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            else return Result.FAILURE;
+        }
+        public Result LogOut()
+        {
+            if (GetCurrentUser() != 0)
+            {
+                SetCurrentUser(0);
+                return Result.SUCCESS;
+            }
+            else
+            {
+                return Result.FAILURE;
+            }
+        }
         /*internal string GetPassword(int userId)
         {
             if (userCredentials.ContainsKey(userId))
                 return userCredentials[userId];
             else return null;
         }*/
-        public void SetCurrentUser(User user){ this.currentUser = user; }
+        public void SetCurrentUser(int userId){ this.CurrentUser = userId; }
 
-        public User GetCurrentUser() { return currentUser;}
+        public int GetCurrentUser() { return CurrentUser;}
+
 
     }
 }
