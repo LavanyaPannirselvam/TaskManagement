@@ -15,9 +15,9 @@ namespace ConsoleApp1.Controller
         
         public string ViewMyProjects()
         {
-            if (_database.GetUser(_database.CurrentUser).AssignedProjects.Count != 0)
+            if (_database.GetUser(Database.CurrentUser).AssignedProjects.Count != 0)
                 {
-                    foreach (Project p in _database.GetUser(_database.CurrentUser).AssignedProjects)
+                    foreach (Project p in _database.GetUser(Database.CurrentUser).AssignedProjects)
                         Console.WriteLine(p.ToString());
                     return "";
                 }

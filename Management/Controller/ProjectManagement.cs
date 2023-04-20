@@ -16,9 +16,9 @@ namespace ConsoleApp1.Controller
         
         public string AssignUser(int projectId, int userId)
         {
-            if (_database.IsUserAvailable(_database.CurrentUser))
+            if (_database.IsUserAvailable(Database.CurrentUser))
             {
-                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+                if (_database.GetUser(Database.CurrentUser).Role != Role.EMPLOYEE)
                 {
                     if (_database.GetProject(projectId) != null)
                     {
@@ -43,9 +43,9 @@ namespace ConsoleApp1.Controller
 
         public string DeassignUser(int projectId, int userId)
         {
-            if (_database.CurrentUser != 0)
+            if (Database.CurrentUser != 0)
             {
-                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+                if (_database.GetUser(Database.CurrentUser).Role != Role.EMPLOYEE)
                 {
                     if (_database.GetProject(projectId) != null)
                     {
@@ -70,9 +70,9 @@ namespace ConsoleApp1.Controller
 
         public string ChangePriority(int projectId, PriorityType priority)
         {
-            if (_database.CurrentUser != 0)
+            if (Database.CurrentUser != 0)
             {
-                if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+                if (_database.GetUser(Database.CurrentUser).Role != Role.EMPLOYEE)
                 {
                     if (_database.GetProject(projectId) != null)
                     {
@@ -92,11 +92,11 @@ namespace ConsoleApp1.Controller
 
         public string ChangeStatus(int projectId, StatusType status)
         {
-            if (_database.CurrentUser != 0)
+            if (Database.CurrentUser != 0)
             {
                 if (_database.GetProject(projectId) != null)
                 {
-                    if(_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser)))
+                    if(_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(Database.CurrentUser)))
                     { 
                         if (_database.GetProject(projectId).Status != status)
                         {
@@ -114,11 +114,11 @@ namespace ConsoleApp1.Controller
 
         public string CreateProject(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate)
         {
-            if (_database.CurrentUser != 0)
+            if (Database.CurrentUser != 0)
             {
-                if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
+                if (_database.GetUser(Database.CurrentUser).Role == Role.MANAGER)
                 {
-                    Project project = new Project(name, desc,_database.CurrentUser, status, type, startDate, endDate);
+                    Project project = new Project(name, desc,Database.CurrentUser, status, type, startDate, endDate);
                     if (_database.AddProject(project) == Result.SUCCESS)
                         return "Project created successfully";
                     else return "Project creation failed";
@@ -130,9 +130,9 @@ namespace ConsoleApp1.Controller
 
         public string RemoveProject(int projectId)
         {
-            if(_database.CurrentUser != 0)
+            if(Database.CurrentUser != 0)
             {
-                if(_database.GetUser(_database.CurrentUser).Role== Role.MANAGER)
+                if(_database.GetUser(Database.CurrentUser).Role== Role.MANAGER)
                 {
                     if (_database.DeleteProject(projectId) == Result.SUCCESS)
                         return "Project removed successfully";
