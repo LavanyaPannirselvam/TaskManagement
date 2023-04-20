@@ -55,12 +55,20 @@ namespace ConsoleApp1.PresentationLayer
         }
         public string CollectCreateProjectInput()
         {
-            GetAndSetPriority() ;
-            GetAndSetStatus();
             GetAndSetName();
             GetAndSetDescription();
-            GetAndSetDates();
-            return projectManagement.CreateProject(name, desc, status, priority, startDate, endDate);
+            GetAndSetPriority();
+            GetAndSetStatus();
+            GetAndSetStartdate();
+            GetAndSetEnddate();
+            if(CheckDates(startDate,endDate))   
+                return projectManagement.CreateProject(name, desc, status, priority, startDate, endDate);
+            else
+            {
+                Console.WriteLine("End date should be greater than start date\nTry again entering the end date");
+                GetAndSetEnddate() ;    
+            }
+            return "";
         }
 
         public string CollectDeleteProjectInput()
@@ -140,18 +148,71 @@ namespace ConsoleApp1.PresentationLayer
                 GetAndSetName();
             }
         }
-        private void GetAndSetDates()
+        private void GetAndSetStartdate()
         {
-            Console.WriteLine("Enter start date (mm/dd/yyyy) : ");
-            startDate = DateOnly.Parse(Console.ReadLine());
-            Console.WriteLine("Enter end date (mm/dd/yyyy) : ");
-            endDate = DateOnly.Parse(Console.ReadLine());
-            if(startDate > endDate)
+            int sDate, sMonth, sYear;
+            Console.WriteLine("Enter start date (dd) : ");
+            if (int.TryParse(Console.ReadLine(), out sDate))
             {
-                Console.WriteLine("End date should be greater than start date");
-                GetAndSetDates();
+                Console.WriteLine("Enter start month (mm) : ");
+                if (int.TryParse(Console.ReadLine(), out sMonth))
+                {
+                    Console.WriteLine("Enter start year (yy) : ");
+                    if (int.TryParse(Console.ReadLine(), out sYear))
+                        startDate = new DateOnly(sYear, sMonth, sDate);
+                    else
+                    {
+                        Console.WriteLine("Wrong format");
+                        GetAndSetStartdate();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format");
+                    GetAndSetStartdate();
+                }
             }
-            
+            else
+            {
+                Console.WriteLine("Wrong format");
+                GetAndSetStartdate();
+            }
+        }
+        private void GetAndSetEnddate()
+        {
+            int sDate, sMonth, sYear;
+            Console.WriteLine("Enter end date (dd) : ");
+            if (int.TryParse(Console.ReadLine(), out sDate))
+            {
+                Console.WriteLine("Enter end month (mm) : ");
+                if (int.TryParse(Console.ReadLine(), out sMonth))
+                {
+                    Console.WriteLine("Enter end year (yy) : ");
+                    if (int.TryParse(Console.ReadLine(), out sYear))
+                        endDate = new DateOnly(sYear, sMonth, sDate);
+                    else
+                    {
+                        Console.WriteLine("Wrong format");
+                        GetAndSetStartdate();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format");
+                    GetAndSetStartdate();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Wrong format");
+                GetAndSetStartdate();
+            }
+        }
+        private static bool CheckDates(DateOnly startDate,DateOnly endDate)
+        {
+            if (startDate.DayNumber - endDate.DayNumber >0)
+                return true;
+            return false;
         }
     }
 }
