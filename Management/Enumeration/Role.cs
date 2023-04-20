@@ -8,6 +8,6 @@ namespace ConsoleApp1.Enumeration
 {
     public enum Role
     {
-        EMPLOYEE,MANAGER,LEAD,NONE
+        EMPLOYEE,MANAGER,LEAD
     }
 }
