@@ -40,7 +40,7 @@ namespace ConsoleApp1.DataBase
 
         public string LogOut() 
         {
-            Console.WriteLine(_database.CurrentUser);
+            Console.WriteLine(Database.CurrentUser);
             Result result = _database.LogOut();
             if(result == Result.SUCCESS)
                 return "LoggedOut successfully";
@@ -49,7 +49,7 @@ namespace ConsoleApp1.DataBase
 
         public string SignOut()
         {
-            Console.WriteLine(_database.CurrentUser);
+            Console.WriteLine(Database.CurrentUser);
             Result result = _database.DeleteUser();
             if (result == Result.SUCCESS)
                 return "Your account deleted successfully";

@@ -16,7 +16,7 @@ namespace ConsoleApp1.DataBase
         private readonly Dictionary<int, string> _userCredentials;
         private readonly Dictionary<int, Project> _allProjects;
 
-        public int CurrentUser;    
+        public static int CurrentUser { get; set; }      
         private Database()
         {
             _allUsers = new Dictionary<int, User>();
@@ -82,13 +82,13 @@ namespace ConsoleApp1.DataBase
         }
         public Result DeleteUser()
         {
-            if (GetCurrentUser() != 0)
+            if (CurrentUser != 0)
             {
-                if (GetUser(GetCurrentUser()).AssignedProjects.Count == 0)
+                if (GetUser(CurrentUser).AssignedProjects.Count == 0)
                 {
-                    _allUsers.Remove(GetCurrentUser());
-                    _userCredentials.Remove(GetCurrentUser());
-                    SetCurrentUser(0);
+                    _allUsers.Remove(CurrentUser);
+                    _userCredentials.Remove(CurrentUser);
+                    CurrentUser = 0;
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
@@ -102,7 +102,7 @@ namespace ConsoleApp1.DataBase
             {
                 if (_userCredentials[userId] == password)
                 {
-                    SetCurrentUser(userId);
+                    CurrentUser=userId;
                     //Console.WriteLine(CurrentUser);
                     return Result.SUCCESS;
                 }
@@ -112,9 +112,9 @@ namespace ConsoleApp1.DataBase
         }
         public Result LogOut()
         {
-            if (GetCurrentUser() != 0)
+            if (CurrentUser != 0)
             {
-                SetCurrentUser(0);
+                CurrentUser = 0;
                 return Result.SUCCESS;
             }
             else
@@ -127,11 +127,11 @@ namespace ConsoleApp1.DataBase
             if (userCredentials.ContainsKey(userId))
                 return userCredentials[userId];
             else return null;
-        }*/
-        public void SetCurrentUser(int userId){ this.CurrentUser = userId; }
+        }
+        public void SetCurrentUser(User user){ this.CurrentUser = user; }
 
-        public int GetCurrentUser() { return CurrentUser;}
+        public User GetCurrentUser() { return CurrentUser;}
 
-
+    }*/
     }
 }
