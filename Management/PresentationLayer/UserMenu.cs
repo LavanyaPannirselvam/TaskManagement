@@ -1,8 +1,8 @@
-﻿using ConsoleApp1.Controller;
-using ConsoleApp1.Enumeration;
+﻿using ConsoleApp1.Enumeration;
 using ConsoleApp1.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +14,18 @@ namespace ConsoleApp1.PresentationLayer
         private readonly CollectProjectInput projectInput = new();
         private readonly CollectUserInput userInput = new();
 
-        public void ShowMenu(string msg)
+        public string ShowMenu(string msg)
         {
-            //Console.WriteLine(msg);
+            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+            ColorCode.SuccessCode(msg);
             while (true)
             {
-                Console.WriteLine("Choose your option : ");
+                ColorCode.MenuCode();
+                Console.WriteLine("\t\t------User Menu------\t\t");
                 foreach (UserMenuOptions menu in Enum.GetValues(typeof(UserMenuOptions)))
-                    Console.WriteLine((int)menu + 1 + " . " + menu.ToString());
+                    Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_"," ").ToLowerInvariant()));
+                Console.WriteLine("---------------------------------------------");
+                ColorCode.GetInputCode("Choose your choice : ");
                 int choice = Validator.getIntInRange(Enum.GetValues(typeof(UserMenuOptions)).Length);
                 UserMenuOptions option = (UserMenuOptions)(choice - 1);
                 switch (option)
@@ -34,9 +38,8 @@ namespace ConsoleApp1.PresentationLayer
                     case UserMenuOptions.CHANGE_STATUS: Console.WriteLine(projectInput.CollectChangeStatusInput()); break;
                     case UserMenuOptions.CREATE_PROJECT: Console.WriteLine(projectInput.CollectCreateProjectInput()); break;
                     case UserMenuOptions.DELETE_PROJECT: Console.WriteLine(projectInput.CollectDeleteProjectInput()); break;
-                    case UserMenuOptions.LOGOUT: Console.WriteLine(userInput.CallLogOut()); return;
-                    case UserMenuOptions.SIGNOUT: Console.WriteLine(userInput.CallSignOut()); break;
-
+                    case UserMenuOptions.LOGOUT: Console.WriteLine(userInput.CallLogOut()); return "";
+                    case UserMenuOptions.SIGNOUT: Console.WriteLine(userInput.CallSignOut()); return "";
                 }
             }
         }

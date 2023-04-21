@@ -1,5 +1,4 @@
 ﻿using ConsoleApp1.Controller;
-using ConsoleApp1.DataBase;
 using ConsoleApp1.Enumeration;
 using ConsoleApp1.Utils;
 using System;
@@ -54,40 +53,40 @@ namespace ConsoleApp1.PresentationLayer
         }
         private void GetAndSetName()
         {
-            Console.WriteLine("Enter your name : ");
+            ColorCode.GetInputCode("Enter your name : ");
             name = Console.ReadLine();
             if (string.IsNullOrEmpty(name) || name.Trim().Length == 0 || Validator.ContainsSpecialOrNumericCharacters(name))
             {
-                Console.WriteLine("Name should not be empty or should contain any special character");
+                ColorCode.FailureCode("Name should not be empty or should contain any special character");
                 GetAndSetName();
             }
         }
 
         private void GetAndSetEmail()
         {
-            Console.WriteLine("Enter your email : ");
+            ColorCode.GetInputCode("Enter your email : ");
             email = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(email) || email.Trim().Length == 0 ||! Validator.IsValidEmail(email))
             {
-                Console.WriteLine("Email should not be empty or should contain any special character other than @");
+                ColorCode.FailureCode("Email should not be empty or should contain any special character other than @");
                 GetAndSetEmail();
             }
         }
 
         private void GetAndSetPassword()
         {
-            Console.WriteLine("Enter password (should contain atleast 1 uppercase letter, 1 lowercase letter, 1 special character and should be atleast of 5 characters) : ");
+            ColorCode.GetInputCode("Enter password (should contain atleast 1 uppercase letter, 1 lowercase letter, 1 special character and should be atleast of 5 characters) : ");
             password = Console.ReadLine();
             if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !Validator.IsValidPassword(password))
             {
-                Console.WriteLine("Password doesn't satisfy the said condition");
+                ColorCode.FailureCode("Password doesn't satisfy the said condition");
                 GetAndSetPassword();
             }
         }
 
         private void GetAndSetRole()
         {
-            Console.WriteLine("Choose your role : ");
+            ColorCode.GetInputCode("Choose your role : ");
             foreach(Role role in Enum.GetValues(typeof(Role)))
                 Console.WriteLine((int)role+1+" . "+role.ToString());
             int choice = Validator.getIntInRange(Enum.GetValues(typeof(Role)).Length);
@@ -97,7 +96,6 @@ namespace ConsoleApp1.PresentationLayer
                 case Role.EMPLOYEE: role = option; break;
                 case Role.MANAGER: role = option; break;
                 case Role.LEAD: role = option; break;
-                default: GetAndSetRole(); break;
             }
             
         }
@@ -106,7 +104,7 @@ namespace ConsoleApp1.PresentationLayer
             Console.WriteLine("Enter your user id : ");
             if (!int.TryParse(Console.ReadLine(), out userId) || userId.ToString().Trim().Length == 0)
             {
-                Console.WriteLine("User id should be in number format and cannot be empty");
+                ColorCode.FailureCode("User id should be in number format and cannot be empty");
                 GetAndSetUserId();
             }
         }

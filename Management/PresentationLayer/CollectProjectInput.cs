@@ -4,6 +4,7 @@ using ConsoleApp1.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,8 @@ namespace ConsoleApp1.PresentationLayer
         StatusType status;
         string name;
         string desc;
-        DateOnly startDate;
-        DateOnly endDate;
+        DateTime startDate;
+        DateTime endDate;
         public string CollectAssignUserInput()
         {
             GetAndSetProjectId();
@@ -51,7 +52,7 @@ namespace ConsoleApp1.PresentationLayer
         {
             GetAndSetProjectId();
             GetAndSetStatus();
-            return projectManagement.ChangePriority(projectId, priority);
+            return projectManagement.ChangeStatus(projectId, status);
         }
         public string CollectCreateProjectInput()
         {
@@ -61,14 +62,12 @@ namespace ConsoleApp1.PresentationLayer
             GetAndSetStatus();
             GetAndSetStartdate();
             GetAndSetEnddate();
-            if(CheckDates(startDate,endDate))   
-                return projectManagement.CreateProject(name, desc, status, priority, startDate, endDate);
-            else
+            if(!CheckDates(startDate,endDate))
             {
-                Console.WriteLine("End date should be greater than start date\nTry again entering the end date");
-                GetAndSetEnddate() ;    
+                ColorCode.FailureCode("End date should be greater than start date\\nTry again entering the end date");
+                GetAndSetEnddate();
             }
-            return "";
+            return projectManagement.CreateProject(name, desc, status, priority, startDate, endDate);
         }
 
         public string CollectDeleteProjectInput()
@@ -78,26 +77,26 @@ namespace ConsoleApp1.PresentationLayer
         }
         private void GetAndSetProjectId()
         {
-            Console.WriteLine("Enter project id : ");
+            ColorCode.GetInputCode("Enter project id : ");
             if (!int.TryParse(Console.ReadLine(), out projectId))
             {
-                Console.WriteLine("Project id should be in number format and cannot be empty");
+                ColorCode.FailureCode("Project id should be in number format and cannot be empty");
                 GetAndSetProjectId();
             }
         }
         private void GetAndSetUserId()
         {
-            Console.WriteLine("Enter user id : ");
+            ColorCode.GetInputCode("Enter user id : ");
             if (!int.TryParse(Console.ReadLine(), out userId) || userId.ToString().Trim().Length == 0)
             {
-                Console.WriteLine("User id should be in number format and cannot be empty");
+                ColorCode.FailureCode("Project id should be in number format and cannot be empty");
                 GetAndSetUserId();
             }
         }
 
         private void GetAndSetPriority()
         {
-            Console.WriteLine("Choose priority : ");
+            ColorCode.GetInputCode("Choose priority : ");
             foreach (PriorityType priorityType in Enum.GetValues(typeof(PriorityType)))
                 Console.WriteLine((int)priorityType + 1 + " . " + priorityType.ToString());
             int choice = Validator.getIntInRange(Enum.GetValues(typeof(PriorityType)).Length);
@@ -108,12 +107,11 @@ namespace ConsoleApp1.PresentationLayer
                 case PriorityType.MEDIUM: priority = option; break;
                 case PriorityType.LOW: priority = option; break;
                 case PriorityType.NONE: priority = option; break;
-                default: Console.WriteLine("Invalid option selected"); GetAndSetPriority(); break;
             }
         }
         private void GetAndSetStatus()
         {
-            Console.WriteLine("Choose status : ");
+            ColorCode.GetInputCode("Choose status : ");
             foreach (StatusType status in Enum.GetValues(typeof(StatusType)))
                 Console.WriteLine((int)status + 1 + " . " + status.ToString());
             int choice = Validator.getIntInRange(Enum.GetValues(typeof(StatusType)).Length);
@@ -124,93 +122,46 @@ namespace ConsoleApp1.PresentationLayer
                 case StatusType.CLOSED: status = option; break;
                 case StatusType.ONHOLD: status = option; break;
                 case StatusType.INPROGRESS: status = option; break;
-                default: Console.WriteLine("Invalid option selected");GetAndSetStatus(); break;
             }
         }
 
         private void GetAndSetName()
         {
-            Console.WriteLine("Enter project name : ");
+            ColorCode.GetInputCode("Enter project name : ");
             name = Console.ReadLine();
             if (string.IsNullOrEmpty(name) || name.Trim().Length == 0 || Validator.ContainsSpecialOrNumericCharacters(name))
             {
-                Console.WriteLine("Name should not be empty or should contain any special character");
+                ColorCode.FailureCode("Name should not be empty or should contain any special character");
                 GetAndSetName();
             }
         }
         private void GetAndSetDescription()
         {
-            Console.WriteLine("Enter project description : ");
+            ColorCode.GetInputCode("Enter project description : ");
             desc = Console.ReadLine();
             if (string.IsNullOrEmpty(desc) || desc.Trim().Length == 0 || Validator.ContainsSpecialOrNumericCharacters(desc))
             {
-                Console.WriteLine("Description should not be empty or should contain any special character");
+                ColorCode.FailureCode("Description should not be empty or should contain any special character");
                 GetAndSetName();
             }
         }
         private void GetAndSetStartdate()
         {
-            int sDate, sMonth, sYear;
-            Console.WriteLine("Enter start date (dd) : ");
-            if (int.TryParse(Console.ReadLine(), out sDate))
-            {
-                Console.WriteLine("Enter start month (mm) : ");
-                if (int.TryParse(Console.ReadLine(), out sMonth))
-                {
-                    Console.WriteLine("Enter start year (yy) : ");
-                    if (int.TryParse(Console.ReadLine(), out sYear))
-                        startDate = new DateOnly(sYear, sMonth, sDate);
-                    else
-                    {
-                        Console.WriteLine("Wrong format");
-                        GetAndSetStartdate();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Wrong format");
-                    GetAndSetStartdate();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Wrong format");
-                GetAndSetStartdate();
-            }
+            string? date;
+            ColorCode.GetInputCode("Enter start date (dd/mm/yyyy): ");
+            date = Console.ReadLine();
+            startDate=DateTime.ParseExact(date,"dd/mm/yyyy",CultureInfo.InvariantCulture);
         }
         private void GetAndSetEnddate()
         {
-            int sDate, sMonth, sYear;
-            Console.WriteLine("Enter end date (dd) : ");
-            if (int.TryParse(Console.ReadLine(), out sDate))
-            {
-                Console.WriteLine("Enter end month (mm) : ");
-                if (int.TryParse(Console.ReadLine(), out sMonth))
-                {
-                    Console.WriteLine("Enter end year (yy) : ");
-                    if (int.TryParse(Console.ReadLine(), out sYear))
-                        endDate = new DateOnly(sYear, sMonth, sDate);
-                    else
-                    {
-                        Console.WriteLine("Wrong format");
-                        GetAndSetStartdate();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Wrong format");
-                    GetAndSetStartdate();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Wrong format");
-                GetAndSetStartdate();
-            }
+            string? date;
+            ColorCode.GetInputCode("Enter end date (dd/mm/yyyy): ");
+            date = Console.ReadLine();
+            endDate = DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture);
         }
-        private static bool CheckDates(DateOnly startDate,DateOnly endDate)
+        private static bool CheckDates(DateTime startDate,DateTime endDate)
         {
-            if (startDate.DayNumber - endDate.DayNumber >0)
+            if (endDate.Day - startDate.Day >=0 && endDate.Month - startDate.Month >=0 && endDate.Year - startDate.Year >= 0)
                 return true;
             return false;
         }
