@@ -1,32 +1,26 @@
-﻿using ConsoleApp1.DataBase;
-using ConsoleApp1.Enumeration;
-using ConsoleApp1.PresentationLayer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using TaskManagementApplication.Enumerations;
+using TaskManagementApplication.Presentation;
 
-namespace ConsoleApp1.Controller
+namespace TaskManagementApplication.Controller
 {
-    public  class Authenticator
+    internal class Authenticator
     {
-        DatabaseHandler _databaseHandler=DatabaseHandler.GetInstance();
-       
-        public string GetSignUpData(string name, string email,Role role,string password)
+        DatabaseHandler _databaseHandler = new();
+        public string GetSignUpData(string name, string email, Role role, string password)//TODO
         {
             string msg = _databaseHandler.SignUp(name, email, role, password);
-            if (msg.Contains("success"))
-                return msg + "\nLogin to continue further";
-            else return msg; 
+            if (!msg.Contains("success"))
+                return msg;
+            else return msg + "\nLogin to continue further";
         }
 
-        public string GetLogInData(int id,string password)
+        public string GetLogInData(int id, string password)
         {
             string msg = _databaseHandler.LogIn(id, password);
-            if(msg.Contains("success")) 
-                new UserMenu().ShowMenu(msg);
-            return msg;
+            if (!msg.Contains("success"))
+                return msg;
+            return new UserLoginMenu().ShowMenu(msg);
         }
 
         public string DoLogOut()
@@ -34,9 +28,10 @@ namespace ConsoleApp1.Controller
             return _databaseHandler.LogOut();
         }
 
-        public string DoSignOut() 
+        public string DoSignOut()
         {
             return _databaseHandler.SignOut();
         }
     }
 }
+
