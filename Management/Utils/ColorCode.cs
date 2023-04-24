@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.Utils
+namespace TaskManagementApplication.Utils
 {
     public class ColorCode
     {
@@ -12,25 +12,25 @@ namespace ConsoleApp1.Utils
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
-        internal static void GetInputCode(string msg) 
+        internal static void GetInputCode(string msg)
         {
-            Console.ForegroundColor= ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write(msg + "\n");
         }
-        internal static void SuccessCode(string msg) 
+        internal static void SuccessCode(string msg)
         {
-            Console.ForegroundColor= ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(msg + "\n");
         }
-        internal static void FailureCode(string msg) 
+        internal static void FailureCode(string msg)
         {
-            Console.ForegroundColor= ConsoleColor.Red;
-            Console.Write(msg+"\n");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(msg + "\n");
         }
-        internal static void PartialCode(string msg) 
+        internal static void PartialCode(string msg)
         {
-            Console.ForegroundColor= ConsoleColor.DarkYellow;
-            Console.Write(msg+"\n");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write(msg + "\n");
         }
     }
 }
