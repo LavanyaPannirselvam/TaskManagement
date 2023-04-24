@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.Enumeration
+namespace TaskManagementApplication.Enumerations
 {
     public enum StatusType
     {
-        OPEN,CLOSED,ONHOLD,INPROGRESS
+        OPEN, CLOSED, ONHOLD, INPROGRESS
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaskManagementApplication.Enumerations
 {
-    public enum MainMenuOptions
+    public enum AdminMenuOptions
     {
-        ADMIN,USER,QUIT
+        LOGIN,LOGOUT
     }
 }
