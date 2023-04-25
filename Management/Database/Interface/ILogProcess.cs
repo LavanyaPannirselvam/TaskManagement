@@ -9,8 +9,8 @@ namespace TaskManagementApplication.DataBase.Interface
 {
     public interface ILogProcess
     {
-        string LogIn(int userid, string password);
-        string LogOut();
+        string LogInUser(int userid, string password);
+        string LogOutUser();
     }
 }
 

@@ -11,7 +11,7 @@ namespace TaskManagementApplication.DataBase.Interface
     public interface ISignProcess
     {
         string SignUp(string name, string email, Role role, string password);
-        string SignOut();
+        string SignOutUser();
 
     }
 }
