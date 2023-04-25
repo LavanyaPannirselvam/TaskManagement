@@ -13,7 +13,7 @@ namespace TaskManagementApplication.Presentation
     {
         private static readonly CollectUserInput collectUserInput = new();
 
-        public static void ShowUserMenu()
+        public static void ShowAdminMenu()
         {
             TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
             while (true)
@@ -29,9 +29,16 @@ namespace TaskManagementApplication.Presentation
                 switch (options)
                 {
                     case AdminMenuOptions.LOGIN:
-                        break;
+                        {
+                            string msg = collectUserInput.CollectSignInInput();
+                            ColorCode.FailureCode(msg);
+                            break;
+                        }
                     case AdminMenuOptions.LOGOUT:
-                        return;
+                        {
+                            return;
+                        }
+                        
                 }
             }
         }

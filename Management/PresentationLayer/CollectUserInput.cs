@@ -48,9 +48,11 @@ namespace TaskManagementApplication.Presentation
         {
             return authenticator.DoSignOut();
         }
-        public string CallViewMyProjects()
+        public string CallViewAssigned(int choice)
         {
-            return userManagement.ViewAssignedProjects();
+            if (choice == 1)
+                return userManagement.ViewAssignedProjects();
+            else return userManagement.ViewAssignedTasks();
         }
         public string CallViewMyProfile()
         {
@@ -106,7 +108,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetUserId()
         {
-            Console.WriteLine("Enter your user id : ");
+            ColorCode.GetInputCode("Enter your user id : ");
             if (!int.TryParse(Console.ReadLine(), out userId) || userId.ToString().Trim().Length == 0)
             {
                 ColorCode.FailureCode("User id should be in number format and cannot be empty");

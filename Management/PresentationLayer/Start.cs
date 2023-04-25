@@ -27,7 +27,7 @@ namespace TaskManagementApplication.Presentation
                 MainMenuOptions options = (MainMenuOptions)(choice - 1);
                 switch (options)
                 {
-                    case MainMenuOptions.ADMIN:AdminMenu.ShowUserMenu();
+                    case MainMenuOptions.ADMIN:AdminMenu.ShowAdminMenu();
                         break;
                     case MainMenuOptions.USER:UserMenu.ShowUserMenu();
                         break;

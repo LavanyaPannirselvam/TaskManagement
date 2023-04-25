@@ -14,7 +14,8 @@ namespace TaskManagementApplication.Presentation
     public class CollectProjectInput
     {
         private readonly ProjectManagement projectManager = new();
-        int projectId;
+        private readonly TaskManagement taskManager = new();
+        int id;
         int userId;
         PriorityType priority;
         StatusType status;
@@ -22,39 +23,49 @@ namespace TaskManagementApplication.Presentation
         string desc;
         DateTime startDate;
         DateTime endDate;
-        public string CollectAssignUserInput()
+        public string CollectAssignUserInput(int choice)
         {
-            GetAndSetProjectId();
+            GetAndSetId();
             GetAndSetUserId();
-            return projectManager.AssignUser(projectId, userId);
+            if(choice==1)
+                return projectManager.AssignUser(id, userId);
+            else return taskManager.AssignUser(id, userId);
         }
 
-        public string CollectDeassignUserInput()
+        public string CollectDeassignUserInput(int choice)
         {
-            GetAndSetProjectId();
+            GetAndSetId();
             GetAndSetUserId();
-            return projectManager.DeassignUser(projectId, userId);
+            if(choice==1)
+                return projectManager.DeassignUser(id, userId);
+            else return taskManager.DeassignUser(id,userId);
         }
-        public string CollectViewProjectInput()
+        public string CollectViewProjectInput(int choice)
         {
-            GetAndSetProjectId();
-            return projectManager.View(projectId);
+            GetAndSetId();
+            if(choice==1)
+                return projectManager.View(id);
+            else return taskManager.View(id);
         }
 
-        public string CollectChangePriorityInput()
+        public string CollectChangePriorityInput(int choice)
         {
-            GetAndSetProjectId();
+            GetAndSetId();
             GetAndSetPriority();
-            return projectManager.ChangePriority(projectId, priority);
+            if( choice==1)
+                return projectManager.ChangePriority(id, priority);
+            else return taskManager.ChangePriority(id,priority);
         }
 
-        public string CollectChangeStatusInput()
+        public string CollectChangeStatusInput(int choice)
         {
-            GetAndSetProjectId();
+            GetAndSetId();
             GetAndSetStatus();
-            return projectManager.ChangeStatus(projectId, status);
+            if(choice==1)
+                return projectManager.ChangeStatus(id, status);
+            else return taskManager.ChangeStatus(id,status);
         }
-        public string CollectCreateProjectInput()
+        public string CollectCreateInput(int choice)
         {
             GetAndSetName();
             GetAndSetDescription();
@@ -67,21 +78,28 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.FailureCode("End date should be greater than start date\\nTry again entering the end date");
                 GetAndSetEnddate();
             }
-            return projectManager.Create(name, desc, status, priority, startDate, endDate);
-        }
-
-        public string CollectDeleteProjectInput()
-        {
-            GetAndSetProjectId();
-            return projectManager.Remove(projectId);
-        }
-        private void GetAndSetProjectId()
-        {
-            ColorCode.GetInputCode("Enter project id : ");
-            if (!int.TryParse(Console.ReadLine(), out projectId))
+            if (choice == 1)
+                return projectManager.Create(name, desc, status, priority, startDate, endDate, 0);
+            else
             {
-                ColorCode.FailureCode("Project id should be in number format and cannot be empty");
-                GetAndSetProjectId();
+                GetAndSetId();
+                return taskManager.Create(name, desc, status, priority, startDate, endDate, id);
+            }
+        }
+        public string CollectDeleteInput(int choice)
+        {
+            GetAndSetId();
+            if(choice==1)
+                return projectManager.Remove(id);
+            else return taskManager.Remove(id);
+        }
+        private void GetAndSetId()
+        {
+            ColorCode.GetInputCode("Enter id : ");
+            if (!int.TryParse(Console.ReadLine(), out id))
+            {
+                ColorCode.FailureCode("Id should be in number format and cannot be empty");
+                GetAndSetId();
             }
         }
         private void GetAndSetUserId()
@@ -127,7 +145,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetName()
         {
-            ColorCode.GetInputCode("Enter project name : ");
+            ColorCode.GetInputCode("Enter name : ");
             name = Console.ReadLine();
             if (string.IsNullOrEmpty(name) || name.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(name))
             {
@@ -137,7 +155,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetDescription()
         {
-            ColorCode.GetInputCode("Enter project description : ");
+            ColorCode.GetInputCode("Enter description : ");
             desc = Console.ReadLine();
             if (string.IsNullOrEmpty(desc) || desc.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(desc))
             {
