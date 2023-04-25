@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskManagementApplication.Controller.Interface
 {
-    public interface IAssignment
+    internal interface IAdminOperations
     {
-        string AssignUser(int id, int userId);
-        string DeassignUser(int id, int userId);
     }
 }
-

@@ -9,5 +9,7 @@ namespace TaskManagementApplication.Controller.Interface
     public interface IView
     {
         string ViewAssignedProjects();
+        string ViewAssignedTasks();
+        string ViewProfile();
     }
 }
