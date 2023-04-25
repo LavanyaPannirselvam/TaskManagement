@@ -14,8 +14,16 @@ namespace TaskManagementApplication.DataBase
         private static Dictionary<int, User>? _allUsers;
         private static Dictionary<int, string>? _userCredentials;
         private static Dictionary<int, Project>? _allProjects;
+        private static Dictionary<int, Tasks>? _allTasks;
+        private readonly string adminPassword = "Admin@123";//TODO
+
         private int currentUser;
-        public int CurrentUser { get { return currentUser; } set { currentUser = value; } }
+        private Admin admin;
+        private bool adminLogin;
+        public int CurrentUser { get { return currentUser; } private set { currentUser = value; } }
+        public Admin Admin { get { return admin; } }
+        public string AdminPassword { get { return adminPassword; } }
+        public bool AdminLoginStatus { get; private set; }
         private Database()
         {
             _allUsers = new Dictionary<int, User>
@@ -35,6 +43,11 @@ namespace TaskManagementApplication.DataBase
                 {2,"234#Qas"},
                 {3,"Ik!2w34"}
             };
+            _allTasks = new Dictionary<int, Tasks>
+            {
+                {1,new Tasks("T1","Task 1",2,StatusType.OPEN,PriorityType.MEDIUM,new DateTime(20/06/2023),new DateTime(20/07/2023),2) }
+            };
+            admin = new Admin("Admin", "admin@gmail.com");
         }
 
         private static readonly Database instance = new();
@@ -65,6 +78,45 @@ namespace TaskManagementApplication.DataBase
                 if (GetProject(projectId).AssignedUsers.Count == 0)
                 {
                     _allProjects.Remove(projectId);
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            return Result.FAILURE;
+        }
+        public bool IsProjectAvailable(int projectId)
+        {
+            if (_allProjects!.ContainsKey(projectId))
+                return true;
+            return false;
+        }
+        //Task section
+        public Result AddTask(Tasks task)
+        {
+            if (_allTasks!.ContainsKey(task.Id))
+                return Result.FAILURE;
+            _allTasks.Add(task.Id, task);
+            return Result.SUCCESS;
+        }
+        public Tasks GetTask(int taskId)
+        {
+            if (_allTasks!.ContainsKey(taskId))
+                return _allTasks[taskId];
+            else return null;
+        }
+        public bool IsTaskAvailable(int taskId)
+        {
+            if (_allTasks!.ContainsKey(taskId))
+                return true;
+            return false;
+        }
+        public Result DeleteTask(int taskId)
+        {
+            if (_allTasks!.ContainsKey(taskId))
+            {
+                if (GetTask(taskId).AssignedUsers.Count == 0)
+                {
+                    _allTasks.Remove(taskId);
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
@@ -120,7 +172,7 @@ namespace TaskManagementApplication.DataBase
             }
             else return Result.FAILURE;
         }
-        public Result LogOut()
+        public Result LogOutUser()
         {
             if (CurrentUser != 0)
             {
@@ -132,5 +184,7 @@ namespace TaskManagementApplication.DataBase
                 return Result.FAILURE;
             }
         }
+        //Admin section
+        public Result 
     }
     }
