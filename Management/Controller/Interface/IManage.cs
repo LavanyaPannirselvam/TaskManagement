@@ -9,7 +9,7 @@ namespace TaskManagementApplication.Controller.Interface
 {
     public interface IManage
     {
-        string Create(string name, string desc, StatusType status, PriorityType type, DateTime startDate, DateTime endDate,int projectId = 0);
+        string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate,int projectId = 0);
         string Remove(int id);
         string View(int id);
 

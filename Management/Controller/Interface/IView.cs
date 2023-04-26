@@ -11,5 +11,6 @@ namespace TaskManagementApplication.Controller.Interface
         string ViewAssignedProjects();
         string ViewAssignedTasks();
         string ViewProfile();
+        string ViewNotifications();
     }
 }
