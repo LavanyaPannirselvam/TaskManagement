@@ -11,6 +11,8 @@ namespace TaskManagementApplication.DataBase.Interface
     {
         string LogInUser(int userid, string password);
         string LogOutUser();
+        string LogInAdmin(int userid, string password);
+        string LogOutAdmin();
     }
 }
 

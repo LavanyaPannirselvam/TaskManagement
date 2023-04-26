@@ -8,7 +8,7 @@ using TaskManagementApplication.Enumerations;
 
 namespace TaskManagementApplication.DataBase.Interface
 {
-    public interface ISignProcess
+    public interface ISignProcess//TO BE USED
     {
         string SignUp(string name, string email, Role role, string password);
         string SignOutUser();
