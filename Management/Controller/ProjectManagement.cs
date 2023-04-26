@@ -12,7 +12,7 @@ namespace TaskManagementApplication.Controller
         {
             if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
             {
-                    if (_database.GetProject(projectId) != null)
+                    if (_database.IsProjectAvailable(projectId))
                     {
                         if (_database.IsUserAvailable(userId))
                         {
@@ -20,6 +20,7 @@ namespace TaskManagementApplication.Controller
                             {
                                 _database.GetProject(projectId).AssignedUsers.Add(_database.GetUser(userId));
                                 _database.GetUser(userId).AssignedProjects.Add(_database.GetProject(projectId));
+                                _database.GetUser(userId).Notifications.Add(new($"Project id {projectId} is assigned to you"));
                                 return "Project is assigned to " + userId + " successfully";
                             }
                             else return "Project is already assigned to the user";
@@ -35,7 +36,7 @@ namespace TaskManagementApplication.Controller
         {
             if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
                 {
-                    if (_database.GetProject(projectId) != null)
+                    if (_database.IsProjectAvailable(projectId))
                     {
                         if (_database.IsUserAvailable(userId))
                         {
@@ -43,6 +44,7 @@ namespace TaskManagementApplication.Controller
                             {
                                 _database.GetProject(projectId).AssignedUsers.Remove(_database.GetUser(userId));
                                 _database.GetUser(userId).AssignedProjects.Remove(_database.GetProject(projectId));
+                                _database.GetUser(userId).Notifications.Add(new($"Project id {projectId} is deassigned from you"));
                                 return "Project is deassigned from " + userId + " successfully";
                             }
                             else return "Project is already deassigned to the user";
@@ -57,7 +59,7 @@ namespace TaskManagementApplication.Controller
         {
             if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
                 {
-                    if (_database.GetProject(projectId) != null)
+                    if (_database.IsProjectAvailable(projectId))
                     {
                         if (_database.GetProject(projectId).Priority != priority)
                         {
@@ -74,7 +76,7 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatus(int projectId, StatusType status)
         {
-            if (_database.GetProject(projectId) != null)
+            if (_database.IsProjectAvailable(projectId))
                 {
                     if (_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser)))
                     {
@@ -90,7 +92,7 @@ namespace TaskManagementApplication.Controller
                 else return "Project is not available";
             }
            
-        public string Create(string name, string desc, StatusType status, PriorityType type, DateTime startDate, DateTime endDate)
+        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int id)
         {
             if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
                 {
@@ -105,7 +107,7 @@ namespace TaskManagementApplication.Controller
 
         public string Remove(int projectId)
         {
-           if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
+            if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
                 {
                     if (_database.DeleteProject(projectId) == Result.SUCCESS)
                         return "Project removed successfully";
