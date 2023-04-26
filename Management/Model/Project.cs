@@ -11,7 +11,7 @@ namespace TaskManagementApplication.Model
     {
         private static int id = 1;
 
-        public Project(string name, string desc, int createdBy, StatusType status, PriorityType type, DateTime startDate, DateTime endDate)
+        public Project(string name, string desc, int createdBy, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate)
         {
             Id = id++;
             Name = name;
@@ -21,7 +21,8 @@ namespace TaskManagementApplication.Model
             Priority = type;
             StartDate = startDate;
             EndDate = endDate;
-            AssignedUsers = new List<User>();
+            AssignedUsers = new List<ApprovedUser>();
+            Tasks = new List<Tasks>();
         }
         public int Id { get; set; }
 
@@ -35,10 +36,10 @@ namespace TaskManagementApplication.Model
 
         public PriorityType Priority { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
-        public ICollection<User> AssignedUsers { get; set; }
+        public DateOnly EndDate { get; set; }
+        public ICollection<ApprovedUser> AssignedUsers { get; set; }
         public ICollection<Tasks> Tasks { get; set; }
 
         public override string ToString()
@@ -50,7 +51,7 @@ namespace TaskManagementApplication.Model
         public string ShowUsers()
         {
             string result = "";
-            foreach (User s in AssignedUsers)
+            foreach (ApprovedUser s in AssignedUsers)
                 result += s.UserId + " ";
             return result;
         }
