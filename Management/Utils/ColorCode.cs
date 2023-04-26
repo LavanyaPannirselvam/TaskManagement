@@ -12,7 +12,7 @@ namespace TaskManagementApplication.Utils
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
-        internal static void GetInputCode(string msg)
+        internal static void DefaultCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(msg + "\n");
@@ -32,5 +32,6 @@ namespace TaskManagementApplication.Utils
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write(msg + "\n");
         }
+
     }
 }

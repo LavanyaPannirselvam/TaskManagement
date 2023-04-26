@@ -19,14 +19,14 @@ namespace TaskManagementApplication.Utils
                 else
                 {
                     ColorCode.FailureCode("Wrong option entered");
-                    ColorCode.GetInputCode("Choose your choice : ");
+                    ColorCode.DefaultCode("Choose your choice : ");
                     return getIntInRange(max);
                 }
             }
             else
             {
                 ColorCode.FailureCode("Wrong format input");
-                ColorCode.GetInputCode("Enter the correct choice : ");
+                ColorCode.DefaultCode("Enter the correct choice : ");
                 return getIntInRange(max);
             }
         }
