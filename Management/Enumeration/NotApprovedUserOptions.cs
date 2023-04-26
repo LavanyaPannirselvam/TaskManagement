@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaskManagementApplication.Enumerations
 {
-    public enum UserMenuOptions
+    public enum NotApprovedUserOptions
     {
-        REQUEST_FOR_SIGNUP, SIGNIN, BACK
+        SHOW_NOTIFICATION,LOGOUT,BACK
     }
 }

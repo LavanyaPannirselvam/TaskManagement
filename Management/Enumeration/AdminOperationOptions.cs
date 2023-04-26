@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaskManagementApplication.Enumerations
 {
-    internal class AdminOperationOptions
+    public enum AdminOperationOptions
     {
+        SHOW_NOTIFICATIONS,APPROVE_USER,BACK
     }
 }
