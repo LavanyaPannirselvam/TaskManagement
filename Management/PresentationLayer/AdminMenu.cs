@@ -9,7 +9,7 @@ using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Presentation
 {
-    public class AdminMenu//TODO
+    public class AdminMenu
     {
         private static readonly CollectUserInput collectUserInput = new();
 
@@ -23,7 +23,7 @@ namespace TaskManagementApplication.Presentation
                 foreach (AdminMenuOptions option in Enum.GetValues(typeof(AdminMenuOptions)))
                     Console.WriteLine((int)option + 1 + ". " + myTI.ToTitleCase(option.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
-                ColorCode.GetInputCode("Choose your choice : ");
+                ColorCode.DefaultCode("Choose your choice : ");
                 int choice = Validation.getIntInRange(Enum.GetValues(typeof(AdminMenuOptions)).Length);
                 AdminMenuOptions options = (AdminMenuOptions)(choice - 1);
                 switch (options)
@@ -36,8 +36,14 @@ namespace TaskManagementApplication.Presentation
                         }
                     case AdminMenuOptions.LOGOUT:
                         {
+                            string msg = collectUserInput.CallLogOutAdmin();
+                            if(msg.Contains("successful"))
+                                ColorCode.SuccessCode(msg);
+                            else ColorCode.FailureCode(msg); 
+                            Start.Run();
                             return;
                         }
+                    case AdminMenuOptions.BACK: return;
                         
                 }
             }

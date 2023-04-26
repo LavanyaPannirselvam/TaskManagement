@@ -10,10 +10,9 @@ using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Presentation
 {
-    public class AdminOperations
+    public class NotApprovedUserOperation
     {
         private readonly TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
-        private readonly AdminFunctions adminFunctions = new();
         private readonly CollectUserInput userInput = new();
         public string ShowMenu(string message)
         {
@@ -21,31 +20,29 @@ namespace TaskManagementApplication.Presentation
             while (true)
             {
                 ColorCode.MenuCode();
-                Console.WriteLine("\t\t------Admin Menu------\t\t");
-                foreach (AdminOperationOptions menu in Enum.GetValues(typeof(AdminOperationOptions)))
+                Console.WriteLine("\t\t------Not Approved User Menu------\t\t");
+                foreach (NotApprovedUserOptions menu in Enum.GetValues(typeof(NotApprovedUserOptions)))
                     Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
-                int choice = Validation.getIntInRange(Enum.GetValues(typeof(AdminOperationOptions)).Length);
-                AdminOperationOptions option = (AdminOperationOptions)(choice - 1);
-                switch (option)
+                int choice = Validation.getIntInRange(Enum.GetValues(typeof(NotApprovedUserOptions)).Length);
+                NotApprovedUserOptions option = (NotApprovedUserOptions)(choice - 1);
+                switch(option)
                 {
-                    case AdminOperationOptions.SHOW_NOTIFICATIONS:
+                    case NotApprovedUserOptions.SHOW_NOTIFICATION:
                         {
-                            string msg = adminFunctions.ShowNotifications();
-                            if(msg!="")
-                                ColorCode.FailureCode(msg);
+                            ColorCode.DefaultCode(userInput.CallViewTemporaryUserNotification());
                             break;
                         }
-                    case AdminOperationOptions.APPROVE_USER:
+                        case NotApprovedUserOptions.LOGOUT:
                         {
-                            string msg = userInput.CollectApproveUserInput();
-                            if(msg.Contains("approved"))
+                            string msg = userInput.CallLogOutTemporaryUser();
+                            if (msg.Contains("successful"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
-                            break;
+                            return "";
                         }
-                    case AdminOperationOptions.BACK: return "";
+                    case NotApprovedUserOptions.BACK: return "";
                 }
             }
         }

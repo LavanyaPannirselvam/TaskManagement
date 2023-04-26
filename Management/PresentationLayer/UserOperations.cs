@@ -26,7 +26,7 @@ namespace TaskManagementApplication.Presentation
                 foreach (UserOperationsOptions menu in Enum.GetValues(typeof(UserOperationsOptions)))
                     Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
-                ColorCode.GetInputCode("Choose your choice : ");
+                ColorCode.DefaultCode("Choose your choice : ");
                 int choice = Validation.getIntInRange(Enum.GetValues(typeof(UserOperationsOptions)).Length);
                 UserOperationsOptions option = (UserOperationsOptions)(choice - 1);
                 switch (option)
@@ -98,14 +98,14 @@ namespace TaskManagementApplication.Presentation
                                 string msg = projectInput.CollectViewProjectInput(1);
                                 if (msg.Contains("not available"))
                                     ColorCode.FailureCode("msg");
-                                else ColorCode.GetInputCode(msg);
+                                else ColorCode.DefaultCode(msg);
                             }
                             else
                             {
                                 string msg = projectInput.CollectViewProjectInput(2);
                                 if (msg.Contains("not available"))
                                     ColorCode.FailureCode("msg");
-                                else ColorCode.GetInputCode(msg);
+                                else ColorCode.DefaultCode(msg);
                             }
                             break;
                         }
@@ -197,29 +197,37 @@ namespace TaskManagementApplication.Presentation
                             }
                             break; 
                         }
-                    case UserOperationsOptions.VIEW_PROFILE://pakka
+                    case UserOperationsOptions.VIEW_PROFILE:
                         {
-                            ColorCode.GetInputCode(userInput.CallViewMyProfile());
+                            ColorCode.DefaultCode(userInput.CallViewMyProfile());
                             break;
                         }
-                    case UserOperationsOptions.LOGOUT://pakka 
+                    case UserOperationsOptions.VIEW_NOTIFICATION:
+                        {
+                            ColorCode.DefaultCode(userInput.CallViewMyNotification());
+                            break;
+                        }
+                    case UserOperationsOptions.LOGOUT:
                         { 
-                            string msg = userInput.CallLogOut();
+                            string msg = userInput.CallLogOutApprovedUsers();
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
+                            Start.Run();
                             return ""; 
                         }
-                    case UserOperationsOptions.SIGNOUT: //pakka,but need to be done by admin
+                    case UserOperationsOptions.SIGNOUT:
                         { 
-                            string msg = userInput.CallSignOut();
+                            string msg = userInput.CallSignOutApprovedUsers();
                             if (msg.Contains("successful"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("Cannot"))
                                 ColorCode.PartialCode(msg);
                             else ColorCode.FailureCode(msg);
+                            Start.Run();
                             return ""; 
                         }
+                    case UserOperationsOptions.BACK: return "";
                 }
             }
         }
@@ -230,7 +238,7 @@ namespace TaskManagementApplication.Presentation
             foreach (ActivityOptions menu in Enum.GetValues(typeof(ActivityOptions)))
                 Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
             Console.WriteLine("---------------------------------------------");
-            ColorCode.GetInputCode("Choose your choice : ");
+            ColorCode.DefaultCode("Choose your choice : ");
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(ActivityOptions)).Length);
             Console.WriteLine($"Activity is : {choice}");
             return choice;

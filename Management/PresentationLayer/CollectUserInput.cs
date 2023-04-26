@@ -14,8 +14,9 @@ namespace TaskManagementApplication.Presentation
 {
     public class CollectUserInput
     {
-        private readonly Authenticator authenticator = new();
-        private readonly UserManagement userManagement = new();
+        private readonly Authenticator _authenticator = new();
+        private readonly UserManagement _userManagement = new();
+        private readonly AdminFunctions _adminFunctions = new();
 
         string? name;
         string? email;
@@ -30,37 +31,65 @@ namespace TaskManagementApplication.Presentation
             GetAndSetEmail();
             GetAndSetPassword();
             GetAndSetRole();
-            return authenticator.GetSignUpData(name, email, role, password);
+            return new SigningProcess().SignUp(name, email, role, password);
         }
 
         public string CollectSignInInput()
         {
             GetAndSetUserId();
             GetAndSetPassword();
-            return authenticator.GetLogInData(userId, password);
+            return _authenticator.GetLogInData(userId, password);
         }
-        public string CallLogOut()
+        public string CallLogOutApprovedUsers()
         {
-            return authenticator.DoLogOut();
+            return _authenticator.DoLogOutApprovedUser();
         }
-
-        public string CallSignOut()
+        public string CallLogOutAdmin()
         {
-            return authenticator.DoSignOut();
+            return _authenticator.DoLogoutAdmin();
+        }
+        public string CallLogOutTemporaryUser()
+        {
+            return _authenticator.DoLogOutTemporaryUser();
+        }
+        public string CallSignOutApprovedUsers()
+        {
+            return _authenticator.DoSignOutApprovedUser();
         }
         public string CallViewAssigned(int choice)
         {
             if (choice == 1)
-                return userManagement.ViewAssignedProjects();
-            else return userManagement.ViewAssignedTasks();
+                return _userManagement.ViewAssignedProjects();
+            else return _userManagement.ViewAssignedTasks();
         }
         public string CallViewMyProfile()
         {
-            return userManagement.ViewProfile();
+            return _userManagement.ViewProfile();
+        }
+        public string CallViewMyNotification()
+        {
+            return _userManagement.ViewNotifications();
+        }
+        public string CallViewTemporaryUserNotification()
+        {
+            ITemporaryUserView iView = new UserManagement();
+            return iView.ViewNotifications();
+        }
+        public string CollectApproveUserInput()
+        {
+            GetAndSetEmail();
+            return _adminFunctions.ApproveUser(email);
+        }
+
+        public string CollectNotApproveUserLoginInput()
+        {
+            GetAndSetEmail();
+            GetAndSetPassword();
+            return _authenticator.GetLogInDataForNonApprovedUser(email, password);
         }
         private void GetAndSetName()
         {
-            ColorCode.GetInputCode("Enter your name : ");
+            ColorCode.DefaultCode("Enter name : ");
             name = Console.ReadLine();
             if (string.IsNullOrEmpty(name) || name.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(name))
             {
@@ -71,7 +100,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetEmail()
         {
-            ColorCode.GetInputCode("Enter your email : ");
+            ColorCode.DefaultCode("Enter email : ");
             email = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(email) || email.Trim().Length == 0 || !Validation.IsValidEmail(email))
             {
@@ -82,7 +111,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetPassword()
         {
-            ColorCode.GetInputCode("Enter password (should contain atleast 1 uppercase letter, 1 lowercase letter, 1 special character and should be atleast of 5 characters) : ");
+            ColorCode.DefaultCode("Enter password (should contain atleast 1 uppercase letter, 1 lowercase letter, 1 special character and should be atleast of 5 characters) : ");
             password = Console.ReadLine();
             if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !Validation.IsValidPassword(password))
             {
@@ -93,7 +122,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetRole()
         {
-            ColorCode.GetInputCode("Choose your role : ");
+            ColorCode.DefaultCode("Choose your role : ");
             foreach (Role role in Enum.GetValues(typeof(Role)))
                 Console.WriteLine((int)role + 1 + " . " + role.ToString());
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(Role)).Length);
@@ -108,7 +137,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetUserId()
         {
-            ColorCode.GetInputCode("Enter your user id : ");
+            ColorCode.DefaultCode("Enter your user id : ");
             if (!int.TryParse(Console.ReadLine(), out userId) || userId.ToString().Trim().Length == 0)
             {
                 ColorCode.FailureCode("User id should be in number format and cannot be empty");

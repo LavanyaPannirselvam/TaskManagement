@@ -21,8 +21,8 @@ namespace TaskManagementApplication.Presentation
         StatusType status;
         string name;
         string desc;
-        DateTime startDate;
-        DateTime endDate;
+        DateOnly startDate;
+        DateOnly endDate;
         public string CollectAssignUserInput(int choice)
         {
             GetAndSetId();
@@ -95,7 +95,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetId()
         {
-            ColorCode.GetInputCode("Enter id : ");
+            ColorCode.DefaultCode("Enter id : ");
             if (!int.TryParse(Console.ReadLine(), out id))
             {
                 ColorCode.FailureCode("Id should be in number format and cannot be empty");
@@ -104,7 +104,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetUserId()
         {
-            ColorCode.GetInputCode("Enter user id : ");
+            ColorCode.DefaultCode("Enter user id : ");
             if (!int.TryParse(Console.ReadLine(), out userId) || userId.ToString().Trim().Length == 0)
             {
                 ColorCode.FailureCode("Project id should be in number format and cannot be empty");
@@ -114,7 +114,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetPriority()
         {
-            ColorCode.GetInputCode("Choose priority : ");
+            ColorCode.DefaultCode("Choose priority : ");
             foreach (PriorityType priorityType in Enum.GetValues(typeof(PriorityType)))
                 Console.WriteLine((int)priorityType + 1 + " . " + priorityType.ToString());
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(PriorityType)).Length);
@@ -129,7 +129,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetStatus()
         {
-            ColorCode.GetInputCode("Choose status : ");
+            ColorCode.DefaultCode("Choose status : ");
             foreach (StatusType status in Enum.GetValues(typeof(StatusType)))
                 Console.WriteLine((int)status + 1 + " . " + status.ToString());
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(StatusType)).Length);
@@ -145,7 +145,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetName()
         {
-            ColorCode.GetInputCode("Enter name : ");
+            ColorCode.DefaultCode("Enter name : ");
             name = Console.ReadLine();
             if (string.IsNullOrEmpty(name) || name.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(name))
             {
@@ -155,7 +155,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetDescription()
         {
-            ColorCode.GetInputCode("Enter description : ");
+            ColorCode.DefaultCode("Enter description : ");
             desc = Console.ReadLine();
             if (string.IsNullOrEmpty(desc) || desc.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(desc))
             {
@@ -166,18 +166,18 @@ namespace TaskManagementApplication.Presentation
         private void GetAndSetStartdate()
         {
             string? date;
-            ColorCode.GetInputCode("Enter start date (dd/mm/yyyy): ");
+            ColorCode.DefaultCode("Enter start date (dd/mm/yyyy): ");
             date = Console.ReadLine();
-            startDate = DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture);
+            startDate = DateOnly.Parse(DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture).ToShortDateString());
         }
         private void GetAndSetEnddate()
         {
             string? date;
-            ColorCode.GetInputCode("Enter end date (dd/mm/yyyy): ");
+            ColorCode.DefaultCode("Enter end date (dd/mm/yyyy): ");
             date = Console.ReadLine();
-            endDate = DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture);
+            endDate = DateOnly.Parse(DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture).ToShortDateString());
         }
-        private static bool CheckDates(DateTime startDate, DateTime endDate)
+        private static bool CheckDates(DateOnly startDate, DateOnly endDate)
         {
             if (endDate.Day - startDate.Day >= 0 && endDate.Month - startDate.Month >= 0 && endDate.Year - startDate.Year >= 0)
                 return true;
