@@ -8,6 +8,6 @@ namespace TaskManagementApplication.Enumerations
 {
     public enum AdminMenuOptions
     {
-        LOGIN,LOGOUT,BACK
+        LOGIN,BACK
     }
 }

@@ -8,6 +8,6 @@ namespace TaskManagementApplication.Enumerations
 {
     public enum AdminOperationOptions
     {
-        SHOW_NOTIFICATIONS,APPROVE_USER,BACK
+        SHOW_NOTIFICATIONS,APPROVE_USER,LOGOUT,BACK
     }
 }
