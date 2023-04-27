@@ -47,7 +47,7 @@ namespace TaskManagementApplication.Utils
 
         public static bool IsValidPassword(string password)
         {
-            string regex = "^(?=.*[a-z])(?=.+ *[A-Z])(?=.*\\d)+(?=.*[-+_!@#$%^&*., ?]).+$";
+            string regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)+(?=.*[-+_!@#$%^&*., ?]).+$";
             return Regex.IsMatch(password, regex, RegexOptions.IgnoreCase);
         }
     }
