@@ -12,8 +12,8 @@ namespace TaskManagementApplication.Presentation
 {
     public class NotApprovedUserOperation
     {
-        private readonly TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
-        private readonly CollectUserInput userInput = new();
+        private readonly TextInfo _myTI = new CultureInfo("en-US", false).TextInfo;
+        private readonly CollectUserInput _userInput = new();
         public string ShowMenu(string message)
         {
             ColorCode.SuccessCode(message);
@@ -22,7 +22,7 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.MenuCode();
                 Console.WriteLine("\t\t------Not Approved User Menu------\t\t");
                 foreach (NotApprovedUserOptions menu in Enum.GetValues(typeof(NotApprovedUserOptions)))
-                    Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
+                    Console.WriteLine((int)menu + 1 + ". " + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
                 int choice = Validation.getIntInRange(Enum.GetValues(typeof(NotApprovedUserOptions)).Length);
@@ -31,18 +31,18 @@ namespace TaskManagementApplication.Presentation
                 {
                     case NotApprovedUserOptions.SHOW_NOTIFICATION:
                         {
-                            ColorCode.DefaultCode(userInput.CallViewTemporaryUserNotification());
+                            ColorCode.DefaultCode(_userInput.CallViewTemporaryUserNotification());
                             break;
                         }
                         case NotApprovedUserOptions.LOGOUT:
                         {
-                            string msg = userInput.CallLogOutTemporaryUser();
+                            string msg = _userInput.CallLogOutTemporaryUser();
                             if (msg.Contains("successful"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
                             return "";
                         }
-                    case NotApprovedUserOptions.BACK: return "";
+                    case NotApprovedUserOptions.BACK: _userInput.CallLogOutTemporaryUser(); return "";
                 }
             }
         }

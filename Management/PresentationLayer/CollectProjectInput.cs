@@ -13,14 +13,14 @@ namespace TaskManagementApplication.Presentation
 {
     public class CollectProjectInput
     {
-        private readonly ProjectManagement projectManager = new();
-        private readonly TaskManagement taskManager = new();
+        private readonly ProjectManagement _projectManager = new();
+        private readonly TaskManagement _taskManager = new();
         int id;
         int userId;
         PriorityType priority;
         StatusType status;
-        string name;
-        string desc;
+        string? name;
+        string? desc;
         DateOnly startDate;
         DateOnly endDate;
         public string CollectAssignUserInput(int choice)
@@ -28,8 +28,8 @@ namespace TaskManagementApplication.Presentation
             GetAndSetId();
             GetAndSetUserId();
             if(choice==1)
-                return projectManager.AssignUser(id, userId);
-            else return taskManager.AssignUser(id, userId);
+                return _projectManager.AssignUser(id, userId);
+            else return _taskManager.AssignUser(id, userId);
         }
 
         public string CollectDeassignUserInput(int choice)
@@ -37,15 +37,15 @@ namespace TaskManagementApplication.Presentation
             GetAndSetId();
             GetAndSetUserId();
             if(choice==1)
-                return projectManager.DeassignUser(id, userId);
-            else return taskManager.DeassignUser(id,userId);
+                return _projectManager.DeassignUser(id, userId);
+            else return _taskManager.DeassignUser(id,userId);
         }
         public string CollectViewProjectInput(int choice)
         {
             GetAndSetId();
             if(choice==1)
-                return projectManager.View(id);
-            else return taskManager.View(id);
+                return _projectManager.View(id);
+            else return _taskManager.View(id);
         }
 
         public string CollectChangePriorityInput(int choice)
@@ -53,8 +53,8 @@ namespace TaskManagementApplication.Presentation
             GetAndSetId();
             GetAndSetPriority();
             if( choice==1)
-                return projectManager.ChangePriority(id, priority);
-            else return taskManager.ChangePriority(id,priority);
+                return _projectManager.ChangePriority(id, priority);
+            else return _taskManager.ChangePriority(id,priority);
         }
 
         public string CollectChangeStatusInput(int choice)
@@ -62,8 +62,8 @@ namespace TaskManagementApplication.Presentation
             GetAndSetId();
             GetAndSetStatus();
             if(choice==1)
-                return projectManager.ChangeStatus(id, status);
-            else return taskManager.ChangeStatus(id,status);
+                return _projectManager.ChangeStatus(id, status);
+            else return _taskManager.ChangeStatus(id,status);
         }
         public string CollectCreateInput(int choice)
         {
@@ -73,25 +73,25 @@ namespace TaskManagementApplication.Presentation
             GetAndSetStatus();
             GetAndSetStartdate();
             GetAndSetEnddate();
-            if (!CheckDates(startDate, endDate))
+            if (CheckDates(startDate, endDate))
             {
-                ColorCode.FailureCode("End date should be greater than start date\\nTry again entering the end date");
+                ColorCode.FailureCode("End date should be greater than start date\nTry again entering the end date");
                 GetAndSetEnddate();
             }
             if (choice == 1)
-                return projectManager.Create(name, desc, status, priority, startDate, endDate, 0);
+                return _projectManager.Create(name!, desc!, status, priority, startDate, endDate, 0);
             else
             {
                 GetAndSetId();
-                return taskManager.Create(name, desc, status, priority, startDate, endDate, id);
+                return _taskManager.Create(name!, desc!, status, priority, startDate, endDate, id);
             }
         }
         public string CollectDeleteInput(int choice)
         {
             GetAndSetId();
             if(choice==1)
-                return projectManager.Remove(id);
-            else return taskManager.Remove(id);
+                return _projectManager.Remove(id);
+            else return _taskManager.Remove(id);
         }
         private void GetAndSetId()
         {
@@ -166,22 +166,22 @@ namespace TaskManagementApplication.Presentation
         private void GetAndSetStartdate()
         {
             string? date;
-            ColorCode.DefaultCode("Enter start date (dd/mm/yyyy): ");
+            ColorCode.DefaultCode("Enter start date (mm/dd/yyyy): ");
             date = Console.ReadLine();
-            startDate = DateOnly.Parse(DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture).ToShortDateString());
+            startDate = DateOnly.Parse(DateTime.ParseExact(date!, "mm/dd/yyyy", CultureInfo.InvariantCulture).ToShortDateString());
         }
         private void GetAndSetEnddate()
         {
             string? date;
-            ColorCode.DefaultCode("Enter end date (dd/mm/yyyy): ");
+            ColorCode.DefaultCode("Enter end date (mm/dd/yyyy): ");
             date = Console.ReadLine();
-            endDate = DateOnly.Parse(DateTime.ParseExact(date, "dd/mm/yyyy", CultureInfo.InvariantCulture).ToShortDateString());
+            endDate = DateOnly.Parse(DateTime.ParseExact(date!, "mm/dd/yyyy",CultureInfo.InvariantCulture).ToShortDateString());
         }
         private static bool CheckDates(DateOnly startDate, DateOnly endDate)
         {
-            if (endDate.Day - startDate.Day >= 0 && endDate.Month - startDate.Month >= 0 && endDate.Year - startDate.Year >= 0)
+            if (endDate <= startDate)
                 return true;
-            return false;
+            else return false;
         }
     }
 }

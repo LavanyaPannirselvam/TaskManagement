@@ -11,8 +11,8 @@ namespace TaskManagementApplication.Presentation
 {
     public class UserMenu
     {
-        private static readonly CollectUserInput collectUserInput = new();
-        private readonly static TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+        private static readonly CollectUserInput _collectUserInput = new();
+        private readonly static TextInfo _myTI = new CultureInfo("en-US", false).TextInfo;
 
         public static void ShowUserMenu() 
         {  
@@ -21,7 +21,7 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.MenuCode();
                 Console.WriteLine("\t\t------User Menu------\t\t");
                 foreach (UserMenuOptions option in Enum.GetValues(typeof(UserMenuOptions)))
-                    Console.WriteLine((int) option + 1 + ". " + myTI.ToTitleCase(option.ToString().Replace("_", " ").ToLowerInvariant()));
+                    Console.WriteLine((int) option + 1 + ". " + _myTI.ToTitleCase(option.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
                 int choice = Validation.getIntInRange(Enum.GetValues(typeof(UserMenuOptions)).Length);
@@ -30,23 +30,23 @@ namespace TaskManagementApplication.Presentation
                 {
                     case UserMenuOptions.REQUEST_FOR_SIGNUP:
                         {
-                            string msg = collectUserInput.CollectSignUpInput();
+                            string msg = _collectUserInput.CollectSignUpInput();
                             if (msg.Contains("accepted"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
                             break;
                         }
-                    case UserMenuOptions.SIGNIN:
+                    case UserMenuOptions.LOGIN:
                         {
                             if (ShowUserTypeMenu() == 1)
                             {
-                                string msg = collectUserInput.CollectSignInInput();
+                                string msg = _collectUserInput.CollectSignInInput();
                                 if (!msg.Contains("success"))
                                     ColorCode.FailureCode(msg);
                             }
                             else
                             {
-                                string msg = collectUserInput.CollectNotApproveUserLoginInput();
+                                string msg = _collectUserInput.CollectNotApproveUserLoginInput();
                                 if (!msg.Contains("success"))
                                     ColorCode.FailureCode(msg);
                             }
@@ -63,7 +63,7 @@ namespace TaskManagementApplication.Presentation
             ColorCode.MenuCode();
             Console.WriteLine("\t\t------Choose between user type------\t\t");
             foreach (UserApprovalOptions menu in Enum.GetValues(typeof(UserApprovalOptions)))
-                Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
+                Console.WriteLine((int)menu + 1 + ". " + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
             Console.WriteLine("---------------------------------------------");
             ColorCode.DefaultCode("Choose your choice : ");
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(UserApprovalOptions)).Length);

@@ -24,21 +24,20 @@ namespace TaskManagementApplication.Presentation
         int userId;
         Role role;
 
-
         public string CollectSignUpInput()
         {
             GetAndSetName();
             GetAndSetEmail();
             GetAndSetPassword();
             GetAndSetRole();
-            return new SigningProcess().SignUp(name, email, role, password);
+            return new SigningProcess().SignUp(name!, email!, role, password!);
         }
 
         public string CollectSignInInput()
         {
             GetAndSetUserId();
             GetAndSetPassword();
-            return _authenticator.GetLogInData(userId, password);
+            return _authenticator.GetLogInData(userId, password!);
         }
         public string CallLogOutApprovedUsers()
         {
@@ -72,20 +71,19 @@ namespace TaskManagementApplication.Presentation
         }
         public string CallViewTemporaryUserNotification()
         {
-            ITemporaryUserView iView = new UserManagement();
-            return iView.ViewNotifications();
+            return _userManagement.ViewNotification();
         }
         public string CollectApproveUserInput()
         {
             GetAndSetEmail();
-            return _adminFunctions.ApproveUser(email);
+            return _adminFunctions.ApproveUser(email!);
         }
 
         public string CollectNotApproveUserLoginInput()
         {
             GetAndSetEmail();
             GetAndSetPassword();
-            return _authenticator.GetLogInDataForNonApprovedUser(email, password);
+            return _authenticator.GetLogInDataForNonApprovedUser(email!, password!);
         }
         private void GetAndSetName()
         {
@@ -111,7 +109,7 @@ namespace TaskManagementApplication.Presentation
 
         private void GetAndSetPassword()
         {
-            ColorCode.DefaultCode("Enter password (should contain atleast 1 uppercase letter, 1 lowercase letter, 1 special character and should be atleast of 5 characters) : ");
+            ColorCode.DefaultCode("Enter password (should contain atleast 1 special character, 1 number, 1 alphabet and should be atleast of 5 characters) : ");
             password = Console.ReadLine();
             if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !Validation.IsValidPassword(password))
             {

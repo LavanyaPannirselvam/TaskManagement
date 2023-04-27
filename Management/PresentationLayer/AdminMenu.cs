@@ -11,7 +11,7 @@ namespace TaskManagementApplication.Presentation
 {
     public class AdminMenu
     {
-        private static readonly CollectUserInput collectUserInput = new();
+        private static readonly CollectUserInput _collectUserInput = new();
 
         public static void ShowAdminMenu()
         {
@@ -30,18 +30,9 @@ namespace TaskManagementApplication.Presentation
                 {
                     case AdminMenuOptions.LOGIN:
                         {
-                            string msg = collectUserInput.CollectSignInInput();
+                            string msg = _collectUserInput.CollectSignInInput();
                             ColorCode.FailureCode(msg);
                             break;
-                        }
-                    case AdminMenuOptions.LOGOUT:
-                        {
-                            string msg = collectUserInput.CallLogOutAdmin();
-                            if(msg.Contains("successful"))
-                                ColorCode.SuccessCode(msg);
-                            else ColorCode.FailureCode(msg); 
-                            Start.Run();
-                            return;
                         }
                     case AdminMenuOptions.BACK: return;
                         

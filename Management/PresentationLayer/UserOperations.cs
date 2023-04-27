@@ -12,9 +12,9 @@ namespace TaskManagementApplication.Presentation
 {
     public class UserOperations
     {
-        private readonly TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
-        private readonly CollectProjectInput projectInput = new();
-        private readonly CollectUserInput userInput = new();
+        private readonly TextInfo _myTI = new CultureInfo("en-US", false).TextInfo;
+        private readonly CollectProjectInput _projectInput = new();
+        private readonly CollectUserInput _userInput = new();
 
         public string ShowMenu(string message)
         {
@@ -24,7 +24,7 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.MenuCode();
                 Console.WriteLine("\t\t------User Menu------\t\t");
                 foreach (UserOperationsOptions menu in Enum.GetValues(typeof(UserOperationsOptions)))
-                    Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
+                    Console.WriteLine((int)menu + 1 + ". " + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()).PadLeft(15));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
                 int choice = Validation.getIntInRange(Enum.GetValues(typeof(UserOperationsOptions)).Length);
@@ -35,7 +35,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if(ShowActivityMenu()==1)
                             {
-                                string msg = projectInput.CollectAssignUserInput(1);
+                                string msg = _projectInput.CollectAssignUserInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -44,7 +44,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg = projectInput.CollectAssignUserInput(2);
+                                string msg = _projectInput.CollectAssignUserInput(2);
                                 if(msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if(msg.Contains("not available"))
@@ -57,7 +57,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu()==1)
                             {
-                                string msg = projectInput.CollectDeassignUserInput(1);
+                                string msg = _projectInput.CollectDeassignUserInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -66,7 +66,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg = projectInput.CollectDeassignUserInput(2);
+                                string msg = _projectInput.CollectDeassignUserInput(2);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("not available"))
@@ -79,13 +79,13 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = userInput.CallViewAssigned(1);
+                                string msg = _userInput.CallViewAssigned(1);
                                 if (msg != "")
                                     ColorCode.FailureCode(msg);
                             }
                             else
                             {
-                                string msg = userInput.CallViewAssigned(2);
+                                string msg = _userInput.CallViewAssigned(2);
                                 if(msg!="")
                                     ColorCode.FailureCode(msg);
                             }
@@ -95,14 +95,14 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = projectInput.CollectViewProjectInput(1);
+                                string msg = _projectInput.CollectViewProjectInput(1);
                                 if (msg.Contains("not available"))
                                     ColorCode.FailureCode("msg");
                                 else ColorCode.DefaultCode(msg);
                             }
                             else
                             {
-                                string msg = projectInput.CollectViewProjectInput(2);
+                                string msg = _projectInput.CollectViewProjectInput(2);
                                 if (msg.Contains("not available"))
                                     ColorCode.FailureCode("msg");
                                 else ColorCode.DefaultCode(msg);
@@ -113,7 +113,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = projectInput.CollectChangePriorityInput(1);
+                                string msg = _projectInput.CollectChangePriorityInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -122,7 +122,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg = projectInput.CollectChangePriorityInput(2);
+                                string msg = _projectInput.CollectChangePriorityInput(2);
                                 if(msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if(msg.Contains("not available"))
@@ -135,7 +135,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = projectInput.CollectChangeStatusInput(1);
+                                string msg = _projectInput.CollectChangeStatusInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -144,7 +144,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg = projectInput.CollectChangeStatusInput(2);
+                                string msg = _projectInput.CollectChangeStatusInput(2);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("not available"))
@@ -157,7 +157,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = projectInput.CollectCreateInput(1);
+                                string msg = _projectInput.CollectCreateInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -166,7 +166,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg= projectInput.CollectCreateInput(2);
+                                string msg= _projectInput.CollectCreateInput(2);
                                 if(msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if(msg.Contains("not available"))
@@ -179,7 +179,7 @@ namespace TaskManagementApplication.Presentation
                         {
                             if (ShowActivityMenu() == 1)
                             {
-                                string msg = projectInput.CollectDeleteInput(1);
+                                string msg = _projectInput.CollectDeleteInput(1);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("access"))
@@ -188,7 +188,7 @@ namespace TaskManagementApplication.Presentation
                             }
                             else
                             {
-                                string msg = projectInput.CollectDeleteInput(2);
+                                string msg = _projectInput.CollectDeleteInput(2);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("not available"))
@@ -197,19 +197,19 @@ namespace TaskManagementApplication.Presentation
                             }
                             break; 
                         }
-                    case UserOperationsOptions.VIEW_PROFILE:
+                    case UserOperationsOptions.VIEW_MY_PROFILE:
                         {
-                            ColorCode.DefaultCode(userInput.CallViewMyProfile());
+                            ColorCode.DefaultCode(_userInput.CallViewMyProfile());
                             break;
                         }
                     case UserOperationsOptions.VIEW_NOTIFICATION:
                         {
-                            ColorCode.DefaultCode(userInput.CallViewMyNotification());
+                            ColorCode.DefaultCode(_userInput.CallViewMyNotification());
                             break;
                         }
                     case UserOperationsOptions.LOGOUT:
                         { 
-                            string msg = userInput.CallLogOutApprovedUsers();
+                            string msg = _userInput.CallLogOutApprovedUsers();
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
@@ -218,7 +218,7 @@ namespace TaskManagementApplication.Presentation
                         }
                     case UserOperationsOptions.SIGNOUT:
                         { 
-                            string msg = userInput.CallSignOutApprovedUsers();
+                            string msg = _userInput.CallSignOutApprovedUsers();
                             if (msg.Contains("successful"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("Cannot"))
@@ -227,7 +227,7 @@ namespace TaskManagementApplication.Presentation
                             Start.Run();
                             return ""; 
                         }
-                    case UserOperationsOptions.BACK: return "";
+                    case UserOperationsOptions.BACK: _userInput.CallLogOutApprovedUsers(); return "";
                 }
             }
         }
@@ -236,11 +236,10 @@ namespace TaskManagementApplication.Presentation
             ColorCode.MenuCode();
             Console.WriteLine("\t\t------Choose between activity------\t\t");
             foreach (ActivityOptions menu in Enum.GetValues(typeof(ActivityOptions)))
-                Console.WriteLine((int)menu + 1 + ". " + myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
+                Console.WriteLine((int)menu + 1 + ". " + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
             Console.WriteLine("---------------------------------------------");
             ColorCode.DefaultCode("Choose your choice : ");
             int choice = Validation.getIntInRange(Enum.GetValues(typeof(ActivityOptions)).Length);
-            Console.WriteLine($"Activity is : {choice}");
             return choice;
         }
     }
