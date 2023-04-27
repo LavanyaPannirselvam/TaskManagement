@@ -8,7 +8,7 @@ namespace TaskManagementApplication.Controller.Interface
 {
     public interface ITemporaryUserView
     {
-        string ViewNotifications();
+        string ViewNotification();
 
     }
 }
