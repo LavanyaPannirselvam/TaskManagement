@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManagementApplication.Controller.Interface;
 using TaskManagementApplication.DataBase;
 using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Model;
 
 namespace TaskManagementApplication.Controller
 {
-    public class SigningProcess
+    public class SigningProcess : ISignProcess
     {
         private readonly Database _database = Database.GetInstance();
         public string SignOutUser()

@@ -45,13 +45,13 @@ namespace TaskManagementApplication.Controller.Interface
                 return "";
             }
         }
-        string ITemporaryUserView.ViewNotifications()
+        public string ViewNotification()
         {
             if (_database.GetUser(_database.CurrentTemporaryUser).Notifications.Count == 0)
                 return "You don't have any notification to show now";
             else
             {
-                foreach (Notification notification in _database.GetUser(_database.CurrentTemporaryUser).Notifications)
+                foreach(Notification notification in _database.GetUser(_database.CurrentTemporaryUser).Notifications)
                     ColorCode.DefaultCode(notification.ToStringWithoutId());
                 return "";
             }

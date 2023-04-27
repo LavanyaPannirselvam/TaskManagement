@@ -20,13 +20,13 @@ namespace TaskManagementApplication.Controller
         {
             if (_database.IsTemporaryUserAvailable(email))
             {
+                User temporaryUser = _database.GetUser(email);
                 if (!_database.IsUserAvailable(email))
                 {
-                    User temporaryUser = _database.GetUser(email);
                     ApprovedUser user = new(temporaryUser.Name, temporaryUser.Email, temporaryUser.Role, UserApprovalOptions.APPROVED);
                     if (_database.AddUser(user) == Result.SUCCESS)
                     {
-                        Notification notification = new("${email}approved, Your userId is : {user.UserId} and password is what you entered during request");
+                        Notification notification = new(email+" approved, Your userId is : "+user.UserId+" and password is what you entered during request.\nLogin with these credentials to enjoy full fledged features of the application");
                         temporaryUser.Notifications.Add(notification);
                         user.Notifications.Add(notification);
                         return "User approved";
@@ -39,7 +39,7 @@ namespace TaskManagementApplication.Controller
                 }
                 else
                 {
-                    _database.GetUser(email).Notifications.Add(new("Email already exists, try to login to your account"));
+                    temporaryUser.Notifications.Add(new("Email already exists, try to login to your account"));
                     return "Email already exists";
                 }
             }
@@ -76,4 +76,3 @@ namespace TaskManagementApplication.Controller
 //enter data & get dummy userid and password -> done
 
 //2 different login options for temporary and permanent users -> done, to be checked
-

@@ -1,6 +1,4 @@
-﻿
-using TaskManagementApplication.Presentation;
-
+﻿using TaskManagementApplication.Presentation;
 namespace TaskManagementApplication.Controller
 {
     internal class Authenticator
