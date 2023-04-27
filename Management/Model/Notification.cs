@@ -23,7 +23,7 @@ namespace TaskManagementApplication.Model
         }
         public string ToStringWithoutId()
         {
-            return string.Format($"Message : {this.Message}");
+            return this.Message;
         }
     }
 }

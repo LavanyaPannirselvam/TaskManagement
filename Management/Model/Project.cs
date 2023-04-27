@@ -44,7 +44,7 @@ namespace TaskManagementApplication.Model
 
         public override string ToString()
         {
-            return string.Format($"Name : {this.Name}\nId : {this.Id}\nDescription : {this.Desc}\n " +
+            return string.Format($"Name : {this.Name}\nId : {this.Id}\nDescription : {this.Desc}\n" +
                 $"Created by : {this.CreatedBy}\nStatus : {this.Status}\nPriority : {this.Priority} \nStart date : {this.StartDate} " +
                 $"\nEnd date : {this.EndDate}\nAssigned users : " + ShowUsers());
         }
@@ -52,7 +52,7 @@ namespace TaskManagementApplication.Model
         {
             string result = "";
             foreach (ApprovedUser s in AssignedUsers)
-                result += s.UserId + " ";
+                result += s.UserId + ", ";
             return result;
         }
 
