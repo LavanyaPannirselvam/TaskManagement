@@ -7,27 +7,26 @@ using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Model;
 
 namespace TaskManagementApplication.DataBase
-
 {
     public class Database
     {
-        private static Dictionary<int, ApprovedUser>? _allUsers;
-        private static Dictionary<int, string>? _userCredentials;
-        private static Dictionary<int, Project>? _allProjects;
-        private static Dictionary<int, Tasks>? _allTasks;
-        private static Dictionary<string, User>? _temporaryUsers;
-        private static Dictionary<string, string>? _temporaryUserCredentials;
-        private static ICollection<string>? _approvedUsers;
-        private readonly string adminPassword = "Admin@123";//TODO
+        private Dictionary<int, ApprovedUser>? _allUsers;
+        private Dictionary<int, string>? _userCredentials;
+        private Dictionary<int, Project>? _allProjects;
+        private Dictionary<int, Tasks>? _allTasks;
+        private Dictionary<string, User>? _temporaryUsers;
+        private Dictionary<string, string>? _temporaryUserCredentials;
+        private ICollection<string>? _approvedUsers;
+        private string _adminPassword = "Admin@123";
 
         private int currentUser;
         private Admin admin;
-        private readonly bool adminLogin;
+        private bool adminLogin;
         private string currentTemporaryUser;
         public int CurrentUser { get { return currentUser; } private set { currentUser = value; } }
         public string CurrentTemporaryUser { get { return currentTemporaryUser; } private set { currentTemporaryUser = value; } }
         public Admin Admin { get { return admin; } }
-        public string AdminPassword { get { return adminPassword; } }
+        public string AdminPassword { get { return _adminPassword; } }
         public bool AdminLoginStatus { get; private set; }
         private Database()
         {
@@ -52,9 +51,17 @@ namespace TaskManagementApplication.DataBase
             {
                 {1,new Tasks("T1","Task 1",2,StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2) }
             };
+            _temporaryUsers = new Dictionary<string, User>
+            {
+                {"example@gmail.com",new User("Example","example@gmail.com",Role.MANAGER,UserApprovalOptions.NOT_APPROVED) }
+            };
+            _temporaryUserCredentials = new Dictionary<string, string>
+            {
+                {"example@gmail.com","789@qwA" }
+            };
             admin = new Admin("Admin", "admin@gmail.com");
-            _temporaryUsers = new Dictionary<string, User>();
-            _temporaryUserCredentials = new Dictionary<string, string>();
+            Notification notification = new("A new signup request from the mail id :"+"example@gmail.com");
+            admin.Notifications.Add(notification.Id, notification);
             _approvedUsers = new List<string>();
         }
 
@@ -135,9 +142,7 @@ namespace TaskManagementApplication.DataBase
         public Result AddUser(ApprovedUser user)
         {
             _approvedUsers!.Add(user.Email);
-            _temporaryUsers!.Remove(user.Email);
             string password = _temporaryUserCredentials![user.Email];
-            _temporaryUserCredentials!.Remove(user.Email);
             _allUsers!.Add(user.UserId, user);
             _userCredentials!.Add(user.UserId, password);
             return Result.SUCCESS;
@@ -216,9 +221,7 @@ namespace TaskManagementApplication.DataBase
                 return Result.SUCCESS;
             }
             else
-            {
                 return Result.FAILURE;
-            }
         }
 
         public Result CheckTemporaryUser(string email,string password)
@@ -227,15 +230,10 @@ namespace TaskManagementApplication.DataBase
             {
                 if (_temporaryUserCredentials![email] == password)
                 {
-                   CurrentTemporaryUser = email;
+                    CurrentTemporaryUser = email;
                     return Result.SUCCESS;
                 }
-                else return Result.FAILURE;
-            }
-            else if(_approvedUsers!.Contains(email))
-            {
-                CurrentTemporaryUser = email;
-                return Result.PARTIAL;
+                else return Result.PARTIAL;
             }
             else return Result.FAILURE;
         }

@@ -61,8 +61,8 @@ namespace TaskManagementApplication.Controller
             if (_database.CheckTemporaryUser(email, password) == Result.SUCCESS)
                 return "Login successful";
             else if (_database.CheckTemporaryUser(email, password) == Result.PARTIAL)
-                return $"Your request have been approved, try logging in with your userid and password";
-            else return "Profile not available or password incorrect";//TODO should define another case to check and seperate the return stmt                  
+                return "Password incorrect";
+            else return "Profile not available";                  
         }
         public string LogOutTemporaryUser() 
         {
