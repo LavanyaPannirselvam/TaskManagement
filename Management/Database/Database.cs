@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,61 +11,56 @@ namespace TaskManagementApplication.DataBase
 {
     public class Database
     {
-        private Dictionary<int, ApprovedUser>? _allUsers;
-        private Dictionary<int, string>? _userCredentials;
+        private Dictionary<string, User>? _allUsers;
+        private Dictionary<string, string>? _userCredentials;
         private Dictionary<int, Project>? _allProjects;
         private Dictionary<int, Tasks>? _allTasks;
-        private Dictionary<string, User>? _temporaryUsers;
-        private Dictionary<string, string>? _temporaryUserCredentials;
-        private ICollection<string>? _approvedUsers;
+        private Dictionary<int, SubTask>? _allSubTasks;
         private string _adminPassword = "Admin@123";
 
-        private int currentUser;
-        private Admin admin;
-        private bool adminLogin;
-        private string currentTemporaryUser;
-        public int CurrentUser { get { return currentUser; } private set { currentUser = value; } }
-        public string CurrentTemporaryUser { get { return currentTemporaryUser; } private set { currentTemporaryUser = value; } }
+        private string currentUser;
+        private readonly Admin admin;
+        //private bool adminLogin;
+        public string CurrentUser { get { return currentUser; } private set { currentUser = value; } }
         public Admin Admin { get { return admin; } }
         public string AdminPassword { get { return _adminPassword; } }
         public bool AdminLoginStatus { get; private set; }
         private Database()
         {
-            _allUsers = new Dictionary<int, ApprovedUser>
+            _allUsers = new Dictionary<string, User>
             {
-                {1,new ApprovedUser("Lavanya","lava@gmail.com",Role.EMPLOYEE,UserApprovalOptions.APPROVED) },
-                {2 ,new ApprovedUser("Prithivi","prithivi.8@gmail.com",Role.MANAGER, UserApprovalOptions.APPROVED) },
-                {3,new ApprovedUser("Deepika","deepi@gmail.com",Role.LEAD, UserApprovalOptions.APPROVED) }
+                {"lava@gmail.com",new User("Lavanya","lava@gmail.com",Role.EMPLOYEE) },
+                {"prithivi.8@gmail.com" ,new User("Prithivi","prithivi.8@gmail.com",Role.MANAGER) },
+                {"deepi@gmail.com",new User("Deepika","deepi@gmail.com",Role.LEAD) }
             };
             _allProjects = new Dictionary<int, Project>
             {
-                {1,new Project("P1","UI",2,StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,06,05),new DateOnly(2023,07,05)) },
-                {2,new Project("P2","Backend",2,StatusType.OPEN, PriorityType.LOW,new DateOnly(2023,10,05),new DateOnly(2023,11,05)) }
+                {1,new Project("P1","UI","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,06,05),new DateOnly(2023,07,05)) },
+                {2,new Project("P2","Backend","Prithivi",StatusType.OPEN, PriorityType.LOW,new DateOnly(2023,10,05),new DateOnly(2023,11,05)) }
             };
-            _userCredentials = new Dictionary<int, string>
+            _userCredentials = new Dictionary<string, string>
             {
-                {1,"123Q!a"},
-                {2,"234#Qas"},
-                {3,"Ik!2w34"}
+                {"lava@gmail.com","123Q!a"},
+                {"prithivi.8@gmail.com","234#Qas"},
+                {"deepi@gmail.com","Ik!2w34"}
             };
             _allTasks = new Dictionary<int, Tasks>
             {
-                {1,new Tasks("T1","Task 1",2,StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2) }
+                {1,new Tasks("T1","Task 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2) }
             };
-            _temporaryUsers = new Dictionary<string, User>
+            _allSubTasks = new Dictionary<int, SubTask>
             {
-                {"example@gmail.com",new User("Example","example@gmail.com",Role.MANAGER,UserApprovalOptions.NOT_APPROVED) }
-            };
-            _temporaryUserCredentials = new Dictionary<string, string>
-            {
-                {"example@gmail.com","789@qwA" }
+                {1,new SubTask("ST1","SubTask 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2,1) }
             };
             admin = new Admin("Admin", "admin@gmail.com");
-            Notification notification = new("A new signup request from the mail id :"+"example@gmail.com");
-            admin.Notifications.Add(notification.Id, notification);
-            _approvedUsers = new List<string>();
+            currentUser = "";
+            GetTask(1).SubTasks.Add(GetSubTask(1));
+            GetProject(2).CreatedTasks.Add(GetTask(1));
+            GetProject(2).SubTasks.Add(GetSubTask(1));
+            GetProject(1).AssignedUsers.Add("Prithivi");
+            GetTask(1).AssignedUsers.Add("Lavanya");
+            GetSubTask(1).AssignedUsers.Add("Deepika");
         }
-
         private static readonly Database instance = new();
         public static Database GetInstance()
         {
@@ -78,14 +74,12 @@ namespace TaskManagementApplication.DataBase
             _allProjects.Add(project.Id, project);
             return Result.SUCCESS;
         }
-
         public Project GetProject(int projectId)
         {
             if (_allProjects!.ContainsKey(projectId))
                 return _allProjects[projectId];
             else return null;
         }
-
         public Result DeleteProject(int projectId)
         {
             if (_allProjects!.ContainsKey(projectId))
@@ -99,11 +93,14 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public bool IsProjectAvailable(int projectId)
+        public Dictionary<int, string> ProjectsList()
         {
-            if (_allProjects!.ContainsKey(projectId))
-                return true;
-            return false;
+            Dictionary<int, string> projectsList = new();
+            foreach (Project p in _allProjects!.Values)
+            {
+                projectsList.Add(p.Id, p.Name);
+            }
+            return projectsList;
         }
         //Task section
         public Result AddTask(Tasks task)
@@ -111,6 +108,7 @@ namespace TaskManagementApplication.DataBase
             if (_allTasks!.ContainsKey(task.Id))
                 return Result.FAILURE;
             _allTasks.Add(task.Id, task);
+            GetProject(task.ProjectId).CreatedTasks.Add(task);
             return Result.SUCCESS;
         }
         public Tasks GetTask(int taskId)
@@ -118,12 +116,6 @@ namespace TaskManagementApplication.DataBase
             if (_allTasks!.ContainsKey(taskId))
                 return _allTasks[taskId];
             else return null;
-        }
-        public bool IsTaskAvailable(int taskId)
-        {
-            if (_allTasks!.ContainsKey(taskId))
-                return true;
-            return false;
         }
         public Result DeleteTask(int taskId)
         {
@@ -138,119 +130,127 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
+        public Dictionary<int, string> TasksList()
+        {
+            Dictionary<int, string> tasksList = new();
+            foreach (Tasks p in _allTasks!.Values)
+            {
+                tasksList.Add(p.Id, p.Name);
+            }
+            return tasksList;
+        }
+        //Subtask section
+        public Result AddSubTask(SubTask subTask)
+        {
+            if (_allSubTasks!.ContainsKey(subTask.Id))
+                return Result.FAILURE;
+            _allSubTasks!.Add(subTask.Id, subTask);
+            GetProject(subTask.ProjectId).SubTasks.Add(subTask);
+            GetTask(subTask.TaskId).SubTasks.Add(subTask);
+            return Result.SUCCESS;
+        }
+        public SubTask GetSubTask(int subTaskId)
+        {
+            if (_allSubTasks!.ContainsKey(subTaskId))
+                return _allSubTasks[subTaskId];
+            else return null;
+        }
+        public Result DeleteSubTask(int subTaskId)
+        {
+            if (_allSubTasks!.ContainsKey(subTaskId))
+            {
+                if (GetTask(subTaskId).AssignedUsers.Count == 0)
+                {
+                    _allSubTasks.Remove(subTaskId);
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            return Result.FAILURE;
+        }
+        public Dictionary<int, string> SubTasksList()
+        {
+            Dictionary<int, string> subTasksList = new();
+            foreach (SubTask p in _allSubTasks!.Values)
+            {
+                subTasksList.Add(p.Id, p.Name);
+            }
+            return subTasksList;
+        }
+
         //User section
-        public Result AddUser(ApprovedUser user)
+        public Result AddUser(User user, string password)
         {
-            _approvedUsers!.Add(user.Email);
-            string password = _temporaryUserCredentials![user.Email];
-            _allUsers!.Add(user.UserId, user);
-            _userCredentials!.Add(user.UserId, password);
-            return Result.SUCCESS;
-        }
-        public Result AddTemporaryUser(User user, string password)
-        {
-            _temporaryUsers!.Add(user.Email, user);
-            _temporaryUserCredentials!.Add(user.Email, password);
-            Notification notification = new("A new signup request from the mail id :" + user.Email);
-            admin.Notifications.Add(notification.Id,notification);
-            return Result.SUCCESS;
-        }
-        public ApprovedUser GetUser(int userId)
-        {
-            return _allUsers![userId];
+            if (_allUsers!.ContainsKey(user.Email))
+                return Result.FAILURE;
+            else
+            {
+                _allUsers!.Add(user.Email, user);
+                _userCredentials!.Add(user.Email, password);
+                return Result.SUCCESS;
+            }
         }
         public User GetUser(string email)
         {
-            return _temporaryUsers![email];
+            return _allUsers![email];
         }
-        public bool IsUserAvailable(int userId)
+        public User GetUser(int userId)
         {
-            if (_allUsers!.ContainsKey(userId))
-                return true;
-            return false;
-        }
-        public bool IsUserAvailable(string email)
-        {
-            foreach(ApprovedUser u in _allUsers!.Values)
+            foreach (User u in _allUsers!.Values)
             {
-                if(u.Email == email) 
-                    return true;
+                if (u.UserId == userId)
+                    return u;
             }
-            return false;
+            return null;
         }
-        public bool IsTemporaryUserAvailable(string email)
+        public Result DeleteUser(string email)
         {
-            if(_temporaryUsers!.ContainsKey(email))
-                return true;
-            else return false;
-        }
-        public Result DeleteApprovedUser()
-        {
-            if (CurrentUser != 0)
+            if (_allUsers!.ContainsKey(email))
             {
-                if (GetUser(CurrentUser).AssignedProjects.Count == 0)
+                if (GetUser(email).AssignedProjects.Count == 0)
                 {
-                    _allUsers!.Remove(CurrentUser);
-                    _userCredentials!.Remove(CurrentUser);
-                    CurrentUser = 0;
+                    _allUsers!.Remove(email);
+                    _userCredentials!.Remove(email);
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
             }
             else return Result.FAILURE;
         }
-
-        public Result CheckApprovedUser(int userId, string password)
+        public Result CheckUser(string logId, string password)
         {
-            if (_allUsers!.ContainsKey(userId))
+            if (_allUsers!.ContainsKey(logId))
             {
-                if (_userCredentials![userId] == password)
+                if (_userCredentials![logId] == password)
                 {
-                    CurrentUser = userId;
+                    CurrentUser = logId;
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
             }
             else return Result.FAILURE;
         }
-        public Result LogOutApprovedUser()
+        public Result LogOutUser()
         {
-            if (CurrentUser != 0)
+            if (CurrentUser != "")
             {
-                CurrentUser = 0;
+                CurrentUser = "";
                 return Result.SUCCESS;
             }
             else
                 return Result.FAILURE;
         }
-
-        public Result CheckTemporaryUser(string email,string password)
+        public Dictionary<int, string> UsersList()
         {
-            if(_temporaryUsers!.ContainsKey(email))
+            Dictionary<int, string> usersList = new();
+            foreach (User p in _allUsers!.Values)
             {
-                if (_temporaryUserCredentials![email] == password)
-                {
-                    CurrentTemporaryUser = email;
-                    return Result.SUCCESS;
-                }
-                else return Result.PARTIAL;
+                usersList.Add(p.UserId, p.Name);
             }
-            else return Result.FAILURE;
-        }
-        public Result LogOutTemporaryUser()
-        {
-            if (CurrentTemporaryUser != null)
-            {
-                CurrentTemporaryUser = null ?? "";
-                return Result.SUCCESS;
-            }
-            else
-            {
-                return Result.FAILURE;
-            }
+            return usersList;
         }
         //Admin section
-        public Result LogInAdmin(int userId,string password) 
+        public Result LogInAdmin(int userId, string password)
         {
             if (Admin.Id == userId)
             {
@@ -263,7 +263,6 @@ namespace TaskManagementApplication.DataBase
             }
             else return Result.FAILURE;
         }
-
         public Result LogOutAdmin()
         {
             if (AdminLoginStatus)
@@ -274,4 +273,4 @@ namespace TaskManagementApplication.DataBase
             else return Result.FAILURE;
         }
     }
-    }
+}
