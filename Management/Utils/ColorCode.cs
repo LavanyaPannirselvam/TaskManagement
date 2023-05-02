@@ -10,17 +10,18 @@ namespace TaskManagementApplication.Utils
     {
         internal static void MenuCode()
         {
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
         internal static void DefaultCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(msg + "\n");
+            Console.Write(msg);
         }
         internal static void SuccessCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(msg + "\n");
+            Console.Write(msg +"\n");
         }
         internal static void FailureCode(string msg)
         {

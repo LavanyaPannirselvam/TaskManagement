@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace TaskManagementApplication.Utils
 {
     public class Validation
     {
-        public static int getIntInRange(int max)
+        public static int GetIntInRange(int max)
         {
             int num;
             if (int.TryParse(Console.ReadLine(), out num))
@@ -19,15 +14,15 @@ namespace TaskManagementApplication.Utils
                 else
                 {
                     ColorCode.FailureCode("Wrong option entered");
-                    ColorCode.DefaultCode("Choose your choice : ");
-                    return getIntInRange(max);
+                    ColorCode.DefaultCode("\nChoose your choice : ");
+                    return GetIntInRange(max);
                 }
             }
             else
             {
                 ColorCode.FailureCode("Wrong format input");
-                ColorCode.DefaultCode("Enter the correct choice : ");
-                return getIntInRange(max);
+                ColorCode.DefaultCode("\nEnter the correct choice : ");
+                return GetIntInRange(max);
             }
         }
         public static bool ContainsSpecialOrNumericCharacters(string input)
