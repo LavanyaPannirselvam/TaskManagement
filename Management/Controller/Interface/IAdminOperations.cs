@@ -10,6 +10,5 @@ namespace TaskManagementApplication.Controller.Interface
     internal interface IAdminOperations
     {
         string ShowNotifications();
-        string ApproveUser(string email);
     }
 }
