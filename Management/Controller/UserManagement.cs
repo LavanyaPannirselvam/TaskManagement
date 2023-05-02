@@ -9,7 +9,7 @@ using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Controller.Interface
 {
-    public class UserManagement : IView , ITemporaryUserView
+    public class UserManagement : IView //pakka
     {
         private readonly Database _database = Database.GetInstance();
 
@@ -41,17 +41,6 @@ namespace TaskManagementApplication.Controller.Interface
             else
             {
                 foreach (Notification notification in _database.GetUser(_database.CurrentUser).Notifications)
-                    ColorCode.DefaultCode(notification.ToStringWithoutId());
-                return "";
-            }
-        }
-        public string ViewNotification()
-        {
-            if (_database.GetUser(_database.CurrentTemporaryUser).Notifications.Count == 0)
-                return "You don't have any notification to show now";
-            else
-            {
-                foreach(Notification notification in _database.GetUser(_database.CurrentTemporaryUser).Notifications)
                     ColorCode.DefaultCode(notification.ToStringWithoutId());
                 return "";
             }

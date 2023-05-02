@@ -20,11 +20,12 @@ namespace TaskManagementApplication.Controller
 
         public string SignUp(string name, string email, Role role, string password)
         {
-            if (_database.AddTemporaryUser(new User(name, email, role, UserApprovalOptions.NOT_APPROVED), password) == Result.SUCCESS)
+            User user = new(name, email, role);
+            if (_database.AddUser(user, password) == Result.SUCCESS)
             {
-                return "Request accepted,wait for confirmation and can check your status after logging into your account with the entered email and password as username and password and select not approved option during logging in";
+                return $"Account created successfully\nUserid is {user.UserId} and Password is {password}";
             }
-            else return "Request failed,try again";
+            else return "Creation failed as email already exists,try with a new email id";
         }
     }
 }

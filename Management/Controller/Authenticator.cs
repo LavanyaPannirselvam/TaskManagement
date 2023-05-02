@@ -1,47 +1,31 @@
 ﻿using TaskManagementApplication.Presentation;
 namespace TaskManagementApplication.Controller
 {
-    internal class Authenticator
+    public class Authenticator
     {
         private readonly DatabaseHandler _databaseHandler = new();
-        public string GetLogInData(int id, string password)
-        {
-            if (id > 1000)
-            {
-                string msg = _databaseHandler.LogInAdmin(id, password);
-                if (!msg.Contains("success"))
-                    return msg;
-                return new AdminOperations().ShowMenu(msg);
-            }
-            else
-            {
-                string msg = _databaseHandler.LogInUser(id, password);
+        public string LogInUser(string loginId, string password)
+        { 
+                string msg = _databaseHandler.LogInUser(loginId, password);
                 if (!msg.Contains("success"))
                     return msg;
                 return new UserOperations().ShowMenu(msg);
-            }
         }
-        public string GetLogInDataForNonApprovedUser(string email,string password)
+        public string LogInAdmin(int userId,string password)
         {
-            string msg = _databaseHandler.LogInNonApprovedUser(email, password);
-            if (msg.Contains("not available"))
+            string msg = _databaseHandler.LogInAdmin(userId, password); ;
+            if (!msg.Contains("success"))
                 return msg;
-            return new NotApprovedUserOperation().ShowMenu(msg);
+            return new AdminOperations().ShowMenu(msg);
         }
-        public string DoLogOutTemporaryUser()
-        {
-            return _databaseHandler.LogOutTemporaryUser();
-        }
-        public string DoLogOutApprovedUser()
+        public string DoLogOutUser()
         {
             return _databaseHandler.LogOutUser();
         }
-
-        public string DoSignOutApprovedUser()
+        public string DoSignOutUser(string email)
         {
-            return _databaseHandler.SignOutUser();
+            return _databaseHandler.SignOutUser(email);
         }
-
         public string DoLogoutAdmin() 
         {
             return _databaseHandler.LogOutAdmin();        
