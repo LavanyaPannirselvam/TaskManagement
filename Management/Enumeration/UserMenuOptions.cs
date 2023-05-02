@@ -8,6 +8,6 @@ namespace TaskManagementApplication.Enumerations
 {
     public enum UserMenuOptions
     {
-        REQUEST_FOR_SIGNUP, LOGIN, BACK
+       LOGIN, BACK
     }
 }
