@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManagementApplication.Enumerations;
+﻿using TaskManagementApplication.Enumerations;
 
 namespace TaskManagementApplication.Model
 {
@@ -20,6 +15,8 @@ namespace TaskManagementApplication.Model
             Notifications = new List<Notification>();
             AssignedProjects = new List<Project>();
             AssignedTasks = new List<Tasks>();
+            AssignedSubTasks = new List<SubTask>();
+            AssignedSubtaskofSubtask = new List<SmallSubTask>();
         }
         public int UserId { get; set; }
         public string Name { get; set; }
@@ -28,9 +25,12 @@ namespace TaskManagementApplication.Model
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<Project> AssignedProjects { get; set; }
         public ICollection<Tasks> AssignedTasks { get; set; }
+        public ICollection<SubTask> AssignedSubTasks { get; set; }
+        public ICollection<SmallSubTask> AssignedSubtaskofSubtask { get; set; }
         public override string ToString()
         {
             return string.Format($"Name : {this.Name} \nUserId : {this.UserId} \nEmail : {this.Email} \nRole : {this.Role}");
         }
+        //todo 
     }
 }

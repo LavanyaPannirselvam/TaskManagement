@@ -2,15 +2,16 @@
 
 namespace TaskManagementApplication.Model
 {
-    public class SubTask
+    public class SmallSubTask
     {
         private static int id = 1;
 
-        public SubTask(string name, string desc, string createdBy, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId, int taskId)
+        public SmallSubTask(string name, string desc, string createdBy, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId, int taskId, int subTaskId)
         {
             Id = id++;
             ProjectId = projectId;
             TaskId = taskId;
+            SubTaskId = subTaskId;
             Name = name;
             Desc = desc;
             CreatedBy = createdBy;
@@ -19,11 +20,11 @@ namespace TaskManagementApplication.Model
             StartDate = startDate;
             EndDate = endDate;
             AssignedUsers = new List<string>();
-            Subtask = new List<SmallSubTask>();
         }
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public int TaskId { get; set; }
+        public int SubTaskId { get; set; }
         public string Name { get; set; }
         public string Desc { get; set; }
         public string CreatedBy { get; set; }
@@ -32,21 +33,20 @@ namespace TaskManagementApplication.Model
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public ICollection<string> AssignedUsers { get; set; }
-        public ICollection<SmallSubTask> Subtask { get; set; }
         public override string ToString()
         {
             string result = "\nName".PadRight(16) + " : " + this.Name + "\n" +
-                "Id".PadRight(15)+" : "+this.Id + "\n" +
+                "Id".PadRight(15) + " : " + this.Id + "\n" +
                 "Project Id".PadRight(15) + " : " + this.ProjectId + "\n" +
                 "Task Id".PadRight(15) + " : " + this.TaskId + "\n" +
+                "Subtask Id".PadRight(15) + " : " + this.SubTaskId + "\n" +
                 "Description".PadRight(15) + " : " + this.Desc + "\n" +
                 "Created by".PadRight(15) + " : " + this.CreatedBy + "\n" +
                 "Status".PadRight(15) + " : " + this.Status + "\n" +
                 "Priority".PadRight(15) + " : " + this.Priority + "\n" +
                 "Start date".PadRight(15) + " : " + this.StartDate + "\n" +
                 "End date".PadRight(15) + " : " + this.EndDate + "\n" +
-                "Assigned users".PadRight(15) + " : " + this.ShowUsers() + "\n"+
-                "Subtask".PadRight(15) + " : " + this.SubTaskofSubTasksList() + "\n";
+                "Assigned users".PadRight(15) + " : " + this.ShowUsers() + "\n";
             return result;
         }
         public string ShowUsers()
@@ -58,19 +58,6 @@ namespace TaskManagementApplication.Model
                 foreach (string s in AssignedUsers)
                 {
                     result += s + ", ";
-                }
-            }
-            return result;
-        }
-        private string SubTaskofSubTasksList()
-        {
-            string result = "-";
-            if (Subtask.Count > 0)
-            {
-                result = "";
-                foreach (SmallSubTask sst in Subtask)
-                {
-                    result += sst.Id + ", ";
                 }
             }
             return result;
