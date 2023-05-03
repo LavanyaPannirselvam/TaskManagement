@@ -27,251 +27,188 @@ namespace TaskManagementApplication.Presentation
                     Console.WriteLine(((int)menu + 1 + ". ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
-                int choice = Validation.GetIntInRange(Enum.GetValues(typeof(UserOperationsOptions)).Length); 
+                int choice = Validation.GetIntInRange(Enum.GetValues(typeof(UserOperationsOptions)).Length);
                 ColorCode.DefaultCode("\n");
                 UserOperationsOptions option = (UserOperationsOptions)(choice - 1);
                 switch (option)
                 {
-                    case UserOperationsOptions.ASSIGN_USER: 
+                    case UserOperationsOptions.ASSIGN_USER:
                         {
                             int result = ShowActivityMenu();
-                            if (result==1)
+                            string msg = "";
+                            if (result == 1)
                             {
-                                string msg = _projectInput.CollectAssignUserInput(1);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
+                                string msg1 = _projectInput.CollectAssignUserInput(1);
+                                if (msg1.Contains("successfully"))
+                                    ColorCode.SuccessCode(msg1);
+                                else if (msg1.Contains("access"))
+                                    ColorCode.FailureCode(msg1);
+                                else ColorCode.PartialCode(msg1);
                             }
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectAssignUserInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
+                                msg = _projectInput.CollectAssignUserInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectAssignUserInput(3);
                             else
-                            {
-                                string msg = _projectInput.CollectAssignUserInput(3);
-                                if(msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if(msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
+                                msg = _projectInput.CollectAssignUserInput(4);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
+                            break;
                         }
-                    case UserOperationsOptions.DEASSIGN_USER: 
+                    case UserOperationsOptions.DEASSIGN_USER:
                         {
                             int result = ShowActivityMenu();
-                            if (result==1)
+                            string msg = "";
+                            if (result == 1)
                             {
-                                string msg = _projectInput.CollectDeassignUserInput(1);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
+                                string msg1 = _projectInput.CollectDeassignUserInput(1);
+                                if (msg1.Contains("successfully"))
+                                    ColorCode.SuccessCode(msg1);
+                                else if (msg1.Contains("access"))
+                                    ColorCode.FailureCode(msg1);
+                                else ColorCode.PartialCode(msg1);
                             }
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectDeassignUserInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            else
-                            {
-                                string msg = _projectInput.CollectDeassignUserInput(3);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
+                                msg = _projectInput.CollectDeassignUserInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectDeassignUserInput(3);
+                            else msg = _projectInput.CollectDeassignUserInput(4);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
+                            break;
                         }
                     case UserOperationsOptions.VIEW_ASSIGNED:
                         {
                             int result = ShowActivityMenu();
+                            string msg;
                             if (result == 1)
-                            {
-                                string msg = _userInput.CallViewAssigned(1);
-                                if (msg != "")
-                                    ColorCode.FailureCode(msg);
-                            }
+                                msg = _userInput.CallViewAssigned(1);
                             else if (result == 2)
-                            {
-                                string msg = _userInput.CallViewAssigned(2);
+                                msg = _userInput.CallViewAssigned(2);
+                            else if (result == 3)
+                                msg = _userInput.CallViewAssigned(3);
+                            else msg = _userInput.CallViewAssigned(4);
                                 if (msg != "")
                                     ColorCode.FailureCode(msg);
-                            }
-                            else
-                            {
-                                string msg = _userInput.CallViewAssigned(3);
-                                if(msg!="")
-                                    ColorCode.FailureCode(msg);
-                            }
-                                 break; 
+                            break;
                         }
-                    case UserOperationsOptions.VIEW: 
+                    case UserOperationsOptions.VIEW:
                         {
                             int result = ShowActivityMenu();
+                            string msg;
                             if (result == 1)
-                            {
-                                string msg = _projectInput.CollectViewProjectInput(1);
-                                if (msg.Contains("not available"))
-                                    ColorCode.FailureCode("msg");
-                                else ColorCode.DefaultCode(msg);
-                            }
+                                msg = _projectInput.CollectViewActivityInput(1);
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectViewProjectInput(2);
-                                if (msg.Contains("not available"))
-                                    ColorCode.FailureCode("msg");
-                                else ColorCode.DefaultCode(msg);
-                            }
-                            else
-                            {
-                                string msg = _projectInput.CollectViewProjectInput(3);
-                                if (msg.Contains("not available"))
-                                    ColorCode.FailureCode("msg");
-                                else ColorCode.DefaultCode(msg);
-                            }
+                                msg = _projectInput.CollectViewActivityInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectViewActivityInput(3);
+                            else msg = _projectInput.CollectViewActivityInput(4);
+                            if (msg.Contains("not available"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.DefaultCode(msg);
                             break;
                         }
                     case UserOperationsOptions.CHANGE_PRIORITY:
                         {
                             int result = ShowActivityMenu();
+                            string msg="";
                             if (result == 1)
                             {
-                                string msg = _projectInput.CollectChangePriorityInput(1);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
+                                string msg1 = _projectInput.CollectChangePriorityInput(1);
+                                if (msg1.Contains("successfully"))
+                                    ColorCode.SuccessCode(msg1);
+                                else if (msg1.Contains("access"))
+                                    ColorCode.FailureCode(msg1);
+                                else ColorCode.PartialCode(msg1);
                             }
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectChangePriorityInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
+                                msg = _projectInput.CollectChangePriorityInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectChangePriorityInput(3);
                             else
-                            {
-                                string msg = _projectInput.CollectChangePriorityInput(3);
-                                if(msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if(msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
+                                msg = _projectInput.CollectChangePriorityInput(4);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
+                            break;
                         }
-                    case UserOperationsOptions.CHANGE_STATUS: 
+                    case UserOperationsOptions.CHANGE_STATUS:
                         {
                             int result = ShowActivityMenu();
+                            string msg;
                             if (result == 1)
-                            {
-                                string msg = _projectInput.CollectChangeStatusInput(1);
+                                msg = _projectInput.CollectChangeStatusInput(1);
+                            else if (result == 2)
+                                msg = _projectInput.CollectChangeStatusInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectChangeStatusInput(3);
+                            else msg = _projectInput.CollectChangeStatusInput(4);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
+                                else if (msg.Contains("not assigned"))
                                     ColorCode.FailureCode(msg);
                                 else ColorCode.PartialCode(msg);
+                            break;
+                        }
+                    case UserOperationsOptions.CREATE:
+                        {
+                            int result = ShowActivityMenu();
+                            string msg = "";
+                            if (result == 1)
+                            {
+                                string msg1 = _projectInput.CollectCreateInput(1);
+                                if (msg1.Contains("successfully"))
+                                    ColorCode.SuccessCode(msg1);
+                                else if (msg1.Contains("access"))
+                                    ColorCode.FailureCode(msg1);
+                                else ColorCode.PartialCode(msg1);
                             }
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectChangeStatusInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
+                                msg = _projectInput.CollectCreateInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectCreateInput(3);
                             else
-                            {
-                                string msg = _projectInput.CollectChangeStatusInput(3);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
+                                msg = _projectInput.CollectCreateInput(4);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
+                            break;
                         }
-                    case UserOperationsOptions.CREATE: 
+                    case UserOperationsOptions.DELETE:
                         {
                             int result = ShowActivityMenu();
+                            string msg = "";
                             if (result == 1)
                             {
-                                string msg = _projectInput.CollectCreateInput(1);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
+                                string msg1 = _projectInput.CollectDeleteInput(1);
+                                if (msg1.Contains("successfully"))
+                                    ColorCode.SuccessCode(msg1);
+                                else if (msg1.Contains("access"))
+                                    ColorCode.FailureCode(msg1);
+                                else ColorCode.PartialCode(msg1);
                             }
                             else if (result == 2)
-                            {
-                                string msg = _projectInput.CollectCreateInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
+                                msg = _projectInput.CollectDeleteInput(2);
+                            else if (result == 3)
+                                msg = _projectInput.CollectDeleteInput(3);
                             else
-                            {
-                                string msg= _projectInput.CollectCreateInput(3);
-                                if(msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if(msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
-                        }
-                    case UserOperationsOptions.DELETE: 
-                        {
-                            int result = ShowActivityMenu();
-                            if (result == 1)
-                            {
-                                string msg = _projectInput.CollectDeleteInput(1);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("access"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            else if(result == 2)
-                            {
-                                string msg = _projectInput.CollectDeleteInput(2);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            else
-                            {
-                                string msg = _projectInput.CollectDeleteInput(3);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
-                            }
-                            break; 
+                                msg = _projectInput.CollectDeleteInput(4);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
+                            break;
                         }
                     case UserOperationsOptions.VIEW_MY_PROFILE:
                         {
@@ -284,13 +221,13 @@ namespace TaskManagementApplication.Presentation
                             break;
                         }
                     case UserOperationsOptions.LOGOUT:
-                        { 
+                        {
                             string msg = _userInput.CallLogOutApprovedUsers();
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else ColorCode.FailureCode(msg);
                             Start.Run();
-                            return ""; 
+                            return "";
                         }
                     case UserOperationsOptions.BACK: _userInput.CallLogOutApprovedUsers(); return "";
                 }

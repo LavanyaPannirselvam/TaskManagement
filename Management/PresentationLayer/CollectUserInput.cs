@@ -62,7 +62,9 @@ namespace TaskManagementApplication.Presentation
         {
             if (choice == 1)
                 return _userManagement.ViewAssignedProjects();
-            else return _userManagement.ViewAssignedTasks();
+            else if (choice == 2)
+                return _userManagement.ViewAssignedTasks();
+            else return _userManagement.ViewAssignedSubTasks();
         }
         public string CallViewMyProfile()
         {
