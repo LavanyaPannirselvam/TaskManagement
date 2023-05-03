@@ -16,6 +16,7 @@ namespace TaskManagementApplication.DataBase
         private Dictionary<int, Project>? _allProjects;
         private Dictionary<int, Tasks>? _allTasks;
         private Dictionary<int, SubTask>? _allSubTasks;
+        private Dictionary<int, SmallSubTask>? _allSmallSubTasks;
         private string _adminPassword = "Admin@123";
 
         private string currentUser;
@@ -52,14 +53,26 @@ namespace TaskManagementApplication.DataBase
             {
                 {1,new SubTask("ST1","SubTask 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2,1) }
             };
+            _allSmallSubTasks = new Dictionary<int, SmallSubTask>
+            {
+                {1,new SmallSubTask("ST1","Subtask of Subtask 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2,1,1) }
+            };
             admin = new Admin("Admin", "admin@gmail.com");
             currentUser = "";
+            GetProject(1).AssignedUsers.Add("Lavanya");
             GetTask(1).SubTasks.Add(GetSubTask(1));
             GetProject(2).CreatedTasks.Add(GetTask(1));
             GetProject(2).SubTasks.Add(GetSubTask(1));
-            GetProject(1).AssignedUsers.Add("Prithivi");
+            GetProject(2).AssignedUsers.Add("Prithivi");
             GetTask(1).AssignedUsers.Add("Lavanya");
             GetSubTask(1).AssignedUsers.Add("Deepika");
+            GetUser("prithivi.8@gmail.com").AssignedProjects.Add(GetProject(1));
+            GetUser("prithivi.8@gmail.com").AssignedProjects.Add(GetProject(2));
+            GetUser("lava@gmail.com").AssignedTasks.Add(GetTask(1));
+            GetUser("deepi@gmail.com").AssignedSubTasks.Add(GetSubTask(1));
+            GetProject(2).SubtaskofSubtask.Add(GetSmallSubTask(1));
+            GetTask(1).SubtaskofSubtask.Add(GetSmallSubTask(1));
+            GetSubTask(1).Subtask.Add(GetSmallSubTask(1));
         }
         private static readonly Database instance = new();
         public static Database GetInstance()
@@ -155,13 +168,13 @@ namespace TaskManagementApplication.DataBase
                 return _allSubTasks[subTaskId];
             else return null;
         }
-        public Result DeleteSubTask(int subTaskId)
+        public Result DeleteSubTask(int smallSubTaskId)
         {
-            if (_allSubTasks!.ContainsKey(subTaskId))
+            if (_allSubTasks!.ContainsKey(smallSubTaskId))
             {
-                if (GetTask(subTaskId).AssignedUsers.Count == 0)
+                if (GetTask(smallSubTaskId).AssignedUsers.Count == 0)
                 {
-                    _allSubTasks.Remove(subTaskId);
+                    _allSubTasks.Remove(smallSubTaskId);
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
@@ -176,6 +189,45 @@ namespace TaskManagementApplication.DataBase
                 subTasksList.Add(p.Id, p.Name);
             }
             return subTasksList;
+        }
+        //Small subtask section
+        public Result AddSmallSubTask(SmallSubTask smallsubTask)
+        {
+            if (_allSmallSubTasks!.ContainsKey(smallsubTask.Id))
+                return Result.FAILURE;
+            _allSmallSubTasks!.Add(smallsubTask.Id, smallsubTask);
+            GetProject(smallsubTask.ProjectId).SubtaskofSubtask.Add(smallsubTask);
+            GetTask(smallsubTask.TaskId).SubtaskofSubtask.Add(smallsubTask);
+            GetSubTask(smallsubTask.SubTaskId).Subtask.Add(smallsubTask);
+            return Result.SUCCESS;
+        }
+        public SmallSubTask GetSmallSubTask(int smallSubTaskId)
+        {
+            if (_allSmallSubTasks!.ContainsKey(smallSubTaskId))
+                return _allSmallSubTasks[smallSubTaskId];
+            else return null;
+        }
+        public Result DeleteSmallSubTask(int smallSubTaskId)
+        {
+            if (_allSmallSubTasks!.ContainsKey(smallSubTaskId))
+            {
+                if (GetSmallSubTask(smallSubTaskId).AssignedUsers.Count == 0)
+                {
+                    _allSmallSubTasks.Remove(smallSubTaskId);
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            return Result.FAILURE;
+        }
+        public Dictionary<int, string> SmallSubTasksList()
+        {
+            Dictionary<int, string> smallSubTasksList = new();
+            foreach (SmallSubTask sst in _allSmallSubTasks!.Values)
+            {
+                smallSubTasksList.Add(sst.Id, sst.Name);
+            }
+            return smallSubTasksList;
         }
 
         //User section
