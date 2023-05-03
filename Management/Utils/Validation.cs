@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.Design;
+using System.Text.RegularExpressions;
 
 namespace TaskManagementApplication.Utils
 {
@@ -44,6 +45,16 @@ namespace TaskManagementApplication.Utils
         {
             string regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)+(?=.*[-+_!@#$%^&*., ?]).+$";
             return Regex.IsMatch(password, regex, RegexOptions.IgnoreCase);
+        }
+
+        public static bool IsChoiceAvailable(int choice,Dictionary<int,string> list)
+        {
+            foreach(int i in list.Keys)
+            {
+                if(choice == i) 
+                    return true;
+            }
+            return false;
         }
     }
 }
