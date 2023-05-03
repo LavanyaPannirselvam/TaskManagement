@@ -11,7 +11,8 @@ namespace TaskManagementApplication.Controller.Interface
     {
         Dictionary<int, string> ProjectsList();
         Dictionary<int, string> TasksList();
-        Dictionary<int, string> SubTasksList();       
+        Dictionary<int, string> SubTasksList();
+        Dictionary<int, string> SmallSubTasksList();
         Dictionary<int, string> UsersList();
     }
 }

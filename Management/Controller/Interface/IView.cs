@@ -10,6 +10,7 @@ namespace TaskManagementApplication.Controller.Interface
     {
         string ViewAssignedProjects();
         string ViewAssignedTasks();
+        string ViewAssignedSubTasks();
         string ViewProfile();
         string ViewNotifications();
     }
