@@ -67,7 +67,7 @@ namespace TaskManagementApplication.Controller
                 }
                 else return "You are not assigned to the project and thus you cannot change the status of this project";
         }
-        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int tid,int stid)
+        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int tid,int stid,int sst)
         {
             if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
             {

@@ -33,6 +33,16 @@ namespace TaskManagementApplication.Controller.Interface
             }
             else return "You don't have tasks assigned to show now";
         }
+        public string ViewAssignedSubTasks()
+        {
+            if (_database.GetUser(_database.CurrentUser).AssignedSubTasks.Count != 0)
+            {
+                foreach (SubTask st in _database.GetUser(_database.CurrentUser).AssignedSubTasks)
+                    ColorCode.DefaultCode(st.ToString());
+                return "";
+            }
+            else return "You don't have subtasks assigned to show now";
+        }
 
         public string ViewNotifications()
         {

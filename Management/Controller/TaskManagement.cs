@@ -57,9 +57,7 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatus(int taskId, StatusType status)
         {
-            if (_database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
-            {
-                if (_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            if (_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
                 {
                     if (_database.GetTask(taskId).Status != status)
                     {
@@ -70,10 +68,8 @@ namespace TaskManagementApplication.Controller
                 }
                 else return "You are not assigned to the task and thus you can't change the status of the task";
             }
-            else return "You are not assigned to the project of this task and thus you don't have access to change the priority of a task";
-        }
 
-        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId,int stid)
+        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId,int stid,int sstid)
         {
             if (_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
             {
