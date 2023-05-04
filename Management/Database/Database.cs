@@ -11,17 +11,18 @@ namespace TaskManagementApplication.DataBase
 {
     public class Database
     {
-        private Dictionary<string, User>? _allUsers;
-        private Dictionary<string, string>? _userCredentials;
-        private Dictionary<int, Project>? _allProjects;
-        private Dictionary<int, Tasks>? _allTasks;
-        private Dictionary<int, SubTask>? _allSubTasks;
-        private Dictionary<int, SmallSubTask>? _allSmallSubTasks;
-        private string _adminPassword = "Admin@123";
+        private readonly Dictionary<string, User>? _allUsers;
+        private readonly Dictionary<string, string>? _userCredentials;
+        private readonly Dictionary<int, Project>? _allProjects;
+        private readonly Dictionary<int, Tasks>? _allTasks;
+        private readonly Dictionary<int, SubTask>? _allSubTasks;
+        private readonly Dictionary<int, SmallSubTask>? _allSmallSubTasks;
+        private readonly Dictionary<int, Issue>? _allIssues;
+        private readonly string _adminPassword = "Admin@123";
 
         private string currentUser;
         private readonly Admin admin;
-        //private bool adminLogin;
+        //private bool adminLogin;  
         public string CurrentUser { get { return currentUser; } private set { currentUser = value; } }
         public Admin Admin { get { return admin; } }
         public string AdminPassword { get { return _adminPassword; } }
@@ -57,12 +58,17 @@ namespace TaskManagementApplication.DataBase
             {
                 {1,new SmallSubTask("ST1","Subtask of Subtask 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2,1,1) }
             };
-            admin = new Admin("Admin", "admin@gmail.com");
+            _allIssues = new Dictionary<int, Issue>
+            {
+                {1,new Issue("T1","Task 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2) }
+            };            
             currentUser = "";
+            admin = new Admin("Admin", "admin@gmail.com");
             GetProject(1).AssignedUsers.Add("Lavanya");
             GetTask(1).SubTasks.Add(GetSubTask(1));
             GetProject(2).CreatedTasks.Add(GetTask(1));
             GetProject(2).SubTasks.Add(GetSubTask(1));
+            GetProject(2).Issues.Add(GetIssue(1));
             GetProject(2).AssignedUsers.Add("Prithivi");
             GetTask(1).AssignedUsers.Add("Lavanya");
             GetSubTask(1).AssignedUsers.Add("Deepika");
@@ -73,6 +79,7 @@ namespace TaskManagementApplication.DataBase
             GetProject(2).SubtaskofSubtask.Add(GetSmallSubTask(1));
             GetTask(1).SubtaskofSubtask.Add(GetSmallSubTask(1));
             GetSubTask(1).Subtask.Add(GetSmallSubTask(1));
+            GetIssue(1).AssignedUsers.Add("Prithivi");
         }
         private static readonly Database instance = new();
         public static Database GetInstance()
@@ -97,7 +104,7 @@ namespace TaskManagementApplication.DataBase
         {
             if (_allProjects!.ContainsKey(projectId))
             {
-                if (GetProject(projectId).AssignedUsers.Count == 0)
+                if (GetProject(projectId).Status == StatusType.CLOSED)
                 {
                     _allProjects.Remove(projectId);
                     return Result.SUCCESS;
@@ -134,7 +141,7 @@ namespace TaskManagementApplication.DataBase
         {
             if (_allTasks!.ContainsKey(taskId))
             {
-                if (GetTask(taskId).AssignedUsers.Count == 0)
+                if (GetTask(taskId).Status == StatusType.CLOSED)
                 {
                     _allTasks.Remove(taskId);
                     return Result.SUCCESS;
@@ -172,7 +179,7 @@ namespace TaskManagementApplication.DataBase
         {
             if (_allSubTasks!.ContainsKey(smallSubTaskId))
             {
-                if (GetTask(smallSubTaskId).AssignedUsers.Count == 0)
+                if (GetTask(smallSubTaskId).Status == StatusType.CLOSED)
                 {
                     _allSubTasks.Remove(smallSubTaskId);
                     return Result.SUCCESS;
@@ -211,7 +218,7 @@ namespace TaskManagementApplication.DataBase
         {
             if (_allSmallSubTasks!.ContainsKey(smallSubTaskId))
             {
-                if (GetSmallSubTask(smallSubTaskId).AssignedUsers.Count == 0)
+                if (GetSmallSubTask(smallSubTaskId).Status == StatusType.CLOSED)
                 {
                     _allSmallSubTasks.Remove(smallSubTaskId);
                     return Result.SUCCESS;
@@ -229,7 +236,43 @@ namespace TaskManagementApplication.DataBase
             }
             return smallSubTasksList;
         }
-
+        //Issue section
+        public Result AddIssue(Issue issue)
+        {
+            if (_allIssues!.ContainsKey(issue.Id))
+                return Result.FAILURE;
+            _allIssues.Add(issue.Id, issue);
+            GetProject(issue.ProjectId).Issues.Add(issue);
+            return Result.SUCCESS;
+        }
+        public Issue GetIssue(int issueId)
+        {
+            if (_allIssues!.ContainsKey(issueId))
+                return _allIssues[issueId];
+            else return null;
+        }
+        public Result DeleteIssue(int issueId)
+        {
+            if (_allIssues!.ContainsKey(issueId))
+            {
+                if (GetIssue(issueId).Status==StatusType.CLOSED)
+                {
+                    _allIssues.Remove(issueId);
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            return Result.FAILURE;
+        }
+        public Dictionary<int, string> IssuesList()
+        {
+            Dictionary<int, string> issuesList = new();
+            foreach (Issue i in _allIssues!.Values)
+            {
+                issuesList.Add(i.Id, i.Name);
+            }
+            return issuesList;
+        }
         //User section
         public Result AddUser(User user, string password)
         {
@@ -259,7 +302,8 @@ namespace TaskManagementApplication.DataBase
         {
             if (_allUsers!.ContainsKey(email))
             {
-                if (GetUser(email).AssignedProjects.Count == 0)
+                User u = GetUser(email);
+                if (u.AssignedProjects.Count == 0 && u.AssignedTasks.Count ==0 && u.AssignedSubTasks.Count ==0 && u.AssignedSubtaskofSubtask.Count ==0 && u.AssignedIssues.Count ==0)
                 {
                     _allUsers!.Remove(email);
                     _userCredentials!.Remove(email);
@@ -276,6 +320,15 @@ namespace TaskManagementApplication.DataBase
                 if (_userCredentials![logId] == password)
                 {
                     CurrentUser = logId;
+                    return Result.SUCCESS;
+                }
+                else return Result.PARTIAL;
+            }
+            else if (Admin.Email == logId)
+            {
+                if (_adminPassword == password)
+                {
+                    CurrentUser = Admin.Email;
                     return Result.SUCCESS;
                 }
                 else return Result.PARTIAL;
