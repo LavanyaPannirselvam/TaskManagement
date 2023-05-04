@@ -8,6 +8,6 @@ namespace TaskManagementApplication.Enumerations
 {
     public enum Role
     {
-        EMPLOYEE, MANAGER, LEAD
+        EMPLOYEE, MANAGER, LEAD , ADMIN
     }
 }

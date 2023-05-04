@@ -8,6 +8,6 @@ namespace TaskManagementApplication.Enumerations
 {
     public enum ActivityOptions
     {
-        PROJECT , TASK , SUBTASK , SUBTASK_OF_SUBTASK
+        PROJECT , TASK , SUBTASK , SUBTASK_OF_SUBTASK , ISSUE ,BACK
     }
 }
