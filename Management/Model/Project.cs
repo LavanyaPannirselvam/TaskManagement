@@ -20,6 +20,7 @@ namespace TaskManagementApplication.Model
             CreatedTasks = new List<Tasks>();
             SubTasks = new List<SubTask>();
             SubtaskofSubtask = new List<SmallSubTask>();
+            Issues = new List<Issue>();
         }
         public int Id { get; set; }
 
@@ -40,6 +41,7 @@ namespace TaskManagementApplication.Model
         public ICollection<Tasks> CreatedTasks { get; set; }
         public ICollection<SubTask> SubTasks { get; set; }
         public ICollection<SmallSubTask> SubtaskofSubtask { get; set; }
+        public ICollection<Issue> Issues { get; set; }
 
         public override string ToString()
         {
@@ -53,8 +55,9 @@ namespace TaskManagementApplication.Model
                 "End date".PadRight(20) + " : " + this.EndDate + "\n" +
                 "Assigned users".PadRight(20) + " : " + this.ShowUsers() + "\n" +
                 "Tasks".PadRight(20) + " : " + this.TasksList() + "\n" +
-                "Subtasks".PadRight(20) + " : " + this.SubTasksList()+"\n"+
-                "Subtask of Subtask".PadRight(20) + " : " + this.SubtaskofSubtasksList()+"\n"; 
+                "Subtasks".PadRight(20) + " : " + this.SubTasksList() + "\n" +
+                "Subtask of Subtask".PadRight(20) + " : " + this.SubtaskofSubtasksList() + "\n" +
+                "Issues".PadRight(20) + " : " + this.IssuesList() + "\n";
             return result;
         }
         private string ShowUsers()
@@ -105,6 +108,19 @@ namespace TaskManagementApplication.Model
                 foreach (SmallSubTask sst in SubtaskofSubtask)
                 {
                     result += sst.Id + ", ";
+                }
+            }
+            return result;
+        }
+        private string IssuesList()
+        {
+            string result = "-";
+            if (Issues.Count > 0)
+            {
+                result = "";
+                foreach (Issue i in Issues)
+                {
+                    result += i.Id + ", ";
                 }
             }
             return result;

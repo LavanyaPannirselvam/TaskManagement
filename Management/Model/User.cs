@@ -17,6 +17,7 @@ namespace TaskManagementApplication.Model
             AssignedTasks = new List<Tasks>();
             AssignedSubTasks = new List<SubTask>();
             AssignedSubtaskofSubtask = new List<SmallSubTask>();
+            AssignedIssues = new List<Issue>();
         }
         public int UserId { get; set; }
         public string Name { get; set; }
@@ -27,6 +28,7 @@ namespace TaskManagementApplication.Model
         public ICollection<Tasks> AssignedTasks { get; set; }
         public ICollection<SubTask> AssignedSubTasks { get; set; }
         public ICollection<SmallSubTask> AssignedSubtaskofSubtask { get; set; }
+        public ICollection<Issue> AssignedIssues { get; set; }
         public override string ToString()
         {
             return string.Format($"Name : {this.Name} \nUserId : {this.UserId} \nEmail : {this.Email} \nRole : {this.Role}");
