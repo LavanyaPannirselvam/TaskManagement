@@ -16,7 +16,7 @@ namespace TaskManagementApplication.Controller
 
         public string AssignUser(int subTaskId, int userId)
         {
-            if (_database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (!_database.GetSubTask(subTaskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -32,7 +32,7 @@ namespace TaskManagementApplication.Controller
 
         public string DeassignUser(int subTaskId, int userId)
         {
-            if (_database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.GetSubTask(subTaskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -48,7 +48,7 @@ namespace TaskManagementApplication.Controller
 
         public string ChangePriority(int subTaskId, PriorityType priority)
         {
-            if (_database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.GetSubTask(subTaskId).Priority != priority)
                 {
@@ -62,24 +62,32 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatus(int subTaskId, StatusType status)
         {
-            if (_database.GetSubTask(subTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
-                {
-                    if (_database.GetSubTask(subTaskId).Status != status)
-                    {
-                        _database.GetSubTask(subTaskId).Status = status;
-                        return "Status setted successfully";
-                    }
-                    else return "Subtask is already in this status";
-                }
-                else return "You are not assigned to this subtask and thus you can't change the status of it";
-            }
-            
-
-        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId, int taskId,int subtaskId)
-        {
-            if (_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            string userName;
+            if (_database.CurrentUser == _database.Admin.Email)
+                userName = _database.Admin.Name;
+            else userName = _database.GetUser(_database.CurrentUser).Name;
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(subTaskId).AssignedUsers.Contains(userName))
             {
-                SubTask subTask = new(name, desc, _database.GetUser(_database.CurrentUser).Name, status, type, startDate, endDate, projectId, taskId);
+                if (_database.GetSubTask(subTaskId).Status != status)
+                {
+                    _database.GetSubTask(subTaskId).Status = status;
+                    return "Status setted successfully";
+                }
+                else return "Subtask is already in this status";
+            }
+            else return "You are not assigned to this subtask and thus you can't change the status of it";
+        }
+
+
+        public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId, int taskId, int subtaskId)
+        {
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            {
+                string createdBy;
+                if (_database.CurrentUser == _database.Admin.Email)
+                    createdBy = _database.Admin.Name;
+                else createdBy = _database.GetUser(_database.CurrentUser).Name;
+                SubTask subTask = new(name, desc, createdBy, status, type, startDate, endDate, projectId, taskId);
                 if (_database.AddSubTask(subTask) == Result.SUCCESS)
                     return "Subtask created successfully. Subtask Id is  : " + subTask.Id;
                 else return "Subtask creation failed";
@@ -88,7 +96,7 @@ namespace TaskManagementApplication.Controller
         }
         public string Remove(int subTaskId)
         {
-            if (_database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(_database.GetSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.DeleteSubTask(subTaskId) == Result.SUCCESS)
                     return "Subtask removed successfully";

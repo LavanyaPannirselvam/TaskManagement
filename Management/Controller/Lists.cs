@@ -27,7 +27,11 @@ namespace TaskManagementApplication.Controller
         }
         public Dictionary<int, string> SmallSubTasksList()
         {
-            return _database.SubTasksList();
+            return _database.SmallSubTasksList();
+        }
+        public Dictionary<int, string> IssuesList()
+        {
+            return _database.IssuesList();
         }
         public Dictionary<int, string> UsersList()
         {

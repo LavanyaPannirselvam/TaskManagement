@@ -16,7 +16,7 @@ namespace TaskManagementApplication.Controller
 
         public string AssignUser(int smallSubTaskId, int userId)
         {
-            if (_database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (!_database.GetSmallSubTask(smallSubTaskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -32,7 +32,7 @@ namespace TaskManagementApplication.Controller
 
         public string DeassignUser(int smallSubTaskId, int userId)
         {
-            if (_database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.GetSmallSubTask(smallSubTaskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -48,7 +48,7 @@ namespace TaskManagementApplication.Controller
 
         public string ChangePriority(int subTaskId, PriorityType priority)
         {
-            if (_database.GetSubTask(_database.GetSmallSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(_database.GetSmallSubTask(subTaskId).TaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.GetSubTask(subTaskId).Priority != priority)
                 {
@@ -62,7 +62,11 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatus(int smallSubTaskId, StatusType status)
         {
-            if (_database.GetSmallSubTask(smallSubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            string userName;
+            if (_database.CurrentUser == _database.Admin.Email)
+                userName = _database.Admin.Name;
+            else userName = _database.GetUser(_database.CurrentUser).Name;
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSmallSubTask(smallSubTaskId).AssignedUsers.Contains(userName))
             {
                 if (_database.GetSmallSubTask(smallSubTaskId).Status != status)
                 {
@@ -76,9 +80,13 @@ namespace TaskManagementApplication.Controller
 
         public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId, int taskId,int subtaskId)
         {
-            if (_database.GetSubTask(subtaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(subtaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
-                SmallSubTask subTask = new(name, desc, _database.GetUser(_database.CurrentUser).Name, status, type, startDate, endDate, projectId, taskId,subtaskId);
+                string createdBy;
+                if (_database.CurrentUser == _database.Admin.Email)
+                    createdBy = _database.Admin.Name;
+                else createdBy = _database.GetUser(_database.CurrentUser).Name;
+                SmallSubTask subTask = new(name, desc,createdBy, status, type, startDate, endDate, projectId, taskId,subtaskId);
                 if (_database.AddSmallSubTask(subTask) == Result.SUCCESS)
                     return "Subtask of subtask created successfully. Subtask Id is  : " + subTask.Id;
                 else return "Subtask of subtask creation failed";
@@ -86,10 +94,9 @@ namespace TaskManagementApplication.Controller
             else return "You are not assigned to the subtask and thus you can't create a subtask of subtask for this subtask";
         }
 
-
         public string Remove(int smallSubTaskId)
         {
-            if (_database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetSubTask(_database.GetSmallSubTask(smallSubTaskId).SubTaskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the task
             {
                 if (_database.DeleteSmallSubTask(smallSubTaskId) == Result.SUCCESS)
                     return "Subtask of subtask removed successfully";

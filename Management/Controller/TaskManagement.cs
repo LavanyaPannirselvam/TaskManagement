@@ -11,7 +11,7 @@ namespace TaskManagementApplication.Controller
 
         public string AssignUser(int taskId, int userId)
         {
-            if (_database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name) || _database.CurrentUser == _database.Admin.Email)//check if the current user is already assigned to the project
             {
                 if (!_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -28,7 +28,7 @@ namespace TaskManagementApplication.Controller
 
         public string DeassignUser(int taskId, int userId)
         {
-            if (_database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
             {
                 if (_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(userId).Name))//check if the userId is not already assigned to the task 
                 {
@@ -43,7 +43,7 @@ namespace TaskManagementApplication.Controller
         }
         public string ChangePriority(int taskId, PriorityType priority)
         {
-            if (_database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))//check if the current user is already assigned to the project
             {
                 if (_database.GetTask(taskId).Priority != priority)
                 {
@@ -57,7 +57,11 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatus(int taskId, StatusType status)
         {
-            if (_database.GetTask(taskId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            string userName;
+            if (_database.CurrentUser == _database.Admin.Email)
+                userName = _database.Admin.Name;
+            else userName = _database.GetUser(_database.CurrentUser).Name;
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetTask(taskId).AssignedUsers.Contains(userName))
                 {
                     if (_database.GetTask(taskId).Status != status)
                     {
@@ -71,9 +75,13 @@ namespace TaskManagementApplication.Controller
 
         public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int projectId,int stid,int sstid)
         {
-            if (_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
             {
-                Tasks task = new(name, desc, _database.GetUser(_database.CurrentUser).Name, status, type, startDate, endDate, projectId);
+                string createdBy;
+                if (_database.CurrentUser == _database.Admin.Email)
+                    createdBy = _database.Admin.Name;
+                else createdBy = _database.GetUser(_database.CurrentUser).Name;
+                Tasks task = new(name, desc, createdBy, status, type, startDate, endDate, projectId);
                 if (_database.AddTask(task) == Result.SUCCESS)
                     return "Task created successfully. Task Id is  : " + task.Id;
                 else return "Task creation failed";
@@ -82,7 +90,7 @@ namespace TaskManagementApplication.Controller
         }
         public string Remove(int taskId)
         {
-            if (_database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(_database.GetTask(taskId).ProjectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
             {
                 if (_database.DeleteTask(taskId) == Result.SUCCESS)
                     return "Task removed successfully";

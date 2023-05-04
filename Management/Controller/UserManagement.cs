@@ -43,7 +43,26 @@ namespace TaskManagementApplication.Controller.Interface
             }
             else return "You don't have subtasks assigned to show now";
         }
-
+        public string ViewAssignedSubtaskofSubtask()
+        {
+            if (_database.GetUser(_database.CurrentUser).AssignedSubtaskofSubtask.Count != 0)
+            {
+                foreach (SmallSubTask sst in _database.GetUser(_database.CurrentUser).AssignedSubtaskofSubtask)
+                    ColorCode.DefaultCode(sst.ToString());
+                return "";
+            }
+            else return "You don't have subtask of subtask assigned to show now";
+        }
+        public string ViewAssignedIssues()
+        {
+            if (_database.GetUser(_database.CurrentUser).AssignedIssues.Count != 0)
+            {
+                foreach (Issue i in _database.GetUser(_database.CurrentUser).AssignedIssues)
+                    ColorCode.DefaultCode(i.ToString());
+                return "";
+            }
+            else return "You don't have issues assigned to show now";
+        }
         public string ViewNotifications()
         {
             if (_database.GetUser(_database.CurrentUser).Notifications.Count == 0)

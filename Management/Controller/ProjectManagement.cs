@@ -6,12 +6,12 @@ using TaskManagementApplication.Model;
 
 namespace TaskManagementApplication.Controller
 {
-    public class ProjectManagement : IManage, IAssignment, IModify//pakka
+    public class ProjectManagement : IManage, IAssignment, IModify
     {
         private readonly Database _database = Database.GetInstance();
-        public string AssignUser(int projectId, int userId)//done
+        public string AssignUser(int projectId, int userId)
         {
-            if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
             {
                 if (!_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(userId).Name))
                 {
@@ -27,7 +27,7 @@ namespace TaskManagementApplication.Controller
 
         public string DeassignUser(int projectId, int userId)
         {
-            if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
             {
                 User user = _database.GetUser(userId);
                 if (_database.GetProject(projectId).AssignedUsers.Contains(user.Name))
@@ -43,7 +43,7 @@ namespace TaskManagementApplication.Controller
         }
         public string ChangePriority(int projectId, PriorityType priority)
         {
-            if (_database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetUser(_database.CurrentUser).Role != Role.EMPLOYEE)
             {
                 if (_database.GetProject(projectId).Priority != priority)
                     {
@@ -56,7 +56,11 @@ namespace TaskManagementApplication.Controller
         }
         public string ChangeStatus(int projectId, StatusType status)
         {
-            if (_database.GetProject(projectId).AssignedUsers.Contains(_database.GetUser(_database.CurrentUser).Name))
+            string userName;
+            if (_database.CurrentUser == _database.Admin.Email)
+                userName = _database.Admin.Name;
+            else userName = _database.GetUser(_database.CurrentUser).Name;
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetProject(projectId).AssignedUsers.Contains(userName))
                 {
                     if (_database.GetProject(projectId).Status != status)
                     {
@@ -69,9 +73,13 @@ namespace TaskManagementApplication.Controller
         }
         public string Create(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int tid,int stid,int sst)
         {
-            if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
             {
-                Project project = new(name, desc, _database.GetUser(_database.CurrentUser).Name, status, type, startDate, endDate);
+                string createdBy;
+                if (_database.CurrentUser == _database.Admin.Email)
+                    createdBy = _database.Admin.Name;
+                else createdBy = _database.GetUser(_database.CurrentUser).Name;
+                Project project = new(name, desc, createdBy, status, type, startDate, endDate);
                 if (_database.AddProject(project) == Result.SUCCESS)
                     return "Project created successfully. Project Id is  : " + project.Id;
                 else return "Project creation failed";
@@ -80,7 +88,7 @@ namespace TaskManagementApplication.Controller
         }
         public string Remove(int projectId)
         {
-            if (_database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
+            if (_database.CurrentUser == _database.Admin.Email || _database.GetUser(_database.CurrentUser).Role == Role.MANAGER)
             {
                 if (_database.DeleteProject(projectId) == Result.SUCCESS)
                     return "Project removed successfully";
@@ -99,5 +107,4 @@ namespace TaskManagementApplication.Controller
         }
     }
 }
-//project list should have get max() so that it can't choose elements more than the numbers displayed
 
