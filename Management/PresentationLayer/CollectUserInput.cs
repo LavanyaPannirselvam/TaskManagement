@@ -44,7 +44,7 @@ namespace TaskManagementApplication.Presentation
             GetAndSetAdminLoginCredentials();
             return _authenticator.LogInAdmin(adminId,password!);
         }
-        public string CallLogOutApprovedUsers()
+        public string CallLogOutUsers()
         {
             return _authenticator.DoLogOutUser();
         }
@@ -64,7 +64,11 @@ namespace TaskManagementApplication.Presentation
                 return _userManagement.ViewAssignedProjects();
             else if (choice == 2)
                 return _userManagement.ViewAssignedTasks();
-            else return _userManagement.ViewAssignedSubTasks();
+            else if (choice == 3)
+                return _userManagement.ViewAssignedSubTasks();
+            else if (choice == 4)
+                return _userManagement.ViewAssignedSubtaskofSubtask();
+            else return _userManagement.ViewAssignedIssues();
         }
         public string CallViewMyProfile()
         {

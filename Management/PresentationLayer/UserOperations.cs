@@ -49,8 +49,11 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectAssignUserInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectAssignUserInput(3);
-                            else
+                            else if (result == 4)
                                 msg = _projectInput.CollectAssignUserInput(4);
+                            else if (result == 5)
+                                msg = _projectInput.CollectAssignUserInput(5);
+                            else ShowMenu("");
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -75,7 +78,11 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectDeassignUserInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectDeassignUserInput(3);
-                            else msg = _projectInput.CollectDeassignUserInput(4);
+                            else if (result == 4)
+                                msg = _projectInput.CollectDeassignUserInput(4);
+                            else if (result == 5)
+                                msg = _projectInput.CollectDeassignUserInput(5);
+                            else ShowMenu("");
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -85,33 +92,47 @@ namespace TaskManagementApplication.Presentation
                         }
                     case UserOperationsOptions.VIEW_ASSIGNED:
                         {
-                            int result = ShowActivityMenu();
-                            string msg;
-                            if (result == 1)
-                                msg = _userInput.CallViewAssigned(1);
-                            else if (result == 2)
-                                msg = _userInput.CallViewAssigned(2);
-                            else if (result == 3)
-                                msg = _userInput.CallViewAssigned(3);
-                            else msg = _userInput.CallViewAssigned(4);
+                            int result;
+                            string msg="";
+                            do
+                            {
+                                result = ShowActivityMenu();
+                                if (result == 1)
+                                    msg = _userInput.CallViewAssigned(1);
+                                else if (result == 2)
+                                    msg = _userInput.CallViewAssigned(2);
+                                else if (result == 3)
+                                    msg = _userInput.CallViewAssigned(3);
+                                else if (result == 4)
+                                    msg = _userInput.CallViewAssigned(4);
+                                else if (result == 5)
+                                    msg = _userInput.CallViewAssigned(5);
                                 if (msg != "")
                                     ColorCode.FailureCode(msg);
+                            } while (result != 6);                              
                             break;
                         }
                     case UserOperationsOptions.VIEW:
                         {
-                            int result = ShowActivityMenu();
-                            string msg;
-                            if (result == 1)
-                                msg = _projectInput.CollectViewActivityInput(1);
-                            else if (result == 2)
-                                msg = _projectInput.CollectViewActivityInput(2);
-                            else if (result == 3)
-                                msg = _projectInput.CollectViewActivityInput(3);
-                            else msg = _projectInput.CollectViewActivityInput(4);
-                            if (msg.Contains("not available"))
-                                ColorCode.FailureCode(msg);
-                            else ColorCode.DefaultCode(msg);
+                            string msg = "";
+                            int result;
+                            do
+                            {
+                                result = ShowActivityMenu();
+                                if (result == 1)
+                                    msg = _projectInput.CollectViewActivityInput(1);
+                                else if (result == 2)
+                                    msg = _projectInput.CollectViewActivityInput(2);
+                                else if (result == 3)
+                                    msg = _projectInput.CollectViewActivityInput(3);
+                                else if (result == 4)
+                                    msg = _projectInput.CollectViewActivityInput(4);
+                                else if (result == 5)
+                                    msg = _projectInput.CollectViewActivityInput(5);
+                                if (msg.Contains("not available"))
+                                    ColorCode.FailureCode(msg);
+                                else ColorCode.DefaultCode(msg);
+                            } while (result != 6);
                             break;
                         }
                     case UserOperationsOptions.CHANGE_PRIORITY:
@@ -131,8 +152,11 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectChangePriorityInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectChangePriorityInput(3);
-                            else
+                            else if (result == 4)
                                 msg = _projectInput.CollectChangePriorityInput(4);
+                            else if (result == 5)
+                                msg = _projectInput.CollectChangePriorityInput(5);
+                            else ShowMenu("");
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -143,14 +167,18 @@ namespace TaskManagementApplication.Presentation
                     case UserOperationsOptions.CHANGE_STATUS:
                         {
                             int result = ShowActivityMenu();
-                            string msg;
+                            string msg = "";
                             if (result == 1)
                                 msg = _projectInput.CollectChangeStatusInput(1);
                             else if (result == 2)
                                 msg = _projectInput.CollectChangeStatusInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectChangeStatusInput(3);
-                            else msg = _projectInput.CollectChangeStatusInput(4);
+                            else if (result == 4)
+                                msg = _projectInput.CollectChangeStatusInput(4);
+                            else if (result == 5)
+                                msg = _projectInput.CollectChangeStatusInput(5);
+                            else ShowMenu("");
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("not assigned"))
@@ -175,8 +203,12 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectCreateInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectCreateInput(3);
-                            else
+                            else if (result == 4)
                                 msg = _projectInput.CollectCreateInput(4);
+                            else if(result == 5)
+                                msg = _projectInput.CollectCreateInput(5);
+                            else
+                                ShowMenu("");
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -201,8 +233,12 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectDeleteInput(2);
                             else if (result == 3)
                                 msg = _projectInput.CollectDeleteInput(3);
-                            else
+                            else if (result == 4)
                                 msg = _projectInput.CollectDeleteInput(4);
+                            else if(result == 5)
+                                msg = _projectInput.CollectDeleteInput(5);
+                            else
+                                ShowMenu("");
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -222,14 +258,16 @@ namespace TaskManagementApplication.Presentation
                         }
                     case UserOperationsOptions.LOGOUT:
                         {
-                            string msg = _userInput.CallLogOutApprovedUsers();
+                            string msg = _userInput.CallLogOutUsers();
                             if (msg.Contains("successfully"))
+                            {
                                 ColorCode.SuccessCode(msg);
+                                Start.Run();
+                            }
                             else ColorCode.FailureCode(msg);
-                            Start.Run();
                             return "";
                         }
-                    case UserOperationsOptions.BACK: _userInput.CallLogOutApprovedUsers(); return "";
+                    case UserOperationsOptions.BACK: _userInput.CallLogOutUsers(); return "";
                 }
             }
         }
