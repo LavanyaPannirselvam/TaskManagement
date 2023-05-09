@@ -1,25 +1,27 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Design;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using TaskManagementApplication.Controller.Interface;
 using TaskManagementApplication.DataBase;
 using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Model;
+using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Controller
 {
     public class ProjectManagement : IActivityManage, IActivityAssignment, IActivityModifications
     {
         private readonly Database _database;
-        private readonly DatabaseHandler _dbHandler;
-        private readonly User currentUser;
+        private readonly User _currentUser;
         public ProjectManagement()
         {
             _database = Database.GetInstance();
-            _dbHandler = DatabaseHandler.GetInstance();
-            currentUser = _database.GetUser(_dbHandler.CurrentUserEmail);
+            _currentUser = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
         }
         public string AssignUser(int projectId, int userId)
         {
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN)
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN)
             {
                 Project project = _database.GetProject(projectId);
                 User toBeAssignedUser = _database.GetUser(userId);
@@ -36,7 +38,7 @@ namespace TaskManagementApplication.Controller
         }
         public string DeassignUser(int projectId, int userId)
         {
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN)
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN)
             {
                 User toBeAssignedUser = _database.GetUser(userId);
                 Project project = _database.GetProject(projectId);
@@ -53,7 +55,7 @@ namespace TaskManagementApplication.Controller
         }
         public string ChangePriorityOfActivity(int projectId, PriorityType priority)
         {
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN)
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN)
             {
                 Project project = _database.GetProject(projectId);
                 if (project.Priority != priority)
@@ -68,7 +70,7 @@ namespace TaskManagementApplication.Controller
         public string ChangeStatusOfActivity(int projectId, StatusType status)
         {
             Project project = _database.GetProject(projectId);
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN || project.AssignedUsers.Contains(currentUser))
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN || project.AssignedUsers.Contains(_currentUser))
             {
                 if (project.Status != status)
                 {
@@ -81,9 +83,9 @@ namespace TaskManagementApplication.Controller
         }
         public string CreateActivity(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate, int tid, int stid, int sst)
         {
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN)
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN)
             {
-                Project project = new(name, desc, currentUser.Name, status, type, startDate, endDate);
+                Project project = new(name, desc, _currentUser.Name, status, type, startDate, endDate);
                 if (_database.AddProject(project) == Result.SUCCESS)
                     return "Project created successfully. Project Id is  : " + project.Id;
                 else return "Project creation failed";
@@ -92,7 +94,7 @@ namespace TaskManagementApplication.Controller
         }
         public string RemoveActivity(int projectId)
         {
-            if (currentUser.Role == Role.MANAGER || currentUser.Role == Role.ADMIN)
+            if (_currentUser.Role == Role.MANAGER || _currentUser.Role == Role.ADMIN)
             {
                 Result result = _database.DeleteProject(projectId);
                 if (result == Result.SUCCESS)
@@ -103,12 +105,30 @@ namespace TaskManagementApplication.Controller
             }
             else return "You don't have the access to delete a project";
         }
-        public string ViewActivity(int projectId)
+        public void ViewActivity(int projectId)
         {
             if (_database.GetProject(projectId) != null)
-                return _database.GetProject(projectId).ToString();
-            else return "Project not available";
+            {
+                Project toBeViewed = _database.GetProject(projectId);
+                ColorCode.DefaultCode(toBeViewed.ToString());
+                if (toBeViewed.CreatedTasks.Count > 0)
+                {
+                    ColorCode.DefaultCode("\nTasks of this project are : \n");
+                    foreach (Tasks tasks in toBeViewed.CreatedTasks)
+                        ColorCode.DefaultCode(tasks.ToString()+"\n");
+                }
+                else ColorCode.FailureCode("\nNo task available for this project\n");
+                if (toBeViewed.SubTasks.Count > 0)
+                {
+                    ColorCode.DefaultCode("\nSubtasks of this project are : \n");
+                    foreach (SubTask subTask in toBeViewed.SubTasks)
+                        ColorCode.DefaultCode(subTask.ToString()+"\n");
+                }
+                else ColorCode.FailureCode("\nNo subtask availabe for this project\n");
+            }
+            else return;
         }
+        
     }
 }
 

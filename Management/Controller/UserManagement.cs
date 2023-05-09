@@ -9,14 +9,13 @@ using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Controller.Interface
 {
-    public class UserManagement : IActivityView
+    public class UserManagement 
     {
         private readonly Database _database = Database.GetInstance();
-        private readonly DatabaseHandler _dbHandler = DatabaseHandler.GetInstance();
         private User user;
         public string ViewAssignedProjects()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedProjects.Count != 0)
             {
                 foreach (Project p in user.AssignedProjects)
@@ -27,7 +26,7 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedTasks()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedTasks.Count != 0)
             {
                 foreach (Tasks t in user.AssignedTasks)
@@ -38,7 +37,7 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedSubTasks()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedSubTasks.Count != 0)
             {
                 foreach (SubTask st in user.AssignedSubTasks)
@@ -49,7 +48,7 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedSubtaskofSubtask()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedSubtaskofSubtask.Count != 0)
             {
                 foreach (SmallSubTask sst in user.AssignedSubtaskofSubtask)
@@ -60,7 +59,7 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedIssues()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedIssues.Count != 0)
             {
                 foreach (Issue i in user.AssignedIssues)
@@ -69,21 +68,21 @@ namespace TaskManagementApplication.Controller.Interface
             }
             else return "You don't have issues assigned to show now";
         }
-        public string ViewNotifications()
+        public string ViewMyNotifications()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.Notifications.Count == 0)
                 return "You don't have any notification to show now";
             else
             {
                 foreach (Notification notification in user.Notifications)
-                    ColorCode.DefaultCode(notification.ToStringWithoutId());
+                    ColorCode.DefaultCode(notification.ToString());
                 return "";
             }
         }
-        public string ViewProfile()
+        public string ViewMyProfile()
         {
-            user = _database.GetUser(_dbHandler.CurrentUserEmail);
+            user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             return user.ToString();
         }
     }

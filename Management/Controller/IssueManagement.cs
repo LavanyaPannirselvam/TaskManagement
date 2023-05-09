@@ -13,18 +13,16 @@ namespace TaskManagementApplication.Controller
     public class IssueManagement : IActivityAssignment, IActivityModifications, IActivityManage
     {
         private readonly Database _database;
-        private readonly DatabaseHandler _dbHandler;
-        private readonly User currentUser;
+        private readonly User _currentUser;
         public IssueManagement()
         {
             _database = Database.GetInstance();
-            _dbHandler = DatabaseHandler.GetInstance();
-            currentUser = _database.GetUser(_dbHandler.CurrentUserEmail);
+            _currentUser = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
         }
         public string AssignUser(int issueId, int userId)
         {
             Issue issue = _database.GetIssue(issueId);
-            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 User toBeAssignedUser = _database.GetUser(userId);
                 if (!issue.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the task 
@@ -41,7 +39,7 @@ namespace TaskManagementApplication.Controller
         public string DeassignUser(int issueId, int userId)
         {
             Issue issue = _database.GetIssue(issueId);
-            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can deassign the task from users
+            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can deassign the task from users
             {
                 User toBeAssignedUser = _database.GetUser(userId);
                 if (issue.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the task 
@@ -58,7 +56,7 @@ namespace TaskManagementApplication.Controller
         public string ChangePriorityOfActivity(int issueId, PriorityType priority)
         {
             Issue issue = _database.GetIssue(issueId);
-            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can change the priority of the task
+            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can change the priority of the task
             {
                 if (issue.Priority != priority)
                 {
@@ -73,7 +71,7 @@ namespace TaskManagementApplication.Controller
         public string ChangeStatusOfActivity(int issueId, StatusType status)
         {
             Issue issue = _database.GetIssue(issueId);
-            if (issue.AssignedUsers.Contains(currentUser))//only users who have been assigned to the task can change the status of the task
+            if (issue.AssignedUsers.Contains(_currentUser))//only users who have been assigned to the task can change the status of the task
             {
                 if (issue.Status != status)
                 {
@@ -87,9 +85,9 @@ namespace TaskManagementApplication.Controller
 
         public string CreateActivity(string name, string desc, StatusType status, PriorityType priority, DateOnly startDate, DateOnly endDate, int projectId, int stid, int sstid)
         {
-            if (_database.GetProject(projectId).AssignedUsers.Contains(currentUser  ))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetProject(projectId).AssignedUsers.Contains(_currentUser  ))//only users who have been assigned to the project of the task can assign the task to users
             {
-                Issue issue = new(name, desc, currentUser.Name, status, priority, startDate, endDate, projectId);
+                Issue issue = new(name, desc, _currentUser.Name, status, priority, startDate, endDate, projectId);
                 if (_database.AddIssue(issue) == Result.SUCCESS)
                     return "Issue created successfully. Issue Id is  : " + issue.Id;
                 else return "Issue creation failed";
@@ -99,7 +97,7 @@ namespace TaskManagementApplication.Controller
         public string RemoveActivity(int issueId)
         {
             Issue issue = _database.GetIssue(issueId);
-            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetProject(issue.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Result result = _database.DeleteIssue(issueId);
                 if (result == Result.SUCCESS)
@@ -110,11 +108,6 @@ namespace TaskManagementApplication.Controller
             }
             else return "You are not assigned to the project of this issue and thus you can't delete this issue";
         }
-        public string ViewActivity(int issueId)
-        {
-            if (_database.GetIssue(issueId) != null)
-                return _database.GetIssue(issueId).ToString();
-            else return "Issue not available";
-        }
+        
     }
 }

@@ -13,18 +13,16 @@ namespace TaskManagementApplication.Controller
     public class SmallSubTaskManagement : IActivityAssignment, IActivityModifications, IActivityManage
     {
         private readonly Database _database;
-        private readonly DatabaseHandler _dbHandler;
-        private readonly User currentUser;
+        private readonly User _currentUser;
         public SmallSubTaskManagement()
         {
             _database = Database.GetInstance();
-            _dbHandler = DatabaseHandler.GetInstance();
-            currentUser = _database.GetUser(_dbHandler.CurrentUserEmail);
+            _currentUser = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
         }
         public string AssignUser(int smallSubtaskId, int userId)
         {
             SmallSubTask smallSubtask = _database.GetSmallSubTask(smallSubtaskId);
-            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the subtask of the subtask of subtask can assign users
+            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the subtask of the subtask of subtask can assign users
             {
                 User toBeAssignedUser = _database.GetUser(userId);
                 if (!smallSubtask.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the subtask 
@@ -41,7 +39,7 @@ namespace TaskManagementApplication.Controller
         public string DeassignUser(int smallSubtaskId, int userId)
         {
             SmallSubTask smallSubtask = _database.GetSmallSubTask(smallSubtaskId);
-            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the subtask of the subtask of subtask can assign users
+            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the subtask of the subtask of subtask can assign users
             {
                 User toBeAssignedUser = _database.GetUser(userId);
                 if (smallSubtask.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the subtask 
@@ -59,7 +57,7 @@ namespace TaskManagementApplication.Controller
         public string ChangePriorityOfActivity(int smallSubtaskId, PriorityType priority)
         {
             SmallSubTask smallSubtask = _database.GetSmallSubTask(smallSubtaskId);
-            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the subtask of this subtask of subtask can change the priority of subtask of subtask
+            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the subtask of this subtask of subtask can change the priority of subtask of subtask
             {
                 if (smallSubtask.Priority != priority)
                 {
@@ -74,7 +72,7 @@ namespace TaskManagementApplication.Controller
         public string ChangeStatusOfActivity(int smallSubtaskId, StatusType status)
         {
             SmallSubTask smallSubtask = _database.GetSmallSubTask(smallSubtaskId);
-            if (smallSubtask.AssignedUsers.Contains(currentUser))//only users who have been assigned to the subtask of subtask can change the status of the subtask
+            if (smallSubtask.AssignedUsers.Contains(_currentUser))//only users who have been assigned to the subtask of subtask can change the status of the subtask
             {
                 if (smallSubtask.Status != status)
                 {
@@ -88,9 +86,9 @@ namespace TaskManagementApplication.Controller
 
         public string CreateActivity(string name, string desc, StatusType status, PriorityType priority, DateOnly startDate, DateOnly endDate, int projectId, int taskId, int subtaskId)
         {
-            if (_database.GetSubTask(subtaskId).AssignedUsers.Contains(currentUser))
+            if (_database.GetSubTask(subtaskId).AssignedUsers.Contains(_currentUser))
             {
-                SmallSubTask smallSubtask = new(name, desc, currentUser.Name, status, priority, startDate, endDate, projectId, taskId, subtaskId);
+                SmallSubTask smallSubtask = new(name, desc, _currentUser.Name, status, priority, startDate, endDate, projectId, taskId, subtaskId);
                 if (_database.AddSmallSubTask(smallSubtask) == Result.SUCCESS)
                     return "Subtask of subtask is created successfully. Subtask of subtask Id is  : " + smallSubtask.Id;
                 else return "Subtask of subtask creation failed";
@@ -100,7 +98,7 @@ namespace TaskManagementApplication.Controller
         public string RemoveActivity(int smallSubtaskId)
         {
             SmallSubTask smallSubtask = _database.GetSmallSubTask(smallSubtaskId);
-            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetSubTask(smallSubtask.SubTaskId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Result result = _database.DeleteSmallSubTask(smallSubtaskId);
                 if (result == Result.SUCCESS)
@@ -111,12 +109,7 @@ namespace TaskManagementApplication.Controller
             }
             else return "You are not assigned to the task of this subtask and thus you can't delete this subtask";
         }
-        public string ViewActivity(int subtaskId)
-        {
-            if (_database.GetSubTask(subtaskId) != null)
-                return _database.GetSubTask(subtaskId).ToString();
-            else return "Subtask not available";
-        }
+        
     }
 }
 
