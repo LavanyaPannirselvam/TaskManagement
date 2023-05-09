@@ -17,7 +17,7 @@ namespace TaskManagementApplication.Model
             Priority = type;
             StartDate = startDate;
             EndDate = endDate;
-            AssignedUsers = new List<int>();
+            AssignedUsers = new List<User>();
             SubTasks = new List<SubTask>();
             SubtaskofSubtask = new List<SmallSubTask>();
         }
@@ -30,7 +30,7 @@ namespace TaskManagementApplication.Model
         public PriorityType Priority { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
-        public ICollection<int> AssignedUsers { get; set; }
+        public ICollection<User> AssignedUsers { get; set; }
         public ICollection<SubTask> SubTasks { get; set; }
         public ICollection<SmallSubTask> SubtaskofSubtask { get; set; }
 
@@ -56,9 +56,9 @@ namespace TaskManagementApplication.Model
             if (AssignedUsers.Count > 0)
             {
                 result = "";
-                foreach (int s in AssignedUsers)
+                foreach (User user in AssignedUsers)
                 {
-                    result += s + ", ";
+                    result += user.Name + ", ";
                 }
             }
             return result;

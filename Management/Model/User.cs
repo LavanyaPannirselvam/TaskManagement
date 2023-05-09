@@ -2,7 +2,7 @@
 
 namespace TaskManagementApplication.Model
 {
-    public class User
+    public class User 
     {
         private static int userId = 1;
 

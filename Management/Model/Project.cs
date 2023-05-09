@@ -1,11 +1,11 @@
-﻿using TaskManagementApplication.Enumerations;
+﻿using TaskManagementApplication.DataBase;
+using TaskManagementApplication.Enumerations;
 
 namespace TaskManagementApplication.Model
 {
     public class Project
     {
-        public static int id = 1;
-
+        private static int id = 1;
         public Project(string name, string desc, string createdBy, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate)
         {
             Id = id++;
@@ -16,7 +16,7 @@ namespace TaskManagementApplication.Model
             Priority = type;
             StartDate = startDate;
             EndDate = endDate;
-            AssignedUsers = new List<int>();
+            AssignedUsers = new List<User>();
             CreatedTasks = new List<Tasks>();
             SubTasks = new List<SubTask>();
             SubtaskofSubtask = new List<SmallSubTask>();
@@ -37,7 +37,7 @@ namespace TaskManagementApplication.Model
         public DateOnly StartDate { get; set; }
 
         public DateOnly EndDate { get; set; }
-        public ICollection<int> AssignedUsers { get; set; }
+        public ICollection<User> AssignedUsers { get; set; }
         public ICollection<Tasks> CreatedTasks { get; set; }
         public ICollection<SubTask> SubTasks { get; set; }
         public ICollection<SmallSubTask> SubtaskofSubtask { get; set; }
@@ -66,9 +66,9 @@ namespace TaskManagementApplication.Model
             if (AssignedUsers.Count > 0)
             {
                 result = "";
-                foreach (int i in AssignedUsers)
+                foreach (User user in AssignedUsers)
                 {
-                    result += i + ", ";
+                    result += user.Name + ", ";
                 }
             }
             return result;
