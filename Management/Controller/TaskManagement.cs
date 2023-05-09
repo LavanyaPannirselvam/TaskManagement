@@ -8,20 +8,27 @@ namespace TaskManagementApplication.Controller
 {
     public class TaskManagement : IActivityAssignment, IActivityModifications, IActivityManage
     {
-        private readonly Database _database = Database.GetInstance();
-        private readonly DatabaseHandler _dbHandler = new();
+        private readonly Database _database;
+        private readonly DatabaseHandler _dbHandler;
+        private readonly User currentUser;
+        public TaskManagement()
+        {
+            _database = Database.GetInstance();
+            _dbHandler = DatabaseHandler.GetInstance();
+            currentUser = _database.GetUser(_dbHandler.CurrentUserEmail);
+        }
         public string AssignUser(int taskId, int userId)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(user.UserId))//only users who have been assigned to the project of the task can assign the task to users
-            {            
-                if (!task.AssignedUsers.Contains(user.UserId))//check if the userId is not already assigned to the task 
+            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            {    
+                User toBeAssignedUser = _database.GetUser(userId);
+                if (!task.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the task 
                 {
-                    task.AssignedUsers.Add(user.UserId);
-                    user.AssignedTasks.Add(task);
-                    user.Notifications.Add(new($"Task id {taskId} is assigned to you"));
-                    return "Task is assigned to " + user.Name + " successfully";
+                    task.AssignedUsers.Add(toBeAssignedUser);
+                    toBeAssignedUser.AssignedTasks.Add(task);
+                    toBeAssignedUser.Notifications.Add(new($"Task id {taskId} is assigned to you"));
+                    return "Task is assigned to " + toBeAssignedUser.Name + " successfully";
                 }
                 else return "Task is already assigned to the user";
             }
@@ -29,16 +36,16 @@ namespace TaskManagementApplication.Controller
         }
         public string DeassignUser(int taskId, int userId)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(user.UserId))//only users who have been assigned to the project of the task can deassign the task from users
+            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can deassign the task from users
             {
-                if (task.AssignedUsers.Contains(user.UserId))//check if the userId is not already assigned to the task 
+                User toBeAssigned = _database.GetUser(userId);
+                if (task.AssignedUsers.Contains(toBeAssigned))//check if the userId is not already assigned to the task 
                 {
-                    task.AssignedUsers.Remove(user.UserId);
-                    user.AssignedTasks.Remove(task);
-                    user.Notifications.Add(new($"Task id {taskId} is deassigned from you"));
-                    return "Task is deassigned from " + user.Name + " successfully";
+                    task.AssignedUsers.Remove(toBeAssigned);
+                    toBeAssigned.AssignedTasks.Remove(task);
+                    toBeAssigned.Notifications.Add(new($"Task id {taskId} is deassigned from you"));
+                    return "Task is deassigned from " + toBeAssigned.Name + " successfully";
                 }
                 else return "Task is already deassigned from the user";
             }
@@ -46,9 +53,8 @@ namespace TaskManagementApplication.Controller
         }
             public string ChangePriorityOfActivity(int taskId, PriorityType priority)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(user.UserId))//only users who have been assigned to the project of the task can change the priority of the task
+            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can change the priority of the task
             {
                 if (task.Priority != priority)
                 {
@@ -62,9 +68,9 @@ namespace TaskManagementApplication.Controller
 
         public string ChangeStatusOfActivity(int taskId, StatusType status)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
             Tasks task = _database.GetTask(taskId);
-            if (task.AssignedUsers.Contains(user.UserId))//only users who have been assigned to the task can change the status of the task
+            if (task.AssignedUsers.Contains(currentUser))//only users who have been assigned to the task can change the status of the task
+
             {
                 if (task.Status != status)
                 {
@@ -78,10 +84,9 @@ namespace TaskManagementApplication.Controller
 
         public string CreateActivity(string name, string desc, StatusType status, PriorityType priority, DateOnly startDate, DateOnly endDate, int projectId, int stid, int sstid)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
-            if (_database.GetProject(projectId).AssignedUsers.Contains(user.UserId))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetProject(projectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
-                Tasks task = new(name, desc, user.Name, status, priority, startDate, endDate, projectId);
+                Tasks task = new(name, desc,currentUser.Name, status, priority, startDate, endDate, projectId);
                 if (_database.AddTask(task) == Result.SUCCESS)
                     return "Task created successfully. Task Id is  : " + task.Id;
                 else return "Task creation failed";
@@ -90,9 +95,8 @@ namespace TaskManagementApplication.Controller
         }
         public string RemoveActivity(int taskId)
         {
-            User user = _database.GetUser(_dbHandler.CurrentUserEmail);
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(user.UserId))//only users who have been assigned to the project of the task can assign the task to users
+            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Result result = _database.DeleteTask(taskId);
                 if (result == Result.SUCCESS)

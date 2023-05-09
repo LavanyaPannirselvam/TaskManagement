@@ -3,17 +3,20 @@ namespace TaskManagementApplication.Controller
 {
     public class Authenticator
     {
-        private readonly DatabaseHandler _databaseHandler = new();
+        private readonly DatabaseHandler _dbHandler = DatabaseHandler.GetInstance();
         public string LogInUser(string loginId, string password)
         { 
-                string msg = _databaseHandler.LogInUser(loginId, password);
-                if (!msg.Contains("success"))
-                    return msg;
-                return new UserOperations().ShowMenu(msg);
+                string msg = _dbHandler.LogInUser(loginId, password);
+            if (!msg.Contains("success"))
+            {
+                return msg;
+            }
+            return new UserOperations().ShowMenu(msg,_dbHandler.GetUser(loginId).Role);
         }
         public string DoLogOutUser()
         {
-            return _databaseHandler.LogOutUser();
+            return _dbHandler.LogOutUser();
+            
         }
     }
 }
