@@ -13,22 +13,52 @@ namespace TaskManagementApplication.Presentation
     public class UserOperations
     {
         private readonly TextInfo _myTI = new CultureInfo("en-US", false).TextInfo;
-        private readonly CollectProjectInput _projectInput = new();
-        private readonly CollectUserInput _userInput = new();
+        private readonly ProjectInput _projectInput = new();
+        private readonly UserInput _userInput = new();
 
-        public string ShowMenu(string message)
+        public string ShowMenu(string message,Role role)
         {
             ColorCode.SuccessCode(message);
             while (true)
             {
+                int count = 0;
                 ColorCode.MenuCode();
-                Console.WriteLine("\t\t------User Menu------\t\t");
+                Console.WriteLine($"\t\t------{_myTI.ToTitleCase((role).ToString().ToLowerInvariant())} Menu------\t\t");
+                if(role == Role.ADMIN)
+                    foreach(AdminOperationOptions menu in Enum.GetValues(typeof(AdminOperationOptions)))
+                        Console.WriteLine((count++ + 1 + " . ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_"," ").ToLowerInvariant()));
                 foreach (UserOperationsOptions menu in Enum.GetValues(typeof(UserOperationsOptions)))
-                    Console.WriteLine(((int)menu + 1 + ". ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
+                    Console.WriteLine((count++ + 1 + ". ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
                 ColorCode.DefaultCode("Choose your choice : ");
-                int choice = Validation.GetIntInRange(Enum.GetValues(typeof(UserOperationsOptions)).Length);
+                int choice = Validation.GetIntInRange(count);
                 ColorCode.DefaultCode("\n");
+                if (role == Role.ADMIN)
+                {
+                    if (choice == 1 || choice == 2)
+                    {
+                        AdminOperationOptions options = (AdminOperationOptions)(choice -1);
+                        switch(options)
+                        {
+                            case AdminOperationOptions.CREATE_USER:
+                                {
+                                    string msg1  = _userInput.CollectSignUpInput();
+                                    if (msg1.Contains("successfully"))
+                                        ColorCode.SuccessCode(msg1);
+                                    else if (msg1.Contains("doesn't"))
+                                        ColorCode.FailureCode(msg1);
+                                    else ColorCode.PartialCode(msg1);
+                                    break;
+                                }
+                                case AdminOperationOptions.DELETE_USER:
+                                {
+                                    _userInput.CollectSignOutUsers();
+                                    break;
+                                }
+                        }
+                    }
+                    choice -= 2;
+                }
                 UserOperationsOptions option = (UserOperationsOptions)(choice - 1);
                 switch (option)
                 {
@@ -53,7 +83,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectAssignUserInput(4);
                             else if (result == 5)
                                 msg = _projectInput.CollectAssignUserInput(5);
-                            else ShowMenu("");
+                            else ShowMenu("",role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -82,7 +112,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectDeassignUserInput(4);
                             else if (result == 5)
                                 msg = _projectInput.CollectDeassignUserInput(5);
-                            else ShowMenu("");
+                            else ShowMenu("", role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -156,7 +186,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectChangePriorityInput(4);
                             else if (result == 5)
                                 msg = _projectInput.CollectChangePriorityInput(5);
-                            else ShowMenu("");
+                            else ShowMenu("", role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -178,7 +208,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectChangeStatusInput(4);
                             else if (result == 5)
                                 msg = _projectInput.CollectChangeStatusInput(5);
-                            else ShowMenu("");
+                            else ShowMenu("", role);
                                 if (msg.Contains("successfully"))
                                     ColorCode.SuccessCode(msg);
                                 else if (msg.Contains("not assigned"))
@@ -208,7 +238,7 @@ namespace TaskManagementApplication.Presentation
                             else if(result == 5)
                                 msg = _projectInput.CollectCreateInput(5);
                             else
-                                ShowMenu("");
+                                ShowMenu("", role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -238,7 +268,7 @@ namespace TaskManagementApplication.Presentation
                             else if(result == 5)
                                 msg = _projectInput.CollectDeleteInput(5);
                             else
-                                ShowMenu("");
+                                ShowMenu("", role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))

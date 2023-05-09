@@ -11,8 +11,10 @@ namespace TaskManagementApplication.Presentation
 {
     public class Start
     {
+        private static readonly UserInput _collectUserInput = new();
         public static void Run()
         {
+
             TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
             while (true)
             {
@@ -27,18 +29,15 @@ namespace TaskManagementApplication.Presentation
                 MainMenuOptions options = (MainMenuOptions)(choice - 1);
                 switch (options)
                 {
-                    /*case MainMenuOptions.ADMIN:
-                        {     
-                            CollectUserInput _userInput = new();
-                            string msg = _userInput.CollectAdminSignInInput();
+                    case MainMenuOptions.LOGIN:
+                        {
+                            ColorCode.MenuCode();
+                            Console.WriteLine("\t\t------User Login------\t\t\n");
+                            string msg = _collectUserInput.CollectSignInInput();
                             if (!msg.Contains("success"))
                                 ColorCode.FailureCode(msg);
                             break;
                         }
-
-                    */
-                    case MainMenuOptions.USER:UserMenu.ShowUserMenu();
-                        break;
                     case MainMenuOptions.QUIT:
                         Environment.Exit(0);
                         break;
