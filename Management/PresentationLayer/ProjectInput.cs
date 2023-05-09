@@ -15,6 +15,7 @@ namespace TaskManagementApplication.Presentation
         private readonly SmallSubTaskManagement _smallSubTaskManager = new();
         private readonly IssueManagement _issueManager = new();
         private readonly ActivityList _lists = new();
+        private readonly ActivityViewer _activityViewer = new();
         int activityId;
         int userId;
         PriorityType priority;
@@ -55,15 +56,66 @@ namespace TaskManagementApplication.Presentation
         {
             GetAndSetActivityId(choice);
             if (choice == 1)
-                return _projectManager.ViewActivity(activityId);
-            else if (choice == 2)
-                return _taskManager.ViewActivity(activityId);
-            else if (choice == 3)
-                return _subTaskManager.ViewActivity(activityId);
-            else if(choice == 4)
-                return _smallSubTaskManager.ViewActivity(activityId);
-            else return _issueManager.ViewActivity(activityId);
+            {
+                return _activityViewer.ViewProject(activityId);//return to user operations
+            }
+            else return "";            
         }
+        public string ShowAssignedActivity(ActivityOptions activityOptions)
+        {
+            int projectId = activityId;
+            int taskId=0;
+            int subtaskId = 0;
+
+            if (activityOptions == ActivityOptions.TASK)
+            {
+                List<Tasks> tasks = new(_lists.TasksList().Values);
+                foreach (Tasks task in tasks)
+                {
+                    if (task.ProjectId == projectId)
+                    {
+                        taskId = task.Id;
+                        return _activityViewer.ViewAssignedTasks(taskId);
+                    }
+                }
+            }
+            else if (activityOptions == ActivityOptions.SUBTASK)
+            {
+                List<SubTask> subtasks = new(_lists.SubTasksList().Values);
+                foreach (SubTask subtask in subtasks)
+                {
+                    if (subtask.TaskId == taskId)
+                    {
+                        subtaskId = subtask.Id;
+                        return _activityViewer.ViewAssignedSubTasks(subtaskId);
+                    }                   
+                }
+            }
+            else if(activityOptions == ActivityOptions.SUBTASK_OF_SUBTASK)
+            {
+                List<SmallSubTask> smallSubtasks = new(_lists.SmallSubTasksList().Values);
+                foreach (SmallSubTask smallSubtask in smallSubtasks)
+                {
+                    if (smallSubtask.SubTaskId == subtaskId)
+                    {
+                        _activityViewer.ViewAssignedSmallSubTasks(smallSubtask.Id);
+                    }
+                }
+            }
+            else
+            {
+                List<Issue> issues = new(_lists.IssuesList().Values);
+                foreach (Issue issue in issues)
+                {
+                    if (issue.ProjectId == projectId)
+                    {
+                        _activityViewer.ViewAssignedIssues(issue.Id);
+                    }
+                }
+            }
+            return "";
+        }
+
         public string CollectChangePriorityInput(int choice)
         {
             GetAndSetActivityId(choice);
@@ -172,7 +224,8 @@ namespace TaskManagementApplication.Presentation
             }
             if (choice == 1)
             {
-                if (Validation.IsChoiceAvailable(tempId, _lists.ProjectsList()))
+                List<int> keys = new(_lists.ProjectsList().Keys);
+                if (Validation.IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -182,7 +235,8 @@ namespace TaskManagementApplication.Presentation
             }
             else if (choice == 2)
             {
-                if (Validation.IsChoiceAvailable(tempId, _lists.TasksList()))
+                List<int> keys = new(_lists.TasksList().Keys);
+                if (Validation.IsChoiceAvailable(tempId,keys))
                     activityId = tempId;
                 else
                 {
@@ -192,7 +246,8 @@ namespace TaskManagementApplication.Presentation
             }
             else if (choice == 3)
             {
-                if (Validation.IsChoiceAvailable(tempId, _lists.SubTasksList()))
+                List<int> keys = new(_lists.SubTasksList().Keys);
+                if (Validation.IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -202,7 +257,8 @@ namespace TaskManagementApplication.Presentation
             }
             else if(choice == 4)
             {
-                if (Validation.IsChoiceAvailable(tempId, _lists.SmallSubTasksList()))
+                List<int> keys = new(_lists.SmallSubTasksList().Keys);
+                if (Validation.IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -212,7 +268,8 @@ namespace TaskManagementApplication.Presentation
             }
             else
             {
-                if (Validation.IsChoiceAvailable(tempId, _lists.IssuesList()))
+                List<int> keys = new(_lists.IssuesList().Keys);
+                if (Validation.IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -230,7 +287,8 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.FailureCode("User id should be only in number format");
                 GetAndSetUserId();
             }
-            if (Validation.IsChoiceAvailable(tempId, _lists.UsersList()))
+            List<int> users = new(_lists.UsersList().Keys);
+            if (Validation.IsChoiceAvailable(tempId, users))
                 userId = tempId;
             else
             {
@@ -312,7 +370,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void DisplayProjectsList()
         {
-            Dictionary<int, string> projectsList = _lists.ProjectsList();
+            Dictionary<int, Project> projectsList = _lists.ProjectsList();
             if (projectsList.Count == 0)
                 ColorCode.FailureCode("No project available");
             else
@@ -320,14 +378,14 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "PROJECT NAME".PadRight(15) + "\n");
                 foreach (int id in projectsList.Keys)
                 {
-                    ColorCode.DefaultCode(id + "".PadRight(6) + projectsList[id] + "".PadRight(15));
+                    ColorCode.DefaultCode(id + "".PadRight(6) + projectsList[id].Name + "".PadRight(15));
                     ColorCode.DefaultCode("\n");
                 }
             }
         }
         private void DisplayTasksList()
         {
-            Dictionary<int, string> tasksList = _lists.TasksList();
+            Dictionary<int, Tasks> tasksList = _lists.TasksList();
             if (tasksList.Count == 0)
                 ColorCode.FailureCode("No tasks available");
             else
@@ -335,13 +393,13 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "TASK NAME".PadRight(15) + "\n");
                 foreach (int id in tasksList.Keys)
                 {
-                    ColorCode.DefaultCode(id + "".PadRight(6) + tasksList[id] + "".PadRight(15) + "\n");
+                    ColorCode.DefaultCode(id + "".PadRight(6) + tasksList[id].Name + "".PadRight(15) + "\n");
                 }
             }
         }
         private void DisplaySubTasksList()
         {
-            Dictionary<int, string> subTasksList = _lists.SubTasksList();
+            Dictionary<int, SubTask> subTasksList = _lists.SubTasksList();
             if (subTasksList.Count == 0)
                 ColorCode.FailureCode("No subtask available");
             else 
@@ -349,13 +407,13 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "SUBTASK NAME".PadRight(15) + "\n");
                 foreach (int id in subTasksList.Keys)
                 {
-                    ColorCode.DefaultCode(id + "".PadRight(6) + subTasksList[id] + "".PadRight(15) + "\n");
+                    ColorCode.DefaultCode(id + "".PadRight(6) + subTasksList[id].Name + "".PadRight(15) + "\n");
                 }
             }
         }
         private void DisplaySmallSubTasksList()
         {
-            Dictionary<int, string> smallSubTasksList = _lists.SmallSubTasksList();
+            Dictionary<int, SmallSubTask> smallSubTasksList = _lists.SmallSubTasksList();
             if (smallSubTasksList.Count == 0)
                 ColorCode.FailureCode("No subtask of subtask available");
             else
@@ -363,13 +421,13 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "SUBTASK OF SUBTASK NAME".PadRight(15) + "\n");
                 foreach (int id in smallSubTasksList.Keys)
                 {
-                    ColorCode.DefaultCode(id + "".PadRight(6) + smallSubTasksList[id] + "".PadRight(15) + "\n");
+                    ColorCode.DefaultCode(id + "".PadRight(6) + smallSubTasksList[id].Name + "".PadRight(15) + "\n");
                 }
             }
         }
         private void DisplayIssuesList()
         {
-            Dictionary<int, string> issuesList = _lists.IssuesList();
+            Dictionary<int, Issue> issuesList = _lists.IssuesList();
             if (issuesList.Count == 0)
                 ColorCode.FailureCode("No issue available");
             else
@@ -377,13 +435,13 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "ISSUE NAME".PadRight(15) + "\n");
                 foreach (int id in issuesList.Keys)
                 {
-                    ColorCode.DefaultCode(id + "".PadRight(6) + issuesList[id] + "".PadRight(15) + "\n");
+                    ColorCode.DefaultCode(id + "".PadRight(6) + issuesList[id].Name + "".PadRight(15) + "\n");
                 }
             }
         }
         private void DisplayUsersList()
         {
-            Dictionary<int, string> usersList = _lists.UsersList();
+            Dictionary<int, User> usersList = _lists.UsersList();
             if (usersList.Count == 0)
                 ColorCode.FailureCode("No user available");
             else
@@ -391,11 +449,14 @@ namespace TaskManagementApplication.Presentation
                 ColorCode.DefaultCode("ID".PadRight(6) + "USER NAME".PadRight(15) + "\n");
                 foreach (int listId in usersList.Keys)
                 {
-                    ColorCode.DefaultCode(listId + "".PadRight(6) + usersList[listId] + "".PadRight(15) + "\n");
+                    ColorCode.DefaultCode(listId + "".PadRight(6) + usersList[listId].Name + "".PadRight(15) + "\n");
                 }
             }
         }
-
+        private void SetId(ref int place,int value)
+        {
+            place = value;
+        }
     }
 }
 //list of available tasks with their project id and id should be mentioned also for userid -> done

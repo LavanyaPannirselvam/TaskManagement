@@ -16,7 +16,7 @@ namespace TaskManagementApplication.Presentation
         private readonly ProjectInput _projectInput = new();
         private readonly UserInput _userInput = new();
 
-        public string ShowMenu(string message,Role role)
+        public string ShowMenu(string message, Role role)
         {
             ColorCode.SuccessCode(message);
             while (true)
@@ -24,9 +24,9 @@ namespace TaskManagementApplication.Presentation
                 int count = 0;
                 ColorCode.MenuCode();
                 Console.WriteLine($"\t\t------{_myTI.ToTitleCase((role).ToString().ToLowerInvariant())} Menu------\t\t");
-                if(role == Role.ADMIN)
-                    foreach(AdminOperationOptions menu in Enum.GetValues(typeof(AdminOperationOptions)))
-                        Console.WriteLine((count++ + 1 + " . ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_"," ").ToLowerInvariant()));
+                if (role == Role.ADMIN)
+                    foreach (AdminOperationOptions menu in Enum.GetValues(typeof(AdminOperationOptions)))
+                        Console.WriteLine((count++ + 1 + " . ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 foreach (UserOperationsOptions menu in Enum.GetValues(typeof(UserOperationsOptions)))
                     Console.WriteLine((count++ + 1 + ". ").PadRight(4) + _myTI.ToTitleCase(menu.ToString().Replace("_", " ").ToLowerInvariant()));
                 Console.WriteLine("---------------------------------------------");
@@ -37,12 +37,12 @@ namespace TaskManagementApplication.Presentation
                 {
                     if (choice == 1 || choice == 2)
                     {
-                        AdminOperationOptions options = (AdminOperationOptions)(choice -1);
-                        switch(options)
+                        AdminOperationOptions options = (AdminOperationOptions)(choice - 1);
+                        switch (options)
                         {
                             case AdminOperationOptions.CREATE_USER:
                                 {
-                                    string msg1  = _userInput.CollectSignUpInput();
+                                    string msg1 = _userInput.CollectSignUpInput();
                                     if (msg1.Contains("successfully"))
                                         ColorCode.SuccessCode(msg1);
                                     else if (msg1.Contains("doesn't"))
@@ -50,9 +50,14 @@ namespace TaskManagementApplication.Presentation
                                     else ColorCode.PartialCode(msg1);
                                     break;
                                 }
-                                case AdminOperationOptions.DELETE_USER:
+                            case AdminOperationOptions.DELETE_USER:
                                 {
-                                    _userInput.CollectSignOutUsers();
+                                    string msg1 = _userInput.CollectSignOutUsers();
+                                    if (msg1.Contains("successfully"))
+                                        ColorCode.SuccessCode(msg1);
+                                    else if (msg1.Contains("doesn't"))
+                                        ColorCode.FailureCode(msg1);
+                                    else ColorCode.PartialCode(msg1);
                                     break;
                                 }
                         }
@@ -83,7 +88,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectAssignUserInput(4);
                             else if (result == 5)
                                 msg = _projectInput.CollectAssignUserInput(5);
-                            else ShowMenu("",role);
+                            else ShowMenu("", role);
                             if (msg.Contains("successfully"))
                                 ColorCode.SuccessCode(msg);
                             else if (msg.Contains("not assigned"))
@@ -120,10 +125,10 @@ namespace TaskManagementApplication.Presentation
                             else ColorCode.PartialCode(msg);
                             break;
                         }
-                    case UserOperationsOptions.VIEW_ASSIGNED:
+                    case UserOperationsOptions.VIEW_ASSIGNED://TODO
                         {
                             int result;
-                            string msg="";
+                            string msg = "";
                             do
                             {
                                 result = ShowActivityMenu();
@@ -139,36 +144,54 @@ namespace TaskManagementApplication.Presentation
                                     msg = _userInput.CallViewAssigned(5);
                                 if (msg != "")
                                     ColorCode.FailureCode(msg);
-                            } while (result != 6);                              
+                            } while (result != 6);
                             break;
                         }
                     case UserOperationsOptions.VIEW:
                         {
-                            string msg = "";
-                            int result;
-                            do
+                            string msg;
+                            string answer;
+                            msg = _projectInput.CollectViewActivityInput(1);//project
+                            if (msg.Contains("Need"))
                             {
-                                result = ShowActivityMenu();
-                                if (result == 1)
-                                    msg = _projectInput.CollectViewActivityInput(1);
-                                else if (result == 2)
-                                    msg = _projectInput.CollectViewActivityInput(2);
-                                else if (result == 3)
-                                    msg = _projectInput.CollectViewActivityInput(3);
-                                else if (result == 4)
-                                    msg = _projectInput.CollectViewActivityInput(4);
-                                else if (result == 5)
-                                    msg = _projectInput.CollectViewActivityInput(5);
-                                if (msg.Contains("not available"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.DefaultCode(msg);
-                            } while (result != 6);
+                                ColorCode.DefaultCode(msg);
+                                answer = Console.ReadLine();
+                                if (answer == "yes")
+                                {
+                                    msg = _projectInput.ShowAssignedActivity(ActivityOptions.TASK);//task
+                                    if (msg.Contains("Need"))
+                                    {
+                                        ColorCode.DefaultCode(msg);
+                                        answer = Console.ReadLine();
+                                        if (answer == "yes")//ok
+                                        {
+                                            msg = _projectInput.ShowAssignedActivity(ActivityOptions.SUBTASK);//subtask
+                                            if (msg.Contains("Need"))
+                                            {
+                                                ColorCode.DefaultCode(msg);
+                                                answer = Console.ReadLine();
+                                                if (answer == "yes")
+                                                {
+                                                   _projectInput.ShowAssignedActivity(ActivityOptions.SUBTASK_OF_SUBTASK);
+
+                                                }
+                                                else return "";
+                                            }
+                                            else ColorCode.FailureCode(msg);
+                                        }
+                                        else return "";
+                                    }
+                                    else ColorCode.FailureCode(msg);
+                                }
+                                else return "";
+                            }
+                            else ColorCode.FailureCode(msg);
                             break;
                         }
                     case UserOperationsOptions.CHANGE_PRIORITY:
                         {
                             int result = ShowActivityMenu();
-                            string msg="";
+                            string msg = "";
                             if (result == 1)
                             {
                                 string msg1 = _projectInput.CollectChangePriorityInput(1);
@@ -209,11 +232,11 @@ namespace TaskManagementApplication.Presentation
                             else if (result == 5)
                                 msg = _projectInput.CollectChangeStatusInput(5);
                             else ShowMenu("", role);
-                                if (msg.Contains("successfully"))
-                                    ColorCode.SuccessCode(msg);
-                                else if (msg.Contains("not assigned"))
-                                    ColorCode.FailureCode(msg);
-                                else ColorCode.PartialCode(msg);
+                            if (msg.Contains("successfully"))
+                                ColorCode.SuccessCode(msg);
+                            else if (msg.Contains("not assigned"))
+                                ColorCode.FailureCode(msg);
+                            else ColorCode.PartialCode(msg);
                             break;
                         }
                     case UserOperationsOptions.CREATE:
@@ -235,7 +258,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectCreateInput(3);
                             else if (result == 4)
                                 msg = _projectInput.CollectCreateInput(4);
-                            else if(result == 5)
+                            else if (result == 5)
                                 msg = _projectInput.CollectCreateInput(5);
                             else
                                 ShowMenu("", role);
@@ -265,7 +288,7 @@ namespace TaskManagementApplication.Presentation
                                 msg = _projectInput.CollectDeleteInput(3);
                             else if (result == 4)
                                 msg = _projectInput.CollectDeleteInput(4);
-                            else if(result == 5)
+                            else if (result == 5)
                                 msg = _projectInput.CollectDeleteInput(5);
                             else
                                 ShowMenu("", role);

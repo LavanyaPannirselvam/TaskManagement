@@ -40,7 +40,7 @@ namespace TaskManagementApplication.Presentation
         }
         public string CallLogOutUsers()
         {
-            return _authenticator.DoLogOutUser();
+            return _authenticator.LogOutUser();
         }
         public string CollectSignOutUsers()
         {
@@ -61,11 +61,11 @@ namespace TaskManagementApplication.Presentation
         }
         public string CallViewMyProfile()
         {
-            return _userManagement.ViewProfile();
+            return _userManagement.ViewMyProfile();
         }
         public string CallViewMyNotification()
         {
-            return _userManagement.ViewNotifications();
+            return _userManagement.ViewMyNotifications();
         }
         private void GetAndSetName()
         {
