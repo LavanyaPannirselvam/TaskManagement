@@ -11,7 +11,6 @@ namespace TaskManagementApplication.Controller.Interface
     {
         string CreateActivity(string name, string desc, StatusType status, PriorityType type, DateOnly startDate, DateOnly endDate,int projectId = 0,int taskId = 0,int subtaskId = 0);
         string RemoveActivity(int id);
-        string ViewActivity(int id);
 
     }
 }
