@@ -20,11 +20,14 @@ namespace TaskManagementApplication.DataBase
         private readonly Dictionary<int, Issue>? _allIssues;
         private Database()//all the below are hardcoded data
         {
+            User lavanya = new("Lavanya", "lava@gmail.com", Role.EMPLOYEE);
+            User prithivi = new("Prithivi", "prithivi.8@gmail.com", Role.MANAGER);
+            User deepika = new("Deepika", "deepi@gmail.com", Role.ADMIN);
             _allUsers = new Dictionary<string, User>
             {
-                {"lava@gmail.com",new User("Lavanya","lava@gmail.com",Role.EMPLOYEE) },
-                {"prithivi.8@gmail.com" ,new User("Prithivi","prithivi.8@gmail.com",Role.MANAGER) },
-                {"deepi@gmail.com",new User("Deepika","deepi@gmail.com",Role.EMPLOYEE) }
+                {"lava@gmail.com",lavanya },
+                {"prithivi.8@gmail.com" ,prithivi},
+                {"deepi@gmail.com",deepika }
             };
             _allProjects = new Dictionary<int, Project>
             {
@@ -52,24 +55,24 @@ namespace TaskManagementApplication.DataBase
             _allIssues = new Dictionary<int, Issue>
             {
                 {1,new Issue("T1","Task 1","Prithivi",StatusType.OPEN,PriorityType.MEDIUM,new DateOnly(2023,08,05),new DateOnly(2023,09,05),2) }
-            };            
-           
-            GetProject(1).AssignedUsers.Add(1);
+            };
+            GetProject(1).AssignedUsers.Add(lavanya);
             GetTask(1).SubTasks.Add(GetSubTask(1));
             GetProject(2).CreatedTasks.Add(GetTask(1));
             GetProject(2).SubTasks.Add(GetSubTask(1));
             GetProject(2).Issues.Add(GetIssue(1));
-            GetProject(2).AssignedUsers.Add(2);
-            GetTask(1).AssignedUsers.Add(1);
-            GetSubTask(1).AssignedUsers.Add(3);
+            GetProject(2).AssignedUsers.Add(prithivi);
+            GetTask(1).AssignedUsers.Add(lavanya);
+            GetSubTask(1).AssignedUsers.Add(deepika);
             GetUser("prithivi.8@gmail.com").AssignedProjects.Add(GetProject(1));
             GetUser("prithivi.8@gmail.com").AssignedProjects.Add(GetProject(2));
             GetUser("lava@gmail.com").AssignedTasks.Add(GetTask(1));
+            GetUser("lava@gmail.com").AssignedProjects.Add(GetProject(1));
             GetUser("deepi@gmail.com").AssignedSubTasks.Add(GetSubTask(1));
             GetProject(2).SubtaskofSubtask.Add(GetSmallSubTask(1));
             GetTask(1).SubtaskofSubtask.Add(GetSmallSubTask(1));
             GetSubTask(1).Subtask.Add(GetSmallSubTask(1));
-            GetIssue(1).AssignedUsers.Add(2);
+            GetIssue(1).AssignedUsers.Add(prithivi);
         }
         private static readonly Database instance = new();
         public static Database GetInstance()
@@ -278,6 +281,15 @@ namespace TaskManagementApplication.DataBase
         public User GetUser(string email)
         {
             return _allUsers![email];
+        }
+        public User GetUser(int userId)
+        {
+            foreach (User user in _allUsers!.Values)
+            {
+                if(user.UserId == userId)
+                    return user;
+            }
+            return null;
         }
         public Result DeleteUser(string email)
         {

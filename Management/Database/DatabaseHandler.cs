@@ -12,9 +12,16 @@ namespace TaskManagementApplication.Controller
 {
     public class DatabaseHandler
     {
-
-        private string currentUserEmail = "";
-        public string CurrentUserEmail { get { return currentUserEmail; } private set { currentUserEmail = value; } }
+        private DatabaseHandler() 
+        {
+            CurrentUserEmail = "";
+        }
+        private static readonly DatabaseHandler instance = new();
+        public static DatabaseHandler GetInstance()
+        {
+            return instance;
+        }
+        public string CurrentUserEmail { get; private set;}
         private readonly Database _database = Database.GetInstance();
         public string LogInUser(string loginId, string password)
         {
@@ -26,6 +33,10 @@ namespace TaskManagementApplication.Controller
             else if (_database.CheckUser(loginId, password) == Result.PARTIAL)
                 return "Password incorrect";
             else return "Invalid userid";
+        }
+        public User GetUser(string loginId)
+        {
+            return _database.GetUser(loginId);
         }
         public string LogOutUser()
         {
