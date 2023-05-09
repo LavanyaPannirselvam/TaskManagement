@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagementApplication.Enumerations;
@@ -106,14 +107,9 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public Dictionary<int, string> ProjectsList()
+        public Dictionary<int, Project> ProjectsList()
         {
-            Dictionary<int, string> projectsList = new();
-            foreach (Project p in _allProjects!.Values)
-            {
-                projectsList.Add(p.Id, p.Name);
-            }
-            return projectsList;
+            return new(_allProjects!);
         }
         //Task section
         public Result AddTask(Tasks task)
@@ -143,14 +139,9 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public Dictionary<int, string> TasksList()
+        public Dictionary<int, Tasks> TasksList()
         {
-            Dictionary<int, string> tasksList = new();
-            foreach (Tasks p in _allTasks!.Values)
-            {
-                tasksList.Add(p.Id, p.Name);
-            }
-            return tasksList;
+            return new(_allTasks!);
         }
         //Subtask section
         public Result AddSubTask(SubTask subTask)
@@ -181,14 +172,9 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public Dictionary<int, string> SubTasksList()
+        public Dictionary<int, SubTask> SubTasksList()
         {
-            Dictionary<int, string> subTasksList = new();
-            foreach (SubTask p in _allSubTasks!.Values)
-            {
-                subTasksList.Add(p.Id, p.Name);
-            }
-            return subTasksList;
+            return new(_allSubTasks!);
         }
         //Small subtask section
         public Result AddSmallSubTask(SmallSubTask smallsubTask)
@@ -220,14 +206,9 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public Dictionary<int, string> SmallSubTasksList()
+        public Dictionary<int, SmallSubTask> SmallSubTasksList()
         {
-            Dictionary<int, string> smallSubTasksList = new();
-            foreach (SmallSubTask sst in _allSmallSubTasks!.Values)
-            {
-                smallSubTasksList.Add(sst.Id, sst.Name);
-            }
-            return smallSubTasksList;
+            return new(_allSmallSubTasks!);
         }
         //Issue section
         public Result AddIssue(Issue issue)
@@ -257,14 +238,9 @@ namespace TaskManagementApplication.DataBase
             }
             return Result.FAILURE;
         }
-        public Dictionary<int, string> IssuesList()
+        public Dictionary<int, Issue> IssuesList()
         {
-            Dictionary<int, string> issuesList = new();
-            foreach (Issue i in _allIssues!.Values)
-            {
-                issuesList.Add(i.Id, i.Name);
-            }
-            return issuesList;
+            return new(_allIssues!);
         }
         //User section
         public Result AddUser(User user, string password)
@@ -306,14 +282,14 @@ namespace TaskManagementApplication.DataBase
             }
             else return Result.FAILURE;
         }        
-        public Dictionary<int, string> UsersList()
+        public Dictionary<int, User> UsersList()
         {
-            Dictionary<int, string> usersList = new();
-            foreach (User p in _allUsers!.Values)
+            Dictionary<int,User> users = new Dictionary<int,User>();
+            foreach(User user in _allUsers!.Values)
             {
-                usersList.Add(p.UserId, p.Name);
+                users.Add(user.UserId, user);   
             }
-            return usersList;
+            return users;
         }
 
         public Result CheckUser(string loginId,string password)
