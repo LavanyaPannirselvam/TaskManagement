@@ -125,7 +125,7 @@ namespace TaskManagementApplication.Presentation
                             else ColorCode.PartialCode(msg);
                             break;
                         }
-                    case UserOperationsOptions.VIEW_ASSIGNED://TODO
+                    case UserOperationsOptions.VIEW_ASSIGNED:
                         {
                             int result;
                             string msg = "";
@@ -155,35 +155,41 @@ namespace TaskManagementApplication.Presentation
                             if (msg.Contains("Need"))
                             {
                                 ColorCode.DefaultCode(msg);
-                                answer = Console.ReadLine();
-                                if (answer == "yes")
+                                string activityChoice = IsActivityCorrect();
+                                if (activityChoice == "task")
                                 {
                                     msg = _projectInput.ShowAssignedActivity(ActivityOptions.TASK);//task
                                     if (msg.Contains("Need"))
                                     {
                                         ColorCode.DefaultCode(msg);
-                                        answer = Console.ReadLine();
+                                        answer = IsInputCorrect();
                                         if (answer == "yes")//ok
                                         {
                                             msg = _projectInput.ShowAssignedActivity(ActivityOptions.SUBTASK);//subtask
                                             if (msg.Contains("Need"))
                                             {
                                                 ColorCode.DefaultCode(msg);
-                                                answer = Console.ReadLine();
+                                                answer = IsInputCorrect();
                                                 if (answer == "yes")
                                                 {
-                                                   _projectInput.ShowAssignedActivity(ActivityOptions.SUBTASK_OF_SUBTASK);
-
+                                                    _projectInput.ShowAssignedActivity(ActivityOptions.SUBTASK_OF_SUBTASK);
                                                 }
-                                                else return "";
+                                                else ShowMenu("", role);
                                             }
                                             else ColorCode.FailureCode(msg);
                                         }
-                                        else return "";
+                                        else ShowMenu("", role);
                                     }
                                     else ColorCode.FailureCode(msg);
                                 }
-                                else return "";
+                                else if (activityChoice == "issue")
+                                {
+                                    _projectInput.ShowAssignedActivity(ActivityOptions.ISSUE);
+                                }
+                                else if (activityChoice == "no")
+                                {
+                                    ShowMenu("", role);
+                                }                           
                             }
                             else ColorCode.FailureCode(msg);
                             break;
@@ -321,7 +327,7 @@ namespace TaskManagementApplication.Presentation
                             else ColorCode.FailureCode(msg);
                             return "";
                         }
-                    case UserOperationsOptions.BACK: _userInput.CallLogOutUsers(); return "";
+                    case UserOperationsOptions.BACK: { _userInput.CallLogOutUsers(); return ""; }
                 }
             }
         }
@@ -336,6 +342,31 @@ namespace TaskManagementApplication.Presentation
             int choice = Validation.GetIntInRange(Enum.GetValues(typeof(ActivityOptions)).Length);
             ColorCode.DefaultCode("\n");
             return choice;
+        }
+
+        private string IsInputCorrect()
+        {
+            string input = Console.ReadLine();
+            if (input == "yes" || input == "no")
+                return input;
+            else
+            {
+                ColorCode.FailureCode("Enter either yes or no ");
+                ColorCode.DefaultCode("");
+                return IsInputCorrect();
+            }
+        }
+        private string IsActivityCorrect()
+        {
+            string input = Console.ReadLine();
+            if (input == "task" || input == "issue" || input == "no")
+                return input;
+            else
+            {
+                ColorCode.FailureCode("Enter either task or issue or no ");
+                ColorCode.DefaultCode("");
+                return IsActivityCorrect();
+            }
         }
     }
 }

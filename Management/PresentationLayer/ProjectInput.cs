@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using TaskManagementApplication.Controller;
 using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Model;
@@ -63,40 +64,41 @@ namespace TaskManagementApplication.Presentation
         }
         public string ShowAssignedActivity(ActivityOptions activityOptions)
         {
-            int projectId = activityId;
-            int taskId=0;
-            int subtaskId = 0;
+            int toCheckId = activityId;
 
             if (activityOptions == ActivityOptions.TASK)
             {
                 List<Tasks> tasks = new(_lists.TasksList().Values);
+                List<int> taskIds = new();
                 foreach (Tasks task in tasks)
                 {
-                    if (task.ProjectId == projectId)
+                   
+                    if (task.ProjectId == toCheckId)
                     {
-                        taskId = task.Id;
-                        return _activityViewer.ViewAssignedTasks(taskId);
+                        taskIds.Add(task.Id);
                     }
                 }
+                return _activityViewer.ViewAssignedTasks(taskIds,toCheckId);
             }
             else if (activityOptions == ActivityOptions.SUBTASK)
             {
                 List<SubTask> subtasks = new(_lists.SubTasksList().Values);
+                List<int> subtaskIds = new();
                 foreach (SubTask subtask in subtasks)
                 {
-                    if (subtask.TaskId == taskId)
+                    if (subtask.ProjectId == toCheckId)
                     {
-                        subtaskId = subtask.Id;
-                        return _activityViewer.ViewAssignedSubTasks(subtaskId);
+                        subtaskIds.Add(subtask.Id);                     
                     }                   
                 }
+                return _activityViewer.ViewAssignedSubTasks(subtaskIds,toCheckId);
             }
             else if(activityOptions == ActivityOptions.SUBTASK_OF_SUBTASK)
             {
                 List<SmallSubTask> smallSubtasks = new(_lists.SmallSubTasksList().Values);
                 foreach (SmallSubTask smallSubtask in smallSubtasks)
                 {
-                    if (smallSubtask.SubTaskId == subtaskId)
+                    if (smallSubtask.ProjectId == toCheckId)
                     {
                         _activityViewer.ViewAssignedSmallSubTasks(smallSubtask.Id);
                     }
@@ -107,7 +109,7 @@ namespace TaskManagementApplication.Presentation
                 List<Issue> issues = new(_lists.IssuesList().Values);
                 foreach (Issue issue in issues)
                 {
-                    if (issue.ProjectId == projectId)
+                    if (issue.ProjectId == toCheckId)
                     {
                         _activityViewer.ViewAssignedIssues(issue.Id);
                     }
