@@ -12,7 +12,11 @@ namespace TaskManagementApplication.Controller
 {
     public class AdminManagement
     {
-        private readonly Database _database = Database.GetInstance();
+        private readonly Database _database;
+        public AdminManagement(Database db)
+        {
+            _database = db;
+        }
 
         public string SignUp(string name,string email,Role role,string password)
         {

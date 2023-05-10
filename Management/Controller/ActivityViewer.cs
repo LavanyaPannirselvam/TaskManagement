@@ -13,13 +13,14 @@ namespace TaskManagementApplication.Controller
     public class ActivityViewer
     {
         private readonly Database _database;
-        public ActivityViewer()
+        Project? toBeViewedProject;
+        public ActivityViewer(Database db)
         {
-            _database = Database.GetInstance();
+            _database = db;
         }
         public string ViewProject(int projectId)
         {
-            Project toBeViewedProject = _database.GetProject(projectId);
+            toBeViewedProject = _database.GetProject(projectId);
             ColorCode.DefaultCode(toBeViewedProject.ToString() + "\n");
             if (toBeViewedProject.CreatedTasks.Count > 0)
             {
@@ -33,24 +34,25 @@ namespace TaskManagementApplication.Controller
                 return "Need to view its issues? (yes/no) : ";              
             else return "Task and issue are not assigned for this project";
         }
-        public string ViewAssignedTasks(List<int> taskIds,int projectId)
+        
+        public string ViewAssignedTasks(List<int> taskIds)
         {
             foreach(int taskId in taskIds)
             {
                 ColorCode.DefaultCode(_database.GetTask(taskId).ToString() + "\n");
             }
-            if (_database.GetProject(projectId).SubTasks.Count > 0)
+            if (toBeViewedProject!.SubTasks.Count > 0)
                 return "Need to view its subtasks? : (yes/no) : ";
             else return "Subtasks are not assigned for this task";
         }
 
-        public string ViewAssignedSubTasks(List<int> subtaskIds, int projectId)
+        public string ViewAssignedSubTasks(List<int> subtaskIds)
         {
             foreach (int subtaskId in subtaskIds)
             {
                 ColorCode.DefaultCode(_database.GetSubTask(subtaskId).ToString() + "\n");
             }
-            if (_database.GetProject(projectId).SubtaskofSubtask.Count > 0)
+            if (toBeViewedProject!.SubtaskofSubtask.Count > 0)
                 return "Need to view it subtask of this subtask? : (yes/no) : ";
             else return "Subtasks are not assigned for this subtask";
         }
@@ -59,6 +61,7 @@ namespace TaskManagementApplication.Controller
         {
             SmallSubTask toBeViewedSmallSubtask = _database.GetSmallSubTask(smallSubtaskId);
             ColorCode.DefaultCode(toBeViewedSmallSubtask.ToString() + "\n");
+
         }
 
         public void ViewAssignedIssues(int issueId)

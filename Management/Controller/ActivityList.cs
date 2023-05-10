@@ -11,7 +11,11 @@ namespace TaskManagementApplication.Controller
 {
     public class ActivityList : IActivityList
     {
-        private readonly Database _database = Database.GetInstance();
+        private readonly Database _database;
+        public ActivityList(Database db)
+        {
+            _database = db;
+        }
 
         public Dictionary<int, Project> ProjectsList()
         {

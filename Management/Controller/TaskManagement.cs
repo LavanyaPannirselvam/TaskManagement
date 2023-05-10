@@ -10,9 +10,9 @@ namespace TaskManagementApplication.Controller
     {
         private readonly Database _database;
         private readonly User _currentUser;
-        public TaskManagement()
+        public TaskManagement(Database db)
         {
-            _database = Database.GetInstance();
+            _database = db;
             _currentUser = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
         }
         public string AssignUser(int taskId, int userId)
