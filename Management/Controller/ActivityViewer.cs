@@ -33,7 +33,6 @@ namespace TaskManagementApplication.Controller
                 return "Need to view its issues? (yes/no) : ";              
             else return "Task and issue are not assigned for this project";
         }
-        
         public string ViewAssignedTasks(List<int> taskIds,int projectId)
         {
             foreach(int taskId in taskIds)
@@ -60,7 +59,6 @@ namespace TaskManagementApplication.Controller
         {
             SmallSubTask toBeViewedSmallSubtask = _database.GetSmallSubTask(smallSubtaskId);
             ColorCode.DefaultCode(toBeViewedSmallSubtask.ToString() + "\n");
-
         }
 
         public void ViewAssignedIssues(int issueId)
