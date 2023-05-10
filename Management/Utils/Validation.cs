@@ -47,9 +47,9 @@ namespace TaskManagementApplication.Utils
             return Regex.IsMatch(password, regex, RegexOptions.IgnoreCase);
         }
 
-        public static bool IsChoiceAvailable(int choice,Dictionary<int,string> list)
+        public static bool IsChoiceAvailable(int choice,List<int> keys)
         {
-            foreach(int i in list.Keys)
+            foreach(int i in keys)
             {
                 if(choice == i) 
                     return true;
