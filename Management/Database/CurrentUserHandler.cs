@@ -40,20 +40,6 @@ namespace TaskManagementApplication.Controller
             else
                 return "Logout failed";
         }
-        public string SignInUser(User user,string password)
-        {
-            if (_database.AddUser(user, password) == Result.SUCCESS)
-                return $"Account created successfully\nUserid is {user.UserId} and Password is {password}";
-            else return "Creation failed as email already exists,try with a new email id";
-        }
-        public string SignOutUser(string email)
-        {
-            Result result = _database.DeleteUser(email);
-            if (result == Result.SUCCESS)
-                return "Account deleted successfully";
-            else if (result == Result.PARTIAL)
-                return "Cannot delete account now as have activities pending to do";
-            else return "Account doesn't exists";
-        }       
+        
     }
 }
