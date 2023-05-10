@@ -9,10 +9,10 @@ using TaskManagementApplication.Utils;
 
 namespace TaskManagementApplication.Controller.Interface
 {
-    public class UserManagement 
+    public class UserManagement
     {
         private readonly Database _database;
-        private User user;
+        User user;
 
         public UserManagement(Database db)
         {
