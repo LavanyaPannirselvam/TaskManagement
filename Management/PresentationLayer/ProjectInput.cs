@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using TaskManagementApplication.Controller;
+using TaskManagementApplication.DataBase;
 using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Model;
 using TaskManagementApplication.Utils;
@@ -10,13 +11,25 @@ namespace TaskManagementApplication.Presentation
 {
     public class ProjectInput
     {
-        private readonly ProjectManagement _projectManager = new();
-        private readonly TaskManagement _taskManager = new();
-        private readonly SubTaskManagement _subTaskManager = new();
-        private readonly SmallSubTaskManagement _smallSubTaskManager = new();
-        private readonly IssueManagement _issueManager = new();
-        private readonly ActivityList _lists = new();
-        private readonly ActivityViewer _activityViewer = new();
+        private readonly Database _database;
+        private readonly ProjectManagement _projectManager;
+        private readonly TaskManagement _taskManager;
+        private readonly SubTaskManagement _subTaskManager;
+        private readonly SmallSubTaskManagement _smallSubTaskManager;
+        private readonly IssueManagement _issueManager;
+        private readonly ActivityList _lists;
+        private readonly ActivityViewer _activityViewer;
+        public ProjectInput() 
+        {
+            _database = Database.GetInstance();
+            _projectManager = new(_database);
+            _taskManager = new(_database);
+            _subTaskManager = new(_database);
+            _smallSubTaskManager = new(_database);
+            _issueManager = new(_database);
+            _lists = new(_database);
+            _activityViewer = new(_database);
+        }       
         int activityId;
         int userId;
         PriorityType priority;
@@ -31,6 +44,7 @@ namespace TaskManagementApplication.Presentation
             GetAndSetUserId();
             if (choice == 1)
                 return _projectManager.AssignUser(activityId, userId);
+               
             else if (choice == 2)
                 return _taskManager.AssignUser(activityId, userId);
             else if (choice == 3)
@@ -78,7 +92,7 @@ namespace TaskManagementApplication.Presentation
                         taskIds.Add(task.Id);
                     }
                 }
-                return _activityViewer.ViewAssignedTasks(taskIds,toCheckId);
+                return _activityViewer.ViewAssignedTasks(taskIds);
             }
             else if (activityOptions == ActivityOptions.SUBTASK)
             {
@@ -91,7 +105,7 @@ namespace TaskManagementApplication.Presentation
                         subtaskIds.Add(subtask.Id);                     
                     }                   
                 }
-                return _activityViewer.ViewAssignedSubTasks(subtaskIds,toCheckId);
+                return _activityViewer.ViewAssignedSubTasks(subtaskIds);
             }
             else if(activityOptions == ActivityOptions.SUBTASK_OF_SUBTASK)
             {

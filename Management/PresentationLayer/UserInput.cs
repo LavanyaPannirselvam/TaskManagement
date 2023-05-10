@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TaskManagementApplication.Controller;
 using TaskManagementApplication.Controller.Interface;
+using TaskManagementApplication.DataBase;
 using TaskManagementApplication.Enumerations;
 using TaskManagementApplication.Utils;
 
@@ -15,9 +16,18 @@ namespace TaskManagementApplication.Presentation
 {
     public class UserInput
     {
+        private readonly Database _database;
+        private readonly UserManagement _userManagement;
+        private readonly AdminManagement _adminManager;
+        public UserInput() 
+        {
+            _database = Database.GetInstance();
+            _userManagement = new(_database);
+            _adminManager = new(_database);
+
+        }
         private readonly Authenticator _authenticator = new();
-        private readonly UserManagement _userManagement = new();
-        private readonly AdminManagement _adminManager = new();
+        
         string? name;
         string? email;
         string? password;
