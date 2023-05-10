@@ -8,27 +8,27 @@ namespace TaskManagementApplication.Utils
 {
     public class ColorCode
     {
-        internal static void MenuCode()
+        public static void MenuCode()
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
-        internal static void DefaultCode(string msg)
+        public static void DefaultCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(msg);
         }
-        internal static void SuccessCode(string msg)
+        public static void SuccessCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(msg +"\n");
         }
-        internal static void FailureCode(string msg)
+        public static void FailureCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(msg + "\n");
         }
-        internal static void PartialCode(string msg)
+        public static void PartialCode(string msg)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write(msg + "\n");

@@ -35,26 +35,8 @@ namespace TaskManagementApplication.Utils
             }
             return false;
         }
-        public static bool IsValidEmail(string email)
-        {
-            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
-            return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
-        }
+        
 
-        public static bool IsValidPassword(string password)
-        {
-            string regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)+(?=.*[-+_!@#$%^&*., ?]).+$";
-            return Regex.IsMatch(password, regex, RegexOptions.IgnoreCase);
-        }
-
-        public static bool IsChoiceAvailable(int choice,List<int> keys)
-        {
-            foreach(int i in keys)
-            {
-                if(choice == i) 
-                    return true;
-            }
-            return false;
-        }
+        
     }
 }
