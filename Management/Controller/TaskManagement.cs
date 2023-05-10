@@ -18,7 +18,7 @@ namespace TaskManagementApplication.Controller
         public string AssignUser(int taskId, int userId)
         {
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {    
                 User toBeAssignedUser = _database.GetUser(userId);
                 if (!task.AssignedUsers.Contains(toBeAssignedUser))//check if the userId is not already assigned to the task 
@@ -35,7 +35,7 @@ namespace TaskManagementApplication.Controller
         public string DeassignUser(int taskId, int userId)
         {
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can deassign the task from users
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can deassign the task from users
             {
                 User toBeAssigned = _database.GetUser(userId);
                 if (task.AssignedUsers.Contains(toBeAssigned))//check if the userId is not already assigned to the task 
@@ -52,7 +52,7 @@ namespace TaskManagementApplication.Controller
             public string ChangePriorityOfActivity(int taskId, PriorityType priority)
         {
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can change the priority of the task
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can change the priority of the task
             {
                 if (task.Priority != priority)
                 {
@@ -67,8 +67,7 @@ namespace TaskManagementApplication.Controller
         public string ChangeStatusOfActivity(int taskId, StatusType status)
         {
             Tasks task = _database.GetTask(taskId);
-            if (task.AssignedUsers.Contains(_currentUser))//only users who have been assigned to the task can change the status of the task
-
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || task.AssignedUsers.Contains(_currentUser))//only users who have been assigned to the task can change the status of the task
             {
                 if (task.Status != status)
                 {
@@ -82,7 +81,7 @@ namespace TaskManagementApplication.Controller
 
         public string CreateActivity(string name, string desc, StatusType status, PriorityType priority, DateOnly startDate, DateOnly endDate, int projectId, int stid, int sstid)
         {
-            if (_database.GetProject(projectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER ||_database.GetProject(projectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Tasks task = new(name, desc,_currentUser.Name, status, priority, startDate, endDate, projectId);
                 if (_database.AddTask(task) == Result.SUCCESS)
@@ -94,7 +93,7 @@ namespace TaskManagementApplication.Controller
         public string RemoveActivity(int taskId)
         {
             Tasks task = _database.GetTask(taskId);
-            if (_database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(task.ProjectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Result result = _database.DeleteTask(taskId);
                 if (result == Result.SUCCESS)

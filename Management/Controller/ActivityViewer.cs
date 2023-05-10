@@ -22,31 +22,45 @@ namespace TaskManagementApplication.Controller
             Project toBeViewedProject = _database.GetProject(projectId);
             ColorCode.DefaultCode(toBeViewedProject.ToString() + "\n");
             if (toBeViewedProject.CreatedTasks.Count > 0)
-                return "Need to view its tasks? : (yes/no) : ";//return this
-            else return "Tasks are not assigned for this project";//or this
+            {
+                if (toBeViewedProject.Issues.Count > 0)
+                {
+                    return "Need to view its task or issue ? (task/issue/no) : ";
+                }
+                else return "Need to view its tasks? : (yes/no) : ";
+            }
+            else if (toBeViewedProject.Issues.Count > 0)
+                return "Need to view its issues? (yes/no) : ";              
+            else return "Task and issue are not assigned for this project";
         }
-        public string ViewAssignedTasks(int taskId)
+        
+        public string ViewAssignedTasks(List<int> taskIds,int projectId)
         {
-            Tasks toBeViewedTask = _database.GetTask(taskId);
-            ColorCode.DefaultCode(toBeViewedTask.ToString() + "\n");
-            if (toBeViewedTask.SubTasks.Count > 0)
-                return "Need to view its subtasks? : (yes/no) : ";//enum podanum
+            foreach(int taskId in taskIds)
+            {
+                ColorCode.DefaultCode(_database.GetTask(taskId).ToString() + "\n");
+            }
+            if (_database.GetProject(projectId).SubTasks.Count > 0)
+                return "Need to view its subtasks? : (yes/no) : ";
             else return "Subtasks are not assigned for this task";
         }
 
-        public string ViewAssignedSubTasks(int subtaskId)
+        public string ViewAssignedSubTasks(List<int> subtaskIds, int projectId)
         {
-            SubTask toBeViewedSubtask = _database.GetSubTask(subtaskId);
-            ColorCode.DefaultCode(toBeViewedSubtask.ToString() + "\n");
-            if (toBeViewedSubtask.Subtask.Count > 0)
-                return "Need to view subtask of this subtask? : (yes/no) : ";//enum podanum      
-            else return "Subtasks are not assigned for this task";
+            foreach (int subtaskId in subtaskIds)
+            {
+                ColorCode.DefaultCode(_database.GetSubTask(subtaskId).ToString() + "\n");
+            }
+            if (_database.GetProject(projectId).SubtaskofSubtask.Count > 0)
+                return "Need to view it subtask of this subtask? : (yes/no) : ";
+            else return "Subtasks are not assigned for this subtask";
         }
 
         public void ViewAssignedSmallSubTasks(int smallSubtaskId)
         {
             SmallSubTask toBeViewedSmallSubtask = _database.GetSmallSubTask(smallSubtaskId);
             ColorCode.DefaultCode(toBeViewedSmallSubtask.ToString() + "\n");
+
         }
 
         public void ViewAssignedIssues(int issueId)
@@ -57,23 +71,3 @@ namespace TaskManagementApplication.Controller
 
     }
 }
-/*public void ViewProject(int projectId)
-        {
-            Project toBeViewedProject = _database.GetProject(projectId);
-            ColorCode.DefaultCode(toBeViewedProject.ToString() + "\n");
-            if (toBeViewedProject.CreatedTasks.Count > 0)
-            {
-                ColorCode.DefaultCode("Need to view its tasks? : (yes/no) : ");//return this
-                string answer = Console.ReadLine();
-                if (answer == "yes")
-                {
-                    foreach (Tasks task in toBeViewedProject.CreatedTasks)
-                    {
-                        ColorCode.DefaultCode($"------Task Id : {task.Id}------");
-                        ViewAssignedTasks(task.Id);
-                    }
-                }
-            }
-            else ColorCode.FailureCode("Tasks are not assigned for this project");//or this
-        }
-*/

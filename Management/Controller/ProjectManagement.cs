@@ -105,30 +105,6 @@ namespace TaskManagementApplication.Controller
             }
             else return "You don't have the access to delete a project";
         }
-        public void ViewActivity(int projectId)
-        {
-            if (_database.GetProject(projectId) != null)
-            {
-                Project toBeViewed = _database.GetProject(projectId);
-                ColorCode.DefaultCode(toBeViewed.ToString());
-                if (toBeViewed.CreatedTasks.Count > 0)
-                {
-                    ColorCode.DefaultCode("\nTasks of this project are : \n");
-                    foreach (Tasks tasks in toBeViewed.CreatedTasks)
-                        ColorCode.DefaultCode(tasks.ToString()+"\n");
-                }
-                else ColorCode.FailureCode("\nNo task available for this project\n");
-                if (toBeViewed.SubTasks.Count > 0)
-                {
-                    ColorCode.DefaultCode("\nSubtasks of this project are : \n");
-                    foreach (SubTask subTask in toBeViewed.SubTasks)
-                        ColorCode.DefaultCode(subTask.ToString()+"\n");
-                }
-                else ColorCode.FailureCode("\nNo subtask availabe for this project\n");
-            }
-            else return;
-        }
-        
     }
 }
 

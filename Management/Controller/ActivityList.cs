@@ -9,7 +9,7 @@ using TaskManagementApplication.Model;
 
 namespace TaskManagementApplication.Controller
 {
-    public class ActivityList
+    public class ActivityList : IActivityList
     {
         private readonly Database _database = Database.GetInstance();
 
