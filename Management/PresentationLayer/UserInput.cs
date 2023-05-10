@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TaskManagementApplication.Controller;
 using TaskManagementApplication.Controller.Interface;
@@ -81,7 +82,7 @@ namespace TaskManagementApplication.Presentation
         {
             ColorCode.DefaultCode("Enter email".PadRight(20) + " : ");
             email = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(email) || email.Trim().Length == 0 || !Validation.IsValidEmail(email))
+            if (string.IsNullOrWhiteSpace(email) || email.Trim().Length == 0 || !IsValidEmail(email))
             {
                 ColorCode.FailureCode("Email should not be empty or should contain any special character other than @");
                 GetAndSetEmail();
@@ -92,7 +93,7 @@ namespace TaskManagementApplication.Presentation
         {
             ColorCode.DefaultCode("Enter password (should contain atleast 1 special character, 1 number, 1 alphabet and should be atleast of 5 characters) : ");
             password = Console.ReadLine();
-            if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !Validation.IsValidPassword(password))
+            if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !IsValidPassword(password))
             {
                 ColorCode.FailureCode("Password doesn't satisfy the said condition");
                 GetAndSetPasswordForSignUp();
@@ -114,10 +115,9 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetLoginId()
         {
-            //ColorCode.DefaultCode("\n");
             ColorCode.DefaultCode("Enter your email id".PadRight(20) + " : ");
             loginId = Console.ReadLine();
-            if (!Validation.IsValidEmail(loginId!))
+            if (!IsValidEmail(loginId!))
                 {
                     ColorCode.FailureCode("Invalid email id");
                     GetAndSetLoginId();
@@ -127,11 +127,22 @@ namespace TaskManagementApplication.Presentation
         {
             ColorCode.DefaultCode("Enter your password".PadRight(20) + " : ");
             password = Console.ReadLine();
-            if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !Validation.IsValidPassword(password))
+            if (string.IsNullOrEmpty(password) || password.Trim().Length < 5 || !IsValidPassword(password))
             {
                 ColorCode.FailureCode("Password is of incorrect format");
                 GetAndSetLoginPassword();
             }
+        }
+        private bool IsValidEmail(string email)
+        {
+            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+            return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+        }
+
+        private bool IsValidPassword(string password)
+        {
+            string regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)+(?=.*[-+_!@#$%^&*., ?]).+$";
+            return Regex.IsMatch(password, regex, RegexOptions.IgnoreCase);
         }
     }
 }

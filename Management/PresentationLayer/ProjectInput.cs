@@ -227,7 +227,7 @@ namespace TaskManagementApplication.Presentation
             if (choice == 1)
             {
                 List<int> keys = new(_lists.ProjectsList().Keys);
-                if (Validation.IsChoiceAvailable(tempId, keys))
+                if (IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -238,7 +238,7 @@ namespace TaskManagementApplication.Presentation
             else if (choice == 2)
             {
                 List<int> keys = new(_lists.TasksList().Keys);
-                if (Validation.IsChoiceAvailable(tempId,keys))
+                if (IsChoiceAvailable(tempId,keys))
                     activityId = tempId;
                 else
                 {
@@ -249,7 +249,7 @@ namespace TaskManagementApplication.Presentation
             else if (choice == 3)
             {
                 List<int> keys = new(_lists.SubTasksList().Keys);
-                if (Validation.IsChoiceAvailable(tempId, keys))
+                if (IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -260,7 +260,7 @@ namespace TaskManagementApplication.Presentation
             else if(choice == 4)
             {
                 List<int> keys = new(_lists.SmallSubTasksList().Keys);
-                if (Validation.IsChoiceAvailable(tempId, keys))
+                if (IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -271,7 +271,7 @@ namespace TaskManagementApplication.Presentation
             else
             {
                 List<int> keys = new(_lists.IssuesList().Keys);
-                if (Validation.IsChoiceAvailable(tempId, keys))
+                if (IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -290,7 +290,7 @@ namespace TaskManagementApplication.Presentation
                 GetAndSetUserId();
             }
             List<int> users = new(_lists.UsersList().Keys);
-            if (Validation.IsChoiceAvailable(tempId, users))
+            if (IsChoiceAvailable(tempId, users))
                 userId = tempId;
             else
             {
@@ -455,9 +455,14 @@ namespace TaskManagementApplication.Presentation
                 }
             }
         }
-        private void SetId(ref int place,int value)
+        private bool IsChoiceAvailable(int choice, List<int> keys)
         {
-            place = value;
+            foreach (int i in keys)
+            {
+                if (choice == i)
+                    return true;
+            }
+            return false;
         }
     }
 }
