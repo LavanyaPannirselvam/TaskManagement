@@ -23,19 +23,12 @@ namespace TaskManagementApplication.Model
             Issues = new List<Issue>();
         }
         public int Id { get; set; }
-
         public string Name { get; set; }
-
         public string Desc { get; set; }
-
         public string CreatedBy { get; set; }
-
         public StatusType Status { get; set; }
-
         public PriorityType Priority { get; set; }
-
         public DateOnly StartDate { get; set; }
-
         public DateOnly EndDate { get; set; }
         public ICollection<User> AssignedUsers { get; set; }
         public ICollection<Tasks> CreatedTasks { get; set; }

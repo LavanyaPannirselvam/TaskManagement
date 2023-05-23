@@ -13,11 +13,7 @@
 
         public override string ToString()
         {
-            return string.Format($"Id : {this.Id} \tMessage : {this.Message}");
-        }
-        public string ToStringWithoutId()
-        {
-            return this.Message;
+            return this.Message+"\n";
         }
     }
 }

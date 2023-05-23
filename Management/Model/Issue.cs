@@ -34,8 +34,7 @@ namespace TaskManagementApplication.Model
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public ICollection<User> AssignedUsers { get; set; }
-       
-
+  
         public override string ToString()
         {
             string result = "\nName".PadRight(21) + " : " + this.Name + "\n" +

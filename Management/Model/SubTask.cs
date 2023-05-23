@@ -35,18 +35,18 @@ namespace TaskManagementApplication.Model
         public ICollection<SmallSubTask> Subtask { get; set; }
         public override string ToString()
         {
-            string result = "\nName".PadRight(16) + " : " + this.Name + "\n" +
-                "Id".PadRight(15)+" : "+this.Id + "\n" +
-                "Project Id".PadRight(15) + " : " + this.ProjectId + "\n" +
-                "Task Id".PadRight(15) + " : " + this.TaskId + "\n" +
-                "Description".PadRight(15) + " : " + this.Desc + "\n" +
-                "Created by".PadRight(15) + " : " + this.CreatedBy + "\n" +
-                "Status".PadRight(15) + " : " + this.Status + "\n" +
-                "Priority".PadRight(15) + " : " + this.Priority + "\n" +
-                "Start date".PadRight(15) + " : " + this.StartDate + "\n" +
-                "End date".PadRight(15) + " : " + this.EndDate + "\n" +
-                "Assigned users".PadRight(15) + " : " + this.ShowUsers() + "\n"+
-                "Subtask of Subtask".PadRight(15) + " : " + this.SubTaskofSubTasksList() + "\n";
+            string result = "\nName".PadRight(20) + " : " + this.Name + "\n" +
+                "Id".PadRight(19)+" : "+this.Id + "\n" +
+                "Project Id".PadRight(19) + " : " + this.ProjectId + "\n" +
+                "Task Id".PadRight(19) + " : " + this.TaskId + "\n" +
+                "Description".PadRight(19) + " : " + this.Desc + "\n" +
+                "Created by".PadRight(19) + " : " + this.CreatedBy + "\n" +
+                "Status".PadRight(19) + " : " + this.Status + "\n" +
+                "Priority".PadRight(19) + " : " + this.Priority + "\n" +
+                "Start date".PadRight(19) + " : " + this.StartDate + "\n" +
+                "End date".PadRight(19) + " : " + this.EndDate + "\n" +
+                "Assigned users".PadRight(19) + " : " + this.ShowUsers() + "\n"+
+                "Subtask of Subtask".PadRight(19) + " : " + this.SubTaskofSubTasksList() + "\n";
             return result;
         }
         public string ShowUsers()
