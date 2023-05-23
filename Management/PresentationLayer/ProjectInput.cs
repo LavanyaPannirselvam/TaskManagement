@@ -19,7 +19,7 @@ namespace TaskManagementApplication.Presentation
         private readonly IssueManagement _issueManager;
         private readonly ActivityList _lists;
         private readonly ActivityViewer _activityViewer;
-        public ProjectInput() 
+        public ProjectInput()
         {
             _database = Database.GetInstance();
             _projectManager = new(_database);
@@ -29,7 +29,7 @@ namespace TaskManagementApplication.Presentation
             _issueManager = new(_database);
             _lists = new(_database);
             _activityViewer = new(_database);
-        }       
+        }
         int activityId;
         int userId;
         PriorityType priority;
@@ -44,7 +44,7 @@ namespace TaskManagementApplication.Presentation
             GetAndSetUserId();
             if (choice == 1)
                 return _projectManager.AssignUser(activityId, userId);
-               
+
             else if (choice == 2)
                 return _taskManager.AssignUser(activityId, userId);
             else if (choice == 3)
@@ -74,7 +74,7 @@ namespace TaskManagementApplication.Presentation
             {
                 return _activityViewer.ViewProject(activityId);//return to user operations
             }
-            else return "";            
+            else return "";
         }
         public string ShowAssignedActivity(ActivityOptions activityOptions)
         {
@@ -86,7 +86,7 @@ namespace TaskManagementApplication.Presentation
                 List<int> taskIds = new();
                 foreach (Tasks task in tasks)
                 {
-                   
+
                     if (task.ProjectId == toCheckId)
                     {
                         taskIds.Add(task.Id);
@@ -102,12 +102,12 @@ namespace TaskManagementApplication.Presentation
                 {
                     if (subtask.ProjectId == toCheckId)
                     {
-                        subtaskIds.Add(subtask.Id);                     
-                    }                   
+                        subtaskIds.Add(subtask.Id);
+                    }
                 }
                 return _activityViewer.ViewAssignedSubTasks(subtaskIds);
             }
-            else if(activityOptions == ActivityOptions.SUBTASK_OF_SUBTASK)
+            else if (activityOptions == ActivityOptions.SUBTASK_OF_SUBTASK)
             {
                 List<SmallSubTask> smallSubtasks = new(_lists.SmallSubTasksList().Values);
                 foreach (SmallSubTask smallSubtask in smallSubtasks)
@@ -190,7 +190,7 @@ namespace TaskManagementApplication.Presentation
                 GetAndSetActivityId(2);
                 return _subTaskManager.CreateActivity(name!, desc!, status, priority, startDate, endDate, projectId, activityId, 0);
             }
-            else if(choice == 4)
+            else if (choice == 4)
             {
                 GetAndSetActivityId(1);
                 int projectId = activityId;
@@ -227,9 +227,9 @@ namespace TaskManagementApplication.Presentation
                 DisplayTasksList();
             else if (choice == 3)
                 DisplaySubTasksList();
-            else if(choice == 4)
+            else if (choice == 4)
                 DisplaySmallSubTasksList();
-            else 
+            else
                 DisplayIssuesList();
             ColorCode.DefaultCode("\n");
             ColorCode.DefaultCode($"Choose {((ActivityOptions)(choice - 1)).ToString().Replace("_", " ").ToLowerInvariant()} id".PadRight(20) + " : ");
@@ -252,7 +252,7 @@ namespace TaskManagementApplication.Presentation
             else if (choice == 2)
             {
                 List<int> keys = new(_lists.TasksList().Keys);
-                if (IsChoiceAvailable(tempId,keys))
+                if (IsChoiceAvailable(tempId, keys))
                     activityId = tempId;
                 else
                 {
@@ -271,7 +271,7 @@ namespace TaskManagementApplication.Presentation
                     GetAndSetActivityId(choice);
                 }
             }
-            else if(choice == 4)
+            else if (choice == 4)
             {
                 List<int> keys = new(_lists.SmallSubTasksList().Keys);
                 if (IsChoiceAvailable(tempId, keys))
@@ -354,7 +354,7 @@ namespace TaskManagementApplication.Presentation
         }
         private void GetAndSetDescription(int choice)//ok
         {
-            ColorCode.DefaultCode($"Enter {((ActivityOptions)(choice - 1)).ToString().Replace("_", " ").ToLowerInvariant()} description".PadRight(30) + " : ");
+            ColorCode.DefaultCode($"Enter {((ActivityOptions)(choice - 1)).ToString().Replace("_", " ").ToLowerInvariant()} description".PadRight(30) +" : ");
             desc = Console.ReadLine();
             if (string.IsNullOrEmpty(desc) || desc.Trim().Length == 0 || Validation.ContainsSpecialOrNumericCharacters(desc))
             {
@@ -376,7 +376,7 @@ namespace TaskManagementApplication.Presentation
             ColorCode.DefaultCode("Enter end date (dd/mm/yyyy)".PadRight(30) + " : ");
             date = Console.ReadLine();
             string[] splits = date!.Split("/");
-            endDate = new(Int16.Parse(splits[2]),Int16.Parse(splits[1]), Int16.Parse(splits[0]));
+            endDate = new(Int16.Parse(splits[2]), Int16.Parse(splits[1]), Int16.Parse(splits[0]));
         }
         private static bool CheckDates(DateOnly startDate, DateOnly endDate)
         {
@@ -418,7 +418,7 @@ namespace TaskManagementApplication.Presentation
             Dictionary<int, SubTask> subTasksList = _lists.SubTasksList();
             if (subTasksList.Count == 0)
                 ColorCode.FailureCode("No subtask available");
-            else 
+            else
             {
                 ColorCode.DefaultCode("ID".PadRight(6) + "SUBTASK NAME".PadRight(15) + "\n");
                 foreach (int id in subTasksList.Keys)

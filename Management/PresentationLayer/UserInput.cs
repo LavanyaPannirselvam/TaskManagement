@@ -19,7 +19,7 @@ namespace TaskManagementApplication.Presentation
         private readonly Database _database;
         private readonly UserManagement _userManagement;
         private readonly AdminManagement _adminManager;
-        public UserInput() 
+        public UserInput()
         {
             _database = Database.GetInstance();
             _userManagement = new(_database);
@@ -27,7 +27,7 @@ namespace TaskManagementApplication.Presentation
 
         }
         private readonly Authenticator _authenticator = new();
-        
+
         string? name;
         string? email;
         string? password;
@@ -128,10 +128,10 @@ namespace TaskManagementApplication.Presentation
             ColorCode.DefaultCode("Enter your email id".PadRight(20) + " : ");
             loginId = Console.ReadLine();
             if (!IsValidEmail(loginId!))
-                {
-                    ColorCode.FailureCode("Invalid email id");
-                    GetAndSetLoginId();
-                }
+            {
+                ColorCode.FailureCode("Invalid email id");
+                GetAndSetLoginId();
+            }
         }
         private void GetAndSetLoginPassword()
         {
