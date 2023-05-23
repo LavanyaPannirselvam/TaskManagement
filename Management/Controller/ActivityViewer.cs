@@ -31,13 +31,13 @@ namespace TaskManagementApplication.Controller
                 else return "Need to view its tasks? : (yes/no) : ";
             }
             else if (toBeViewedProject.Issues.Count > 0)
-                return "Need to view its issues? (yes/no) : ";              
+                return "Need to view its issues? (yes/no) : ";
             else return "Task and issue are not assigned for this project";
         }
-        
+
         public string ViewAssignedTasks(List<int> taskIds)
         {
-            foreach(int taskId in taskIds)
+            foreach (int taskId in taskIds)
             {
                 ColorCode.DefaultCode(_database.GetTask(taskId).ToString() + "\n");
             }

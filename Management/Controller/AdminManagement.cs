@@ -18,9 +18,9 @@ namespace TaskManagementApplication.Controller
             _database = db;
         }
 
-        public string SignUp(string name,string email,Role role,string password)
+        public string SignUp(string name, string email, Role role, string password)
         {
-            User user = new(name,email,role);
+            User user = new(name, email, role);
             Result result = _database.AddUser(user, password);
             if (result == Result.SUCCESS)
                 return $"Account created successfully\nUser id is {user.UserId} ans password is {password}";
@@ -35,6 +35,6 @@ namespace TaskManagementApplication.Controller
                 return "Account cannot be deleted right now as the user has assigned activities to be completed";
             else return "Entered email doesn't exists";
         }
-        
+
     }
 }

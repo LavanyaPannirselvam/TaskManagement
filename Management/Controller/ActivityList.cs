@@ -23,7 +23,7 @@ namespace TaskManagementApplication.Controller
         }
         public Dictionary<int, Tasks> TasksList()
         {
-            return _database.TasksList();  
+            return _database.TasksList();
         }
         public Dictionary<int, SubTask> SubTasksList()
         {

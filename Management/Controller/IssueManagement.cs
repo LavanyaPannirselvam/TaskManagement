@@ -85,7 +85,7 @@ namespace TaskManagementApplication.Controller
 
         public string CreateActivity(string name, string desc, StatusType status, PriorityType priority, DateOnly startDate, DateOnly endDate, int projectId, int stid, int sstid)
         {
-            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(projectId).AssignedUsers.Contains(_currentUser  ))//only users who have been assigned to the project of the task can assign the task to users
+            if (_currentUser.Role == Role.ADMIN || _currentUser.Role == Role.MANAGER || _database.GetProject(projectId).AssignedUsers.Contains(_currentUser))//only users who have been assigned to the project of the task can assign the task to users
             {
                 Issue issue = new(name, desc, _currentUser.Name, status, priority, startDate, endDate, projectId);
                 if (_database.AddIssue(issue) == Result.SUCCESS)
@@ -108,6 +108,6 @@ namespace TaskManagementApplication.Controller
             }
             else return "You are not assigned to the project of this issue and thus you can't delete this issue";
         }
-        
+
     }
 }

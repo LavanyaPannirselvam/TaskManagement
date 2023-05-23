@@ -109,7 +109,7 @@ namespace TaskManagementApplication.Controller
             }
             else return "You are not assigned to the task of this subtask and thus you can't delete this subtask";
         }
-        
+
     }
 }
 

@@ -32,7 +32,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedTasks()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedTasks.Count != 0)
             {
                 foreach (Tasks t in user.AssignedTasks)
@@ -43,7 +42,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedSubTasks()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedSubTasks.Count != 0)
             {
                 foreach (SubTask st in user.AssignedSubTasks)
@@ -54,7 +52,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedSubtaskofSubtask()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedSubtaskofSubtask.Count != 0)
             {
                 foreach (SmallSubTask sst in user.AssignedSubtaskofSubtask)
@@ -65,7 +62,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewAssignedIssues()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.AssignedIssues.Count != 0)
             {
                 foreach (Issue i in user.AssignedIssues)
@@ -76,7 +72,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewMyNotifications()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             if (user.Notifications.Count == 0)
                 return "You don't have any notification to show now";
             else
@@ -88,7 +83,6 @@ namespace TaskManagementApplication.Controller.Interface
         }
         public string ViewMyProfile()
         {
-            //user = _database.GetUser(CurrentUserHandler.CurrentUserEmail);
             return user.ToString();
         }
     }
